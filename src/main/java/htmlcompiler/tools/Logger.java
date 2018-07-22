@@ -1,30 +1,20 @@
 package htmlcompiler.tools;
 
-import org.apache.maven.plugin.logging.Log;
+import java.util.function.Consumer;
 
 public interface Logger {
     void info(String message);
     void warn(String message);
 
-    static Logger toLogger(final Log log) {
+    static Logger newLogger(final Consumer<String> info, final Consumer<String> warn) {
         return new Logger() {
-            public void info(final String message) {
-                log.info(message);
+            public void info(String message) {
+                info.accept(message);
             }
-            public void warn(final String message) {
-                log.warn(message);
+            public void warn(String message) {
+                warn.accept(message);
             }
         };
     }
 
-    static Logger newStandardOutLogger() {
-        return new Logger() {
-            public void info(final String message) {
-                System.out.println(message);
-            }
-            public void warn(final String message) {
-                System.err.println(message);
-            }
-        };
-    }
 }

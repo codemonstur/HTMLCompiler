@@ -15,16 +15,16 @@ import static htmlcompiler.compile.html.HtmlCompiler.newDefaultTemplateContext;
 import static htmlcompiler.compile.js.JsCompiler.compileJavascriptFile;
 import static htmlcompiler.compile.js.JsCompiler.compressJavascriptCode;
 import static htmlcompiler.compile.js.TypeScriptCompiler.compileTypeScript;
-import static htmlcompiler.model.StyleType.css;
 import static htmlcompiler.model.FileType.detectType;
 import static htmlcompiler.model.ScriptType.javascript;
-import static htmlcompiler.tools.Logger.newStandardOutLogger;
+import static htmlcompiler.model.StyleType.css;
+import static htmlcompiler.tools.Logger.newLogger;
 
 public interface Command {
     void execute(File inputDir, FileType type, String filename, PrintStream out) throws Exception;
 
     static Command newCommand(final CommandType type, final File inputDir) throws MojoFailureException, UnrecognizedCommand {
-        final Logger log = newStandardOutLogger();
+        final Logger log = newLogger(System.out::println, System.err::println);
         final HtmlCompiler html = new HtmlCompiler(log, inputDir, newDefaultTemplateContext());
 
         switch (type) {
