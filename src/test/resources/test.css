@@ -1,0 +1,28 @@
+* {
+    width: 100%
+}
+
+div, p {
+    color: #eee;
+}
+
+
+.classone {
+    color: #fff;
+}
+
+#idone {
+    color: #000;
+}
+
+body {
+    margin: 0;
+}
+
+body .panel {
+    border: none;
+}
+
+body .panel, b .panel {
+    border: none;
+}

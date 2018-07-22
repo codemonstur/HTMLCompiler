@@ -1,0 +1,52 @@
+.intro { color: #eee; }
+#firstname { color: #eee; }
+* { color: #eee; }
+p { color: #eee; }
+div, p { color: #eee; }
+div p { color: #eee; }
+div > p { color: #eee; }
+div + p { color: #eee; }
+p ~ ul { color: #eee; }
+[target] { color: #eee; }
+[target=_blank] { color: #eee; }
+[title~=flower] { color: #eee; }
+[lang|=en] { color: #eee; }
+a[href^="https"] { color: #eee; }
+a[href$=".pdf"] { color: #eee; }
+a[href*="w3schools"] { color: #eee; }
+a:active { color: #eee; }
+p::after { color: #eee; }
+p::before { color: #eee; }
+input:checked { color: #eee; }
+input:disabled { color: #eee; }
+p:empty { color: #eee; }
+input:enabled { color: #eee; }
+p:first-child { color: #eee; }
+p::first-letter { color: #eee; }
+p::first-line { color: #eee; }
+p:first-of-type { color: #eee; }
+input:focus { color: #eee; }
+a:hover { color: #eee; }
+input:in-range { color: #eee; }
+input:invalid { color: #eee; }
+p:lang(it) { color: #eee; }
+p:last-child { color: #eee; }
+p:last-of-type { color: #eee; }
+a:link { color: #eee; }
+:not(p) { color: #eee; }
+p:nth-child(2) { color: #eee; }
+p:nth-last-child(2) { color: #eee; }
+p:nth-last-of-type(2) { color: #eee; }
+p:nth-of-type(2) { color: #eee; }
+p:only-of-type { color: #eee; }
+p:only-child { color: #eee; }
+input:optional { color: #eee; }
+input:out-of-range { color: #eee; }
+input:read-only { color: #eee; }
+input:read-write { color: #eee; }
+input:required { color: #eee; }
+:root { color: #eee; }
+::selection { color: #eee; }
+#news:target { color: #eee; }
+input:valid { color: #eee; }
+a:visited { color: #eee; }
