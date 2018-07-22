@@ -51,7 +51,7 @@ To compile typescript the code calls `tsc`. Have it installed.
 3. Add this code to the pom:
 ```
 <plugin>
-    <groupId>org.bitbucket.codmonster</groupId>
+    <groupId>com.github.codemonstur</groupId>
     <artifactId>htmlcompiler</artifactId>
     <version>0.0.11</version>
     <executions>
@@ -62,7 +62,7 @@ To compile typescript the code calls `tsc`. Have it installed.
 
 The code will compile all HTML files in `src/main/websrc` to `target/classes/webbin`.
 
-### How to use as maven plugin (1)
+### How to use as maven plugin (2)
 
 Import jitpack as a plugin repository
 ```
@@ -87,6 +87,10 @@ Import the plugin
 ```
 
 There is only a single goal at this time: htmlcompile. 
+
+### How to use as maven plugin (3)
+
+I want to put it in maven central. Haven't gotten to it yet.
 
 ### Configure the plugin
 
