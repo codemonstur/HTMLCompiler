@@ -29,7 +29,7 @@ public enum Tasks {;
         for (final File inFile : listFiles(inputDir, null, true)) {
             if (!isHtmlFile(inFile)) continue;
 
-            try (final PrintWriter out = new PrintWriter(toOutputFile(inputDir, outputDir, inFile))) {
+            try (final PrintWriter out = new PrintWriter(toOutputFile(inputDir, inFile, outputDir))) {
                 out.print(DOCTYPE+html.compileHtmlFile(inFile));
             } catch (Exception e) {
                 throw new MojoFailureException("Exception occurred while parsing " + relativize(inputDir, inFile), e);
@@ -58,6 +58,7 @@ public enum Tasks {;
 
     public static File toOutputDirectory(final MavenProject project) throws MojoFailureException {
         final File outputDir = new File(project.getBuild().getOutputDirectory(), "webbin");
+        outputDir.mkdirs();
         if (!outputDir.exists())
             throw new MojoFailureException("Output directory must exist: " + outputDir);
         if (!outputDir.isDirectory())

@@ -52,7 +52,6 @@ public enum Link {;
             throws InvalidInput, UnrecognizedFileType, IOException, LessException {
         final File location = toLocation(file, element.getAttribute("href"), "<link> in %s has an invalid href location '%s'");
 
-        // create new style
         final Element style = document.createElement("style");
         style.setTextContent(compileCssCode(toStyleType(location.getName()), IO.toString(location)));
 

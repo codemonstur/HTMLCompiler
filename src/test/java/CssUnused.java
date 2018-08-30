@@ -1,3 +1,7 @@
+import com.google.javascript.jscomp.*;
+import com.google.javascript.jscomp.CompilerOptions.ExtractPrototypeMemberDeclarationsMode;
+import com.google.javascript.jscomp.CompilerOptions.PropertyCollapseLevel;
+import com.google.javascript.jscomp.CompilerOptions.Reach;
 import com.helger.css.decl.*;
 import com.helger.css.reader.CSSReader;
 import com.helger.css.writer.CSSWriter;
@@ -25,8 +29,57 @@ public final class CssUnused {
     public static void main(final String... args) throws IOException, InvalidInput {
         final File file = new File("src/test/resources/test2.css");
 
+        com.google.javascript.jscomp.Compiler google = new com.google.javascript.jscomp.Compiler(System.out);
+        final SourceFile code = SourceFile.fromCode("hello", "console.log(\"Hello, world!\")");
+        google.compile(null, code, newDefaultCompilerOptions());
+
         readWithPhax(file);
 //        readWithCSSOMParser(file);
+    }
+
+    private static CompilerOptions newDefaultCompilerOptions() {
+        final CompilerOptions options = new CompilerOptions();
+        options.setFoldConstants(true);
+        options.setCoalesceVariableNames(true);
+        options.setDeadAssignmentElimination(true);
+        options.setInlineConstantVars(true);
+        options.setInlineFunctions(Reach.LOCAL_ONLY);
+        options.setMaxFunctionSizeAfterInlining(50);
+        options.setAssumeStrictThis(true);
+        options.setAssumeClosuresOnlyCaptureReferences(true);
+        options.setInlineProperties(true);
+        options.setCrossChunkCodeMotion(true);
+        options.setParentChunkCanSeeSymbolsDeclaredInChildren(true);
+        options.setCrossChunkCodeMotion(true);
+        options.setRemoveUnusedPrototypeProperties(true);
+        options.setInlineVariables(Reach.LOCAL_ONLY);
+        options.setInlineLocalVariables(true);
+        options.setSmartNameRemoval(true);
+        options.setExtraSmartNameRemoval(true);
+        options.setRemoveDeadCode(true);
+        options.setExtractPrototypeMemberDeclarations(ExtractPrototypeMemberDeclarationsMode.USE_IIFE);
+        options.setRemoveUnusedPrototypePropertiesInExterns(true);
+        options.setRemoveUnusedClassProperties(true);
+        options.setRemoveUnusedConstructorProperties(true);
+        options.setRemoveUnusedVariables(Reach.ALL);
+        options.setCollapseAnonymousFunctions(true);
+        options.setCollapseVariableDeclarations(true);
+        options.setAliasAllStrings(true);
+        options.setConvertToDottedProperties(true);
+        options.setRewriteFunctionExpressions(true);
+
+        // Renaming
+        options.setVariableRenaming(VariableRenamingPolicy.ALL);
+        options.setPropertyRenaming(PropertyRenamingPolicy.ALL_UNQUOTED);
+        options.setLabelRenaming(true);
+        options.setGeneratePseudoNames(true);
+        options.setShadowVariables(true);
+        options.setPreferStableNames(true);
+        options.setCollapsePropertiesLevel(PropertyCollapseLevel.ALL);
+        options.setCollapseObjectLiterals(true);
+        options.setDevirtualizePrototypeMethods(true);
+        options.setAnonymousFunctionNaming(AnonymousFunctionNamingPolicy.MAPPED);
+        return options;
     }
 
     private static void readWithPhax(final File file) throws InvalidInput {

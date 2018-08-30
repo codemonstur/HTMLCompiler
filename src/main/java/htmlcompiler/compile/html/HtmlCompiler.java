@@ -100,8 +100,8 @@ public final class HtmlCompiler {
     }
 
     private static Map<String, Object> applyMavenProjectContext(final Map<String, Object> context, final MavenProject project) {
-        for (final Entry<String, String> entry : System.getenv().entrySet()) {
-            context.put(entry.getKey(), entry.getValue());
+        for (final Entry<Object, Object> entry : project.getProperties().entrySet()) {
+            context.put(entry.getKey().toString(), entry.getValue());
         }
         return context;
     }
@@ -123,7 +123,7 @@ public final class HtmlCompiler {
     }
 
     public String compileHtmlFile(final File file) throws Exception {
-        return toHtml(processHtml(file, htmlToDocument(loadTemplate(file.getAbsolutePath()))));
+        return compressHtmlCode(toHtml(processHtml(file, htmlToDocument(loadTemplate(file.getAbsolutePath())))));
     }
     public String compileHtmlCode(final File file, final String content) throws Exception {
         if (content == null || content.trim().isEmpty()) return "";

@@ -12,7 +12,7 @@ To compile typescript the code calls `tsc`. Have it installed.
 
 ### Supported features
 
-- Parses HTML as HTTL templates using the HTTL template engine
+- Parses HTML as Pebble templates using the Pebble template engine
 - Compresses HTML (remove comments, remove whitespace)
 - Inlines javascript
 - Minifies javascript
@@ -21,7 +21,7 @@ To compile typescript the code calls `tsc`. Have it installed.
 - Minifies stylesheets (removing comments, removing whitespace)
 - Generates integrity tag for remote resources
 - Adds an include statement to JavaScript
-- Also compresses HTML inside script tag with type text/x-jquery-tmpl
+- Also compresses HTML inside script tag with type text/x-jquery-tmpl or text/html
 - Allow for calling htmlcompiler features through the command line
 - Inlining of link tags (favico)
 - SASS and LESS compiling
