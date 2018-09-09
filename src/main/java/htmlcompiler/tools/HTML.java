@@ -49,6 +49,10 @@ public enum HTML {;
             parent.appendChild(replacement);
     }
 
+    public static void deleteTag(final Element element) {
+        element.getParentNode().removeChild(element);
+    }
+
     public static Element newElementOf(final Document document, final File location, final HtmlCompiler compiler) throws Exception {
         return toElementOf(document, loadHtml(compiler, location));
     }

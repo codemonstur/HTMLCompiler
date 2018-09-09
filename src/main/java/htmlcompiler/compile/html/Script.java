@@ -24,6 +24,10 @@ public enum Script {;
     public static TagProcessor newScriptProcessor(final Logger log, final HtmlCompiler html, final SimpleXml xml) {
         return (inputDir, file, document, element) -> {
             final String code = element.getTextContent();
+            if (!element.hasAttribute("src") && isEmpty(code)) {
+                deleteTag(element);
+                return true;
+            }
             if (isJavaScript(element) && notEmpty(code)) {
                 element.setTextContent(compressJavascriptCode(code));
                 return false;

@@ -10,8 +10,12 @@ public interface TagProcessor {
 
     boolean process(File inputDir, File file, Document document, Element element) throws Exception;
 
+    static boolean isEmpty(final String code) {
+        return code == null || code.trim().isEmpty();
+    }
+
     static boolean notEmpty(final String code) {
-        return code != null && !code.isEmpty();
+        return code != null && !code.trim().isEmpty();
     }
 
     static boolean isJavaScript(final Element script) {

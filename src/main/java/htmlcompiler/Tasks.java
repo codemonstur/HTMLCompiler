@@ -7,6 +7,8 @@ import org.apache.maven.project.MavenProject;
 
 import java.io.File;
 import java.io.PrintWriter;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import static htmlcompiler.compile.html.HtmlCompiler.newDefaultTemplateContext;
 import static htmlcompiler.tools.HTML.DOCTYPE;
@@ -16,11 +18,14 @@ import static org.apache.commons.io.FileUtils.listFiles;
 
 public enum Tasks {;
 
+    private static final DateTimeFormatter YYYY_MM_DD_HH_MM_SS = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
     public static void compileHTML(final Logger log, final MavenProject project) throws MojoFailureException {
         final File inputDir = toInputDirectory(project);
         final File outputDir = toOutputDirectory(project);
 
-        log.info( format( "Compiling HTML in %s to %s"
+        log.info( format( "[%s] Compiling HTML in %s to %s"
+                , LocalDateTime.now().format(YYYY_MM_DD_HH_MM_SS)
                 , relativize(project.getBasedir(), inputDir)
                 , relativize(project.getBasedir(), outputDir)
                 ));
