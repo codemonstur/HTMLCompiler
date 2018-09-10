@@ -25,10 +25,10 @@ public enum Tasks {;
         final File outputDir = toOutputDirectory(project);
 
         log.info( format( "[%s] Compiling HTML in %s to %s"
-                , LocalDateTime.now().format(YYYY_MM_DD_HH_MM_SS)
-                , relativize(project.getBasedir(), inputDir)
-                , relativize(project.getBasedir(), outputDir)
-                ));
+                        , LocalDateTime.now().format(YYYY_MM_DD_HH_MM_SS)
+                        , relativize(project.getBasedir(), inputDir)
+                        , relativize(project.getBasedir(), outputDir)
+                        ));
 
         final HtmlCompiler html = new HtmlCompiler(log, inputDir, newDefaultTemplateContext(project));
         for (final File inFile : listFiles(inputDir, null, true)) {

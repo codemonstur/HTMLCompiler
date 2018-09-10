@@ -17,7 +17,12 @@ public final class MavenHtmlCompile extends LogSuppressingMojo {
     @Parameter(defaultValue = "${project}", readonly = true)
     public MavenProject project;
 
+    @Parameter(defaultValue = "true")
+    public boolean enabled;
+
     public void execute() throws MojoFailureException {
+        if (!enabled) return;
+
         final Log log = getLog();
         compileHTML(newLogger(log::info, log::warn), project);
     }
