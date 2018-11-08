@@ -4,6 +4,7 @@ import com.googlecode.htmlcompressor.compressor.HtmlCompressor;
 import com.mitchellbosecke.pebble.PebbleEngine;
 import com.mitchellbosecke.pebble.error.PebbleException;
 import com.mitchellbosecke.pebble.template.PebbleTemplate;
+import htmlcompiler.model.ScriptBag;
 import htmlcompiler.tools.IO;
 import htmlcompiler.tools.Logger;
 import net.sourceforge.htmlunit.cyberneko.HTMLConfiguration;
@@ -33,6 +34,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import static htmlcompiler.compile.html.Body.newBodyProcessor;
+import static htmlcompiler.compile.html.Head.newHeadProcessor;
 import static htmlcompiler.compile.html.Image.newImageProcessor;
 import static htmlcompiler.compile.html.Import.newImportProcessor;
 import static htmlcompiler.compile.html.Link.newLinkProcessor;
@@ -83,11 +86,14 @@ public final class HtmlCompiler {
         return compressor;
     }
     private static Map<String, TagProcessor> newDefaultTagProcessors(final Logger log, final HtmlCompiler html) {
+        final ScriptBag scripts = new ScriptBag();
         final Map<String, TagProcessor> processors = new HashMap<>();
         processors.put("style", newStyleProcessor());
         processors.put("link", newLinkProcessor(html, log));
         processors.put("img", newImageProcessor(html));
-        processors.put("script", newScriptProcessor(log, html, new SimpleXml()));
+        processors.put("script", newScriptProcessor(log, html, new SimpleXml(), scripts));
+        processors.put("body", newBodyProcessor(html, scripts));
+        processors.put("head", newHeadProcessor(html, scripts));
         processors.put("import", newImportProcessor(html));
         return processors;
     }
@@ -146,8 +152,6 @@ public final class HtmlCompiler {
     }
 
     private void processElement(final File inputDir, final File file, final Document document, final Element node) throws Exception {
-        processors.getOrDefault(node.getNodeName(), NOOP).process(inputDir, file, document, node);
-
         final NodeList nodeList = node.getChildNodes();
         for (int i = 0; i < nodeList.getLength(); i++) {
             final Node currentNode = nodeList.item(i);
@@ -155,6 +159,8 @@ public final class HtmlCompiler {
                 processElement(inputDir, file, document, (Element) currentNode);
             }
         }
+
+        processors.getOrDefault(node.getNodeName(), NOOP).process(inputDir, file, document, node);
     }
 
     public Document htmlToDocument(final String html) throws IOException, SAXException {

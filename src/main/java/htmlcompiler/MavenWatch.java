@@ -7,24 +7,27 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 
+import java.io.IOException;
+
 import static htmlcompiler.Tasks.compileHTML;
+import static htmlcompiler.Tasks.toInputDirectory;
 import static htmlcompiler.tools.Logger.newLogger;
-import static org.apache.maven.plugins.annotations.LifecyclePhase.COMPILE;
+import static htmlcompiler.tools.Watcher.watchDirectory;
 
-@Mojo( defaultPhase = COMPILE, name = "htmlcompile" )
-public final class MavenHtmlCompile extends LogSuppressingMojo {
+@Mojo( name = "watch" )
+public final class MavenWatch extends LogSuppressingMojo {
 
-    @Parameter(defaultValue = "${project}", readonly = true)
+    @Parameter( defaultValue = "${project}", readonly = true )
     public MavenProject project;
 
-    @Parameter(defaultValue = "true")
-    public boolean enabled;
-
+    @Override
     public void execute() throws MojoFailureException {
-        if (!enabled) return;
-
         final Log log = getLog();
-        compileHTML(newLogger(log::info, log::warn), project);
+        try {
+            watchDirectory(toInputDirectory(project), () -> compileHTML(newLogger(log::info, log::warn), project));
+        } catch (IOException e) {
+            throw new MojoFailureException(e.getMessage());
+        }
     }
 
 }
