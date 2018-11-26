@@ -27,30 +27,29 @@ public enum Script {;
 
     public static TagProcessor newScriptProcessor(final Logger log, final HtmlCompiler html, final SimpleXml xml, final ScriptBag scripts) {
         return (inputDir, file, document, element) -> {
-            final String code = element.getTextContent();
-            if (!element.hasAttribute("src") && isEmpty(code)) {
+
+            if (!element.hasAttribute("src") && isEmpty(element)) {
                 deleteTag(element);
                 return true;
             }
-
             if (element.hasAttribute("move")) {
                 final MoveType type = toMoveType(element.getAttribute("move"), null);
-                storeCode(extractJavascriptCode(element, file), type, scripts);
+                storeCode(toJavascriptCode(element, file), type, scripts);
                 deleteTag(element);
                 return true;
             }
-
-            if (isJavaScript(element) && notEmpty(code)) {
-                element.setTextContent(compressJavascriptCode(code));
-                removeAttributes(element, "compress");
+            if (isJavaScript(element) && !isEmpty(element)) {
+                element.setTextContent(toJavascriptCode(element, file));
+                removeAttributes(element, "inline", "compress", "src", "type");
                 return false;
             }
-            if (isTypeScript(element) && notEmpty(code)) {
-                element.setTextContent(compileTypeScript(file, code));
+            if (isTypeScript(element) && !isEmpty(element)) {
+                element.setTextContent(compileTypeScript(file, element.getTextContent()));
+                removeAttributes(element, "inline", "compress", "src", "type");
                 return false;
             }
-            if (isHtml(element) && notEmpty(code)) {
-                final CheckedIterator<String> it = xml.iterateXml(new ByteArrayInputStream(code.getBytes(UTF_8)));
+            if (isHtml(element) && !isEmpty(element)) {
+                final CheckedIterator<String> it = xml.iterateXml(new ByteArrayInputStream(element.getTextContent().getBytes(UTF_8)));
                 final StringBuilder builder = new StringBuilder();
                 while (it.hasNext()) {
                     builder.append(html.compileHtmlCode(file, it.next()));
@@ -59,7 +58,7 @@ public enum Script {;
                 return false;
             }
             if (element.hasAttribute("inline")) {
-                element.setTextContent(extractJavascriptCode(element, file));
+                element.setTextContent(toJavascriptCode(element, file));
                 removeAttributes(element, "inline", "compress", "src", "type");
                 return false;
             }
@@ -74,19 +73,24 @@ public enum Script {;
         };
     }
 
-    private static String extractJavascriptCode(final Element element, final File file) throws IOException, UnrecognizedFileType, InvalidInput {
+    private static String toJavascriptCode(final Element element, final File file) throws IOException, UnrecognizedFileType, InvalidInput {
+        return compressIfRequested(element.hasAttribute("compress"), selectCode(element, file));
+    }
+
+    private static String selectCode(final Element element, final File file) throws InvalidInput, IOException, UnrecognizedFileType {
+        return isEmpty(element) ? javascriptFromFile(element, file) : element.getTextContent();
+    }
+    private static String javascriptFromFile(final Element element, final File file) throws IOException, UnrecognizedFileType, InvalidInput {
         final File location = toLocation(file, element.getAttribute("src"), "script tag in %s has an invalid src location '%s'");
-
-        String content = "";
         if (isJavaScript(element))
-            content = compileJavascriptFile(location);
-        else if (isTypeScript(element)) {
-            content = compileTypeScript(location);
-        }
+            return compileJavascriptFile(location);
+        else if (isTypeScript(element))
+            return compileTypeScript(location);
+        return "";
+    }
 
-        if (element.hasAttribute("compress"))
-            content = compressJavascriptCode(content);
-        return content;
+    private static String compressIfRequested(final boolean requested, final String code) throws IOException {
+        return requested ? compressJavascriptCode(code) : code;
     }
 
 }

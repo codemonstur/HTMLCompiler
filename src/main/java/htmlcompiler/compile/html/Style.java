@@ -5,7 +5,7 @@ import htmlcompiler.tools.IO;
 import java.io.File;
 
 import static htmlcompiler.compile.css.CssCompiler.compressCssCode;
-import static htmlcompiler.compile.html.TagProcessor.notEmpty;
+import static htmlcompiler.compile.html.TagProcessor.isEmpty;
 import static htmlcompiler.tools.HTML.makeAbsolutePath;
 import static htmlcompiler.tools.IO.toLocation;
 
@@ -21,7 +21,7 @@ public enum Style {;
                 element.setTextContent(compressCssCode(IO.toString(location)));
                 return true;
             }
-            if (notEmpty(element.getTextContent())) {
+            if (!isEmpty(element)) {
                 element.setTextContent(compressCssCode(element.getTextContent()));
             }
             if (element.hasAttribute("to-absolute")) {

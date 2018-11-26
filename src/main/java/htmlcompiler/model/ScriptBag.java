@@ -4,7 +4,7 @@ public final class ScriptBag {
     public final Bag head = new Bag();
     public final Bag body = new Bag();
 
-    public final class Bag {
+    public static class Bag {
         public final StringBuilder scriptsAtStart = new StringBuilder();
         public final StringBuilder scriptsAtEnd = new StringBuilder();
     }

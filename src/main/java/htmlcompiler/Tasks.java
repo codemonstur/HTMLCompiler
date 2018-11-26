@@ -71,4 +71,14 @@ public enum Tasks {;
         return outputDir;
     }
 
+    public static File toStaticDirectory(final MavenProject project) throws MojoFailureException {
+        final File outputDir = new File(project.getBuild().getOutputDirectory(), "wwwroot");
+        outputDir.mkdirs();
+        if (!outputDir.exists())
+            throw new MojoFailureException("Output directory must exist: " + outputDir);
+        if (!outputDir.isDirectory())
+            throw new MojoFailureException("Output directory must be a directory");
+        return outputDir;
+    }
+
 }
