@@ -17,7 +17,7 @@ import static htmlcompiler.tools.Watcher.watchDirectory;
 @Mojo( name = "watch" )
 public final class MavenWatch extends LogSuppressingMojo {
 
-    @Parameter( defaultValue = "${project}", readonly = true )
+    @Parameter(defaultValue = "${project}", readonly = true)
     public MavenProject project;
 
     @Override

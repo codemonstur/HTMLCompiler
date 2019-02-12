@@ -28,20 +28,25 @@ import static io.undertow.UndertowOptions.ENABLE_HTTP2;
 @Mojo( name = "host" )
 public final class MavenHost extends LogSuppressingMojo  {
 
-    @Parameter( defaultValue = "${project}", readonly = true )
+    @Parameter(defaultValue = "${project}", readonly = true)
     public MavenProject project;
+
+    @Parameter(defaultValue = "8080")
+    public int port;
 
     @Override
     public void execute() throws MojoFailureException {
+        final Log log = getLog();
 
         Undertow.builder()
             .setServerOption(ALWAYS_SET_KEEP_ALIVE, true)
             .setServerOption(ENABLE_HTTP2, true)
-            .addHttpListener( 8080, "127.0.0.1")
+            .addHttpListener(port, "127.0.0.1")
             .setHandler(pathHandler(toStaticDirectory(project), toOutputDirectory(project)))
             .build().start();
 
-        final Log log = getLog();
+        log.info("Listening on localhost:"+port);
+
         try {
             watchDirectory(toInputDirectory(project), () -> compileHTML(newLogger(log::info, log::warn), project));
         } catch (IOException e) {
