@@ -53,7 +53,7 @@ To compile typescript the code calls `tsc`. Have it installed.
     <artifactId>htmlcompiler</artifactId>
     <version>1.3.0</version>
     <executions>
-        <execution><goals><goal>htmlcompile</goal></goals></execution>
+        <execution><goals><goal>compile</goal></goals></execution>
     </executions>
 </plugin>
 ```
