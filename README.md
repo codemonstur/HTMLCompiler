@@ -44,72 +44,23 @@ To compile typescript the code calls `tsc`. Have it installed.
   - Check validity using integrity tag
 - Add --help option
 
-### How to use as maven plugin (1)
+### How to use as maven plugin
 
-1. Checkout the code using `git clone repo`
-2. Run `mvn install`.
-3. Add this code to the pom:
+1. Add this code to the pom:
 ```
 <plugin>
     <groupId>com.github.codemonstur</groupId>
     <artifactId>htmlcompiler</artifactId>
-    <version>0.0.11</version>
+    <version>1.3.0</version>
     <executions>
         <execution><goals><goal>htmlcompile</goal></goals></execution>
     </executions>
 </plugin>
 ```
+2. Run `mvn package`
 
-The code will compile all HTML files in `src/main/websrc` to `target/classes/webbin`.
+The code will compile all HTML files in `src/main/websrc` to `target/classes/webbin` while mirroring the directory structure.
 
-### How to use as maven plugin (2)
-
-Import jitpack as a plugin repository
-```
-<pluginRepositories>
-    <pluginRepository>
-        <id>jitpack.io</id>
-        <url>https://jitpack.io</url>
-    </pluginRepository>
-</pluginRepositories>
-```
-
-Import the plugin
-```
-<plugin>
-    <groupId>org.bitbucket.codmonster</groupId>
-    <artifactId>htmlcompiler</artifactId>
-    <version>0.0.6</version>
-    <executions>
-        <execution><goals><goal>htmlcompile</goal></goals></execution>
-    </executions>
-</plugin>
-```
-
-There is only a single goal at this time: htmlcompile. 
-
-### How to use as maven plugin (3)
-
-I want to put it in maven central. Haven't gotten to it yet.
-
-### Configure the plugin
-
-If you want to override the default configuration you can do that through the pom like this:
-```
-<configuration>
-    <outputDir>${project.build.directory}/classes</outputDir>
-    <templateSets>
-        <templateSet>
-            <rootDir>${basedir}/src/main/websrc/</rootDir>
-            <templateDir>${basedir}/src/main/websrc/pages</templateDir>
-        </templateSet>
-        <templateSet>
-            <rootDir>${basedir}/src/main/websrc/</rootDir>
-            <templateDir>${basedir}/src/main/websrc/error</templateDir>
-        </templateSet>
-    </templateSets>
-</configuration>
-```
 
 ### How to use from the command line
 
@@ -117,7 +68,7 @@ The tool can be used from the command line as well.
 In order to set this up do the following:
 1. Clone the repository into a directory
 2. Run `mvn clean package shade:shade@shade`
-3. Copy the generated jar file (`c`) to a location of your choice
+3. Copy the generated jar file (`htmlcompiler.jar`) to a location of your choice
 4. Open `~/.bashrc` or `~/.bash_profile` and add an alias `alias hc='java -jar /your/chosen/dir/htmlcompiler.jar'`
 5. Reload the above file by doing `source ~/.bashrc` or `source ~/.bash_profile`
 
