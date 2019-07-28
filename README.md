@@ -61,6 +61,7 @@ To compile typescript the code calls `tsc`. Have it installed.
 
 The code will compile all HTML files in `src/main/websrc` to `target/classes/webbin` while mirroring the directory structure.
 
+For an example how to set this up see here: https://github.com/codemonstur/HTMLCompiler-example
 
 ### How to use from the command line
 
