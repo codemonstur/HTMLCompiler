@@ -5,7 +5,7 @@ import org.w3c.dom.Node;
 
 public enum Body {;
 
-    public static TagProcessor newBodyProcessor(final HtmlCompiler html, final ScriptBag scripts) {
+    public static TagProcessor newBodyProcessor(final ScriptBag scripts) {
         return (inputDir, file, document, element) -> {
             final String startCode = scripts.getScriptAtBodyStart().trim();
             if (!startCode.isEmpty()) {

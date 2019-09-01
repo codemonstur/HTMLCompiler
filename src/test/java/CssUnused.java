@@ -6,7 +6,7 @@ import com.helger.css.decl.*;
 import com.helger.css.reader.CSSReader;
 import com.helger.css.writer.CSSWriter;
 import com.helger.css.writer.CSSWriterSettings;
-import htmlcompiler.model.error.InvalidInput;
+import htmlcompiler.error.InvalidInput;
 
 import java.io.File;
 import java.io.IOException;

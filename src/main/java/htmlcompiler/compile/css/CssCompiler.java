@@ -6,7 +6,7 @@ import com.vaadin.sass.internal.handler.SCSSDocumentHandlerImpl;
 import com.vaadin.sass.internal.parser.Parser;
 import com.yahoo.platform.yui.compressor.CssCompressor;
 import htmlcompiler.model.StyleType;
-import htmlcompiler.model.error.UnrecognizedFileType;
+import htmlcompiler.error.UnrecognizedFileType;
 import htmlcompiler.tools.IO;
 import org.lesscss.LessCompiler;
 import org.lesscss.LessException;

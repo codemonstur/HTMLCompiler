@@ -1,4 +1,4 @@
-package htmlcompiler.model.error;
+package htmlcompiler.error;
 
 import static java.lang.String.*;
 

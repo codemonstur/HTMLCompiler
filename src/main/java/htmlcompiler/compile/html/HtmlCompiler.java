@@ -1,15 +1,12 @@
 package htmlcompiler.compile.html;
 
+import com.google.gson.Gson;
 import com.googlecode.htmlcompressor.compressor.HtmlCompressor;
-import com.mitchellbosecke.pebble.PebbleEngine;
-import com.mitchellbosecke.pebble.error.PebbleException;
-import com.mitchellbosecke.pebble.template.PebbleTemplate;
 import htmlcompiler.model.ScriptBag;
 import htmlcompiler.tools.IO;
 import htmlcompiler.tools.Logger;
 import net.sourceforge.htmlunit.cyberneko.HTMLConfiguration;
 import org.apache.maven.plugin.MojoFailureException;
-import org.apache.maven.project.MavenProject;
 import org.apache.xerces.parsers.DOMParser;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -30,14 +27,16 @@ import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import static htmlcompiler.compile.html.Body.newBodyProcessor;
 import static htmlcompiler.compile.html.Head.newHeadProcessor;
 import static htmlcompiler.compile.html.Image.newImageProcessor;
 import static htmlcompiler.compile.html.Import.newImportProcessor;
+import static htmlcompiler.compile.html.Include.newIncludeProcessor;
+import static htmlcompiler.compile.html.Library.newLibraryProcessor;
 import static htmlcompiler.compile.html.Link.newLinkProcessor;
 import static htmlcompiler.compile.html.Script.newScriptProcessor;
 import static htmlcompiler.compile.html.Style.newStyleProcessor;
@@ -52,19 +51,15 @@ public final class HtmlCompiler {
     private final File inputDir;
     private final DOMParser parser;
     private final HtmlCompressor compressor;
-    private final PebbleEngine pebble;
-    private final Map<String, Object> context;
     private final Map<String, TagProcessor> processors;
 
-    public HtmlCompiler(final Logger log, final File inputDir, final Map<String, Object> context) throws MojoFailureException {
+    public HtmlCompiler(final Logger log, final File inputDir) throws MojoFailureException {
         try {
             this.inputDir = inputDir;
-            this.context = context;
             this.parser = newDefaultDomParser();
-            this.pebble = newDefaultPebble();
             this.compressor = newDefaultHtmlCompressor();
-            this.processors = newDefaultTagProcessors(log, this);
-        } catch (SAXNotRecognizedException | SAXNotSupportedException e) {
+            this.processors = newDefaultTagProcessors(log, this, new Gson());
+        } catch (SAXNotRecognizedException | SAXNotSupportedException | IOException e) {
             throw new MojoFailureException("Initialization error", e);
         }
     }
@@ -76,46 +71,25 @@ public final class HtmlCompiler {
         parser.setFeature("http://cyberneko.org/html/features/document-fragment",true);
         return parser;
     }
-    private static PebbleEngine newDefaultPebble() {
-        return new PebbleEngine.Builder().build();
-    }
     private static HtmlCompressor newDefaultHtmlCompressor() {
         final HtmlCompressor compressor = new HtmlCompressor();
         compressor.setRemoveComments(true);
         compressor.setRemoveIntertagSpaces(true);
         return compressor;
     }
-    private static Map<String, TagProcessor> newDefaultTagProcessors(final Logger log, final HtmlCompiler html) {
+    private static Map<String, TagProcessor> newDefaultTagProcessors(final Logger log, final HtmlCompiler html, final Gson gson) throws IOException {
         final ScriptBag scripts = new ScriptBag();
         final Map<String, TagProcessor> processors = new HashMap<>();
         processors.put("style", newStyleProcessor());
         processors.put("link", newLinkProcessor(html, log));
         processors.put("img", newImageProcessor(html));
         processors.put("script", newScriptProcessor(log, html, new SimpleXml(), scripts));
-        processors.put("body", newBodyProcessor(html, scripts));
-        processors.put("head", newHeadProcessor(html, scripts));
+        processors.put("body", newBodyProcessor(scripts));
+        processors.put("head", newHeadProcessor(scripts));
         processors.put("import", newImportProcessor(html));
+        processors.put("include", newIncludeProcessor(html));
+        processors.put("library", newLibraryProcessor(gson));
         return processors;
-    }
-
-    public static Map<String, Object> newDefaultTemplateContext() {
-        return applyEnvironmentContext(new HashMap<>());
-    }
-    public static Map<String, Object> newDefaultTemplateContext(final MavenProject project) {
-        return applyEnvironmentContext(applyMavenProjectContext(new HashMap<>(), project));
-    }
-
-    private static Map<String, Object> applyMavenProjectContext(final Map<String, Object> context, final MavenProject project) {
-        for (final Entry<Object, Object> entry : project.getProperties().entrySet()) {
-            context.put(entry.getKey().toString(), entry.getValue());
-        }
-        return context;
-    }
-    private static Map<String, Object> applyEnvironmentContext(final Map<String, Object> context) {
-        for (final Entry<String, String> entry : System.getenv().entrySet()) {
-            context.put(entry.getKey(), entry.getValue());
-        }
-        return context;
     }
 
     public String compressHtmlCode(final String content) {
@@ -129,19 +103,11 @@ public final class HtmlCompiler {
     }
 
     public String compileHtmlFile(final File file) throws Exception {
-        return compressHtmlCode(toHtml(processHtml(file, htmlToDocument(loadTemplate(file.getAbsolutePath())))));
+        return compressHtmlCode(toHtml(processHtml(file, htmlToDocument(Files.readString(file.toPath())))));
     }
     public String compileHtmlCode(final File file, final String content) throws Exception {
         if (content == null || content.trim().isEmpty()) return "";
         return toHtml(processHtml(file, htmlToDocument(content)));
-    }
-
-    private String loadTemplate(final String resource) throws PebbleException, IOException {
-        final PebbleTemplate template = pebble.getTemplate(resource);
-        try (final StringWriter writer = new StringWriter()) {
-            template.evaluate(writer, context);
-            return writer.toString();
-        }
     }
 
     public Document processHtml(final File file, final Document document) throws Exception {

@@ -2,8 +2,8 @@ package htmlcompiler.compile.html;
 
 import htmlcompiler.model.MoveType;
 import htmlcompiler.model.ScriptBag;
-import htmlcompiler.model.error.InvalidInput;
-import htmlcompiler.model.error.UnrecognizedFileType;
+import htmlcompiler.error.InvalidInput;
+import htmlcompiler.error.UnrecognizedFileType;
 import htmlcompiler.tools.Logger;
 import org.w3c.dom.Element;
 import simplexml.SimpleXml;

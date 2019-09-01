@@ -1,4 +1,4 @@
-package htmlcompiler.model.error;
+package htmlcompiler.error;
 
 public final class UnrecognizedFileType extends Exception {
 

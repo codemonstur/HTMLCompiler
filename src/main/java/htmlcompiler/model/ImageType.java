@@ -1,5 +1,7 @@
 package htmlcompiler.model;
 
+import static htmlcompiler.tools.Filenames.toExtension;
+
 public enum ImageType {
     bmp("image/bmp"),
     cmx("image/x-cmx"),
@@ -41,7 +43,4 @@ public enum ImageType {
         return ImageType.valueOf(toExtension(filename)).mimetype;
     }
 
-    private static String toExtension(final String filename) {
-        return filename.substring(filename.lastIndexOf('.')+1);
-    }
 }

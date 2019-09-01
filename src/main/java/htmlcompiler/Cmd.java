@@ -1,7 +1,7 @@
 package htmlcompiler;
 
-import htmlcompiler.model.error.UnrecognizedCommand;
-import htmlcompiler.model.error.UnrecognizedFileType;
+import htmlcompiler.error.UnrecognizedCommand;
+import htmlcompiler.error.UnrecognizedFileType;
 import org.apache.commons.cli.*;
 import org.apache.log4j.Level;
 

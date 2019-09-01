@@ -1,7 +1,7 @@
 package htmlcompiler.compile.html;
 
-import htmlcompiler.model.error.InvalidInput;
-import htmlcompiler.model.error.UnrecognizedFileType;
+import htmlcompiler.error.InvalidInput;
+import htmlcompiler.error.UnrecognizedFileType;
 import htmlcompiler.tools.IO;
 import htmlcompiler.tools.Logger;
 import org.lesscss.LessException;

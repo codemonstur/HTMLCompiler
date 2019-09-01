@@ -1,6 +1,6 @@
 package htmlcompiler.model;
 
-import htmlcompiler.model.error.UnrecognizedFileType;
+import htmlcompiler.error.UnrecognizedFileType;
 
 import java.io.File;
 

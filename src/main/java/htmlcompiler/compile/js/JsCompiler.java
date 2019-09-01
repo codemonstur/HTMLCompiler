@@ -2,7 +2,7 @@ package htmlcompiler.compile.js;
 
 import com.yahoo.platform.yui.compressor.JavaScriptCompressor;
 import htmlcompiler.model.ScriptType;
-import htmlcompiler.model.error.UnrecognizedFileType;
+import htmlcompiler.error.UnrecognizedFileType;
 import htmlcompiler.tools.IO;
 
 import java.io.File;

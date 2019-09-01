@@ -27,6 +27,9 @@ public final class MavenHost extends LogSuppressingMojo  {
     @Parameter(defaultValue = "8080")
     public int port;
 
+    @Parameter(defaultValue = "true")
+    public boolean replaceExtension;
+
     @Override
     public void execute() throws MojoFailureException {
         final Log log = getLog();
@@ -38,7 +41,7 @@ public final class MavenHost extends LogSuppressingMojo  {
 
             log.info("Listening on localhost:"+port);
 
-            watchDirectory(toInputDirectory(project), () -> compileHTML(newLogger(log::info, log::warn), project));
+            watchDirectory(toInputDirectory(project), () -> compileHTML(newLogger(log::info, log::warn), project, replaceExtension));
         } catch (IOException e) {
             throw new MojoFailureException(e.getMessage());
         }

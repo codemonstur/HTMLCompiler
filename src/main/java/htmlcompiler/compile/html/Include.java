@@ -8,9 +8,9 @@ import java.io.File;
 import static htmlcompiler.tools.HTML.*;
 import static htmlcompiler.tools.IO.toLocation;
 
-public enum Import {;
+public enum Include {;
 
-    public static TagProcessor newImportProcessor(final HtmlCompiler html) {
+    public static TagProcessor newIncludeProcessor(final HtmlCompiler html) {
         return (inputDir, file, document, element) -> {
             final Element root = loadHtml(html, toSourceLocation(element, "src", file));
             if (root == null) deleteTag(element);
@@ -20,8 +20,8 @@ public enum Import {;
     }
 
     private static File toSourceLocation(final Element element, final String attribute, final File file) throws InvalidInput {
-        if (!element.hasAttribute(attribute)) throw new InvalidInput(String.format("<import> is missing '%s' attribute", attribute));
-        return toLocation(file.getParentFile(), element.getAttribute(attribute), "<import> in %s has an invalid src location '%s'");
+        if (!element.hasAttribute(attribute)) throw new InvalidInput(String.format("<include> is missing '%s' attribute", attribute));
+        return toLocation(file.getParentFile(), element.getAttribute(attribute), "<include> in %s has an invalid src location '%s'");
     }
 
 }

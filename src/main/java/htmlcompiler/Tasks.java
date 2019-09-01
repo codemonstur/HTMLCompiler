@@ -1,6 +1,10 @@
 package htmlcompiler;
 
 import htmlcompiler.compile.html.HtmlCompiler;
+import htmlcompiler.templates.DummyEngine;
+import htmlcompiler.templates.Jade4j;
+import htmlcompiler.templates.Pebble;
+import htmlcompiler.templates.TemplateEngine;
 import htmlcompiler.tools.Logger;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.project.MavenProject;
@@ -9,47 +13,59 @@ import java.io.File;
 import java.io.PrintWriter;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Map;
 
-import static htmlcompiler.compile.html.HtmlCompiler.newDefaultTemplateContext;
+import static htmlcompiler.tools.Filenames.toExtension;
 import static htmlcompiler.tools.HTML.DOCTYPE;
 import static htmlcompiler.tools.IO.relativize;
 import static java.lang.String.format;
+import static java.util.Map.entry;
 import static org.apache.commons.io.FileUtils.listFiles;
 
 public enum Tasks {;
 
     private static final DateTimeFormatter YYYY_MM_DD_HH_MM_SS = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
-    public static void compileHTML(final Logger log, final MavenProject project) throws MojoFailureException {
+    public static void compileHTML(final Logger log, final MavenProject project, final boolean replaceExtension) throws MojoFailureException {
         final File inputDir = toInputDirectory(project);
         final File outputDir = toOutputDirectory(project);
 
-        log.info( format( "[%s] Compiling HTML in %s to %s"
-                        , LocalDateTime.now().format(YYYY_MM_DD_HH_MM_SS)
-                        , relativize(project.getBasedir(), inputDir)
-                        , relativize(project.getBasedir(), outputDir)
-                        ));
+        log.info(format
+            ( "[%s] Compiling HTML in %s to %s"
+            , LocalDateTime.now().format(YYYY_MM_DD_HH_MM_SS)
+            , relativize(project.getBasedir(), inputDir)
+            , relativize(project.getBasedir(), outputDir)
+            ));
 
-        final HtmlCompiler html = new HtmlCompiler(log, inputDir, newDefaultTemplateContext(project));
+        final Map<String, TemplateEngine> engines = Map.ofEntries
+            ( entry(".pebble", new Pebble(project))
+            , entry(".jade", new Jade4j(project))
+            , entry(".hct", new DummyEngine())
+            );
+
+        final HtmlCompiler html = new HtmlCompiler(log, inputDir);
         for (final File inFile : listFiles(inputDir, null, true)) {
-            if (!isHtmlFile(inFile)) continue;
+            final TemplateEngine engine = engines.get(toExtension(inFile, null));
+            if (engine == null) continue;
 
-            try (final PrintWriter out = new PrintWriter(toOutputFile(inputDir, inFile, outputDir))) {
-                out.print(DOCTYPE+html.compileHtmlFile(inFile));
+            try {
+                try (final PrintWriter out = new PrintWriter(toOutputFile(inputDir, inFile, outputDir, replaceExtension))) {
+                    out.print(DOCTYPE+html.compressHtmlCode(html.compileHtmlCode(inFile, engine.processTemplate(inFile))));
+                }
             } catch (Exception e) {
                 throw new MojoFailureException("Exception occurred while parsing " + relativize(inputDir, inFile), e);
             }
         }
     }
 
-    private static File toOutputFile(final File inputDir, final File inFile, final File outputDir) {
-        final File outFile = new File(outputDir, relativize(inputDir, inFile));
+    private static File toOutputFile(final File inputDir, final File inFile, final File outputDir, final boolean replaceExtension) {
+        final File outFile = new File(outputDir, extensionize(relativize(inputDir, inFile), replaceExtension));
         outFile.getParentFile().mkdirs();
         return outFile;
     }
 
-    private static boolean isHtmlFile(final File inFile) {
-        return inFile != null && inFile.isFile() && inFile.getName().endsWith(".html");
+    private static String extensionize(final String filename, final boolean replaceExtension) {
+        return replaceExtension ? filename.substring(0, filename.lastIndexOf('.')) + ".html" : filename+".html";
     }
 
     public static File toInputDirectory(final MavenProject project) throws MojoFailureException {

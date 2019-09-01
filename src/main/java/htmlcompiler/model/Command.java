@@ -2,7 +2,7 @@ package htmlcompiler.model;
 
 import htmlcompiler.compile.css.CssCompiler;
 import htmlcompiler.compile.html.HtmlCompiler;
-import htmlcompiler.model.error.UnrecognizedCommand;
+import htmlcompiler.error.UnrecognizedCommand;
 import htmlcompiler.tools.IO;
 import htmlcompiler.tools.Logger;
 import org.apache.maven.plugin.MojoFailureException;
@@ -11,7 +11,6 @@ import java.io.File;
 import java.io.PrintStream;
 
 import static htmlcompiler.compile.css.CssCompiler.*;
-import static htmlcompiler.compile.html.HtmlCompiler.newDefaultTemplateContext;
 import static htmlcompiler.compile.js.JsCompiler.compileJavascriptFile;
 import static htmlcompiler.compile.js.JsCompiler.compressJavascriptCode;
 import static htmlcompiler.compile.js.TypeScriptCompiler.compileTypeScript;
@@ -25,7 +24,7 @@ public interface Command {
 
     static Command newCommand(final CommandType type, final File inputDir) throws MojoFailureException, UnrecognizedCommand {
         final Logger log = newLogger(System.out::println, System.err::println);
-        final HtmlCompiler html = new HtmlCompiler(log, inputDir, newDefaultTemplateContext());
+        final HtmlCompiler html = new HtmlCompiler(log, inputDir);
 
         switch (type) {
             case compile: return newCompile(html);

@@ -20,11 +20,14 @@ public final class MavenWatch extends LogSuppressingMojo {
     @Parameter(defaultValue = "${project}", readonly = true)
     public MavenProject project;
 
+    @Parameter(defaultValue = "true")
+    public boolean replaceExtension;
+
     @Override
     public void execute() throws MojoFailureException {
         final Log log = getLog();
         try {
-            watchDirectory(toInputDirectory(project), () -> compileHTML(newLogger(log::info, log::warn), project));
+            watchDirectory(toInputDirectory(project), () -> compileHTML(newLogger(log::info, log::warn), project, replaceExtension));
         } catch (IOException e) {
             throw new MojoFailureException(e.getMessage());
         }
