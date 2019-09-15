@@ -1,10 +1,7 @@
 package htmlcompiler;
 
 import htmlcompiler.compile.html.HtmlCompiler;
-import htmlcompiler.templates.DummyEngine;
-import htmlcompiler.templates.Jade4j;
-import htmlcompiler.templates.Pebble;
-import htmlcompiler.templates.TemplateEngine;
+import htmlcompiler.templates.*;
 import htmlcompiler.tools.Logger;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.project.MavenProject;
@@ -31,7 +28,7 @@ public enum Tasks {;
         final File outputDir = toOutputDirectory(project);
 
         log.info(format
-            ( "[%s] Compiling HTML in %s to %s"
+            ( "[%s] Compiling supported template formats in %s to %s"
             , LocalDateTime.now().format(YYYY_MM_DD_HH_MM_SS)
             , relativize(project.getBasedir(), inputDir)
             , relativize(project.getBasedir(), outputDir)
@@ -40,6 +37,10 @@ public enum Tasks {;
         final Map<String, TemplateEngine> engines = Map.ofEntries
             ( entry(".pebble", new Pebble(project))
             , entry(".jade", new Jade4j(project))
+            , entry(".md", new Markdown())
+            , entry(".hb", new Handlebars(project))
+            , entry(".jinjava", new JinJava(project))
+            , entry(".twig", new JTwig(project))
             , entry(".hct", new DummyEngine())
             );
 

@@ -1,7 +1,11 @@
 package htmlcompiler;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
+import htmlcompiler.model.fakeapi.Endpoint;
+import htmlcompiler.model.fakeapi.Request;
 import htmlcompiler.tools.LogSuppressingMojo;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugin.logging.Log;
@@ -13,8 +17,14 @@ import java.io.File;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static htmlcompiler.Tasks.*;
+import static htmlcompiler.model.fakeapi.Endpoint.toKey;
+import static htmlcompiler.model.fakeapi.Request.toHttpHandler;
 import static htmlcompiler.tools.Logger.newLogger;
 import static htmlcompiler.tools.Watcher.watchDirectory;
 
@@ -30,13 +40,19 @@ public final class MavenHost extends LogSuppressingMojo  {
     @Parameter(defaultValue = "true")
     public boolean replaceExtension;
 
+    @Parameter(defaultValue = "true")
+    public boolean requestApiEnabled;
+
+    @Parameter(defaultValue = "")
+    public String requestApiSpecification;
+
     @Override
     public void execute() throws MojoFailureException {
         final Log log = getLog();
 
         try {
             final HttpServer server = HttpServer.create(new InetSocketAddress("127.0.0.1", port), 100);
-            server.createContext("/", pathHandler(toStaticDirectory(project), toOutputDirectory(project)));
+            server.createContext("/", newServerHandler(project, requestApiEnabled, requestApiSpecification));
             server.start();
 
             log.info("Listening on localhost:"+port);
@@ -47,17 +63,40 @@ public final class MavenHost extends LogSuppressingMojo  {
         }
     }
 
+    private static HttpHandler newServerHandler(final MavenProject project, final boolean specEnabled, final String specFile) throws MojoFailureException, IOException {
+        final HttpHandler handler = pathHandler(toStaticDirectory(project), toOutputDirectory(project));
+        return specEnabled ? fakeApiHandler(toApiMap(fileToSpec(specFile)), handler) : handler;
+    }
+
+    private static List<Request> fileToSpec(final String filename) throws IOException {
+        final String data = Files.readString(Path.of(filename));
+        return new Gson().fromJson(data, new TypeToken<List<Request>>(){}.getType());
+    }
+    private static Map<Endpoint, HttpHandler> toApiMap(final List<Request> requests) {
+        final Map<Endpoint, HttpHandler> map = new HashMap<>();
+        for (final Request spec : requests) {
+            map.put(spec.endpoint, toHttpHandler(spec));
+        }
+        return map;
+    }
+
+    private static HttpHandler fakeApiHandler(final Map<Endpoint, HttpHandler> api, final HttpHandler next) {
+        return exchange -> api.getOrDefault(toKey(exchange), next).handle(exchange);
+    }
+
     private static HttpHandler pathHandler(final File... directories) {
         return exchange -> {
-            for (final File dir : directories) {
-                final File file = toFile(dir, exchange.getRequestURI().getPath(), null);
-                if (file == null) continue;
+            if (!"/".equals(exchange.getRequestURI().getPath())) {
+                for (final File dir : directories) {
+                    final File file = toFile(dir, exchange.getRequestURI().getPath(), null);
+                    if (file == null) continue;
 
-                exchange.getResponseHeaders().add("Content-Type", Files.probeContentType(file.toPath()));
-                exchange.sendResponseHeaders(200, file.length());
-                Files.copy(file.toPath(), exchange.getResponseBody());
-                exchange.close();
-                return;
+                    exchange.getResponseHeaders().add("Content-Type", Files.probeContentType(file.toPath()));
+                    exchange.sendResponseHeaders(200, file.length());
+                    Files.copy(file.toPath(), exchange.getResponseBody());
+                    exchange.close();
+                    return;
+                }
             }
 
             exchange.sendResponseHeaders(404, 0);
