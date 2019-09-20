@@ -41,6 +41,8 @@ public enum Tasks {;
             , entry(".hb", new Handlebars(project))
             , entry(".jinjava", new JinJava(project))
             , entry(".twig", new JTwig(project))
+            , entry(".mustache", new Mustache(project))
+            , entry(".thymeleaf", new Thymeleaf(project))
             , entry(".hct", new DummyEngine())
             );
 

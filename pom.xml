@@ -255,6 +255,38 @@
             <artifactId>jinjava</artifactId>
             <version>2.5.2</version>
         </dependency>
+        <dependency>
+            <groupId>org.trimou</groupId>
+            <artifactId>trimou-core</artifactId>
+            <version>2.5.0.Final</version>
+        </dependency>
+        <dependency>
+            <groupId>org.thymeleaf</groupId>
+            <artifactId>thymeleaf</artifactId>
+            <version>3.0.11.RELEASE</version>
+        </dependency>
+
+<!--
+Other options for template engines:
+https://github.com/playframework/twirl
+http://www.jproggy.org/snippetory/
+https://mixer2.org/
+https://github.com/tiagobento/watertemplate-engine
+https://github.com/subchen/jetbrick-template-2x
+http://rythmengine.org/
+https://www.jamon.org/index.html
+https://www.stringtemplate.org/
+-->
+
+<!--
+        Where is the documentation for using this??
+        <dependency>
+            <groupId>com.github.enpassant</groupId>
+            <artifactId>ickenham_2.12</artifactId>
+            <version>1.4.1</version>
+        </dependency>
+-->
+
 <!--
         This one is being difficult with documentation, don't know where to make it compile a single template
         <dependency>
