@@ -19,19 +19,20 @@ public class LoopingSingleThread implements Service {
     }
 
     @Override
-    public Service start() {
+    public LoopingSingleThread start() {
+        if (!running) throw new IllegalStateException();
         thread.start();
         return this;
     }
 
     @Override
-    public Service join() throws InterruptedException {
+    public LoopingSingleThread join() throws InterruptedException {
         thread.join();
         return this;
     }
 
     @Override
-    public Service stop() {
+    public LoopingSingleThread stop() {
         running = false;
         return this;
     }
