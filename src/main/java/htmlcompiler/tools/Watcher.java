@@ -40,7 +40,7 @@ public enum Watcher {;
         final List<FileEventListener> listeners = new ArrayList<>();
         listeners.add((type, entry) -> doCompile.release());
         listeners.add((type, entry) -> {
-            if (type != ENTRY_CREATE) return;
+            if (type == ENTRY_CREATE) return;
             if (!Files.isDirectory(entry)) return;
             walkAndRegisterDirectories(entry, watcher, keys);
         });
