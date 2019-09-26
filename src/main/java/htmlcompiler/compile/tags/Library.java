@@ -1,4 +1,4 @@
-package htmlcompiler.compile.html;
+package htmlcompiler.compile.tags;
 
 import com.google.gson.Gson;
 import htmlcompiler.compile.db.LibraryArchive;
@@ -13,7 +13,7 @@ public enum Library {;
 
     public static TagProcessor newLibraryProcessor(final Gson gson) throws IOException {
         final LibraryArchive archive = new LibraryArchive(gson);
-        return (inputDir, file, document, element) -> {
+        return (file, document, element) -> {
             final String name = element.getAttribute("name");
             final String version = element.getAttribute("version");
             final String type = element.getAttribute("type");

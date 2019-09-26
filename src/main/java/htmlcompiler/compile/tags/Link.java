@@ -1,5 +1,6 @@
-package htmlcompiler.compile.html;
+package htmlcompiler.compile.tags;
 
+import htmlcompiler.compile.HtmlCompiler;
 import htmlcompiler.error.InvalidInput;
 import htmlcompiler.error.UnrecognizedFileType;
 import htmlcompiler.tools.IO;
@@ -21,7 +22,7 @@ import static htmlcompiler.tools.IO.toLocation;
 public enum Link {;
 
     public static TagProcessor newLinkProcessor(final HtmlCompiler html, final Logger log) {
-        return (inputDir, file, document, element) -> {
+        return (file, document, element) -> {
             if (isLinkFavicon(element) && element.hasAttribute("inline")) {
                 inlineFavicon(element, file);
                 return true;
@@ -31,7 +32,7 @@ public enum Link {;
                 return true;
             }
             if (!element.hasAttribute("integrity") && !element.hasAttribute("no-security")) {
-                addIntegrityAttributes(element, element.getAttribute("href"), inputDir, file, html, log);
+                addIntegrityAttributes(element, element.getAttribute("href"), file, html, log);
             }
             if (element.hasAttribute("to-absolute")) {
                 makeAbsolutePath(element, "href");

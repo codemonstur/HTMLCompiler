@@ -1,26 +1,47 @@
-package util;
+package htmlcompiler.services;
 
 import java.io.IOException;
 import java.nio.file.*;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import static java.nio.file.StandardWatchEventKinds.*;
 
-public enum DirectoryWatcher {;
+public final class DirectoryWatcher {
 
     public interface PathEventListener {
         void onEvent(WatchEvent.Kind<Path> event, Path path);
     }
 
-    public static Service newDirectoryWatcher(final Set<Path> directories, final PathEventListener listener) throws IOException {
-        return newDirectoryWatcher(directories, false, listener);
+    private boolean emitCreatedForExisting = false;
+    private PathEventListener listener;
+    private Set<Path> directories = new HashSet<>();
+
+    public static DirectoryWatcher newDirectoryWatcher() {
+        return new DirectoryWatcher();
+    }
+    public DirectoryWatcher listener(final PathEventListener listener) {
+        this.listener = listener;
+        return this;
+    }
+    public DirectoryWatcher directories(final Collection<Path> directories) {
+        for (final Path path : directories)
+            this.directories.add(path.normalize());
+        return this;
+    }
+    public DirectoryWatcher directory(final Path directory) {
+        this.directories.add(directory.normalize());
+        return this;
+    }
+    public DirectoryWatcher emitCreatedForExisting() {
+        return emitCreatedForExisting(true);
+    }
+    public DirectoryWatcher emitCreatedForExisting(final boolean enabled) {
+        this.emitCreatedForExisting = enabled;
+        return this;
     }
 
     @SuppressWarnings("unchecked")
-    public static Service newDirectoryWatcher(final Set<Path> directories, final boolean emitCreatedForExisting
-            , final PathEventListener listener) throws IOException {
+    public Service build() throws IOException {
         if (directories.isEmpty()) throw new IllegalArgumentException("You must set at least 1 directory");
         if (listener == null) throw new IllegalArgumentException("You must set a listener");
 
@@ -30,7 +51,7 @@ public enum DirectoryWatcher {;
         for (final var directory : directories) {
             try (final var walk = Files.walk(directory)) {
                 walk.filter(path -> path.toFile().isDirectory())
-                    .map(path -> sendCreateEvent(emitCreatedForExisting, path, listener))
+                    .map(path -> notifyCreateEvent(emitCreatedForExisting, path, listener))
                     .forEach(path -> watchDirectory(path, watchService, watchKeyToDirectory));
             }
         }
@@ -67,7 +88,7 @@ public enum DirectoryWatcher {;
         }
     }
 
-    private static Path sendCreateEvent(final boolean enabled, final Path dir, final PathEventListener listener) {
+    private static Path notifyCreateEvent(final boolean enabled, final Path dir, final PathEventListener listener) {
         if (enabled) listener.onEvent(ENTRY_CREATE, dir);
         return dir;
     }

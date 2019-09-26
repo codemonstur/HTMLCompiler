@@ -28,7 +28,7 @@ public enum Cmd {;
             final CommandLine cmd = new DefaultParser().parse(options, args);
             final File inputDir = new File(orDefault(cmd.getOptionValue("root"), "."));
 
-            newCommand(toCommandType(cmd.getArgs(), unknown), inputDir).execute
+            newCommand(toCommandType(cmd.getArgs(), unknown)).execute
                 ( inputDir
                 , fromUserInput(cmd.getOptionValue("type"))
                 , cmd.getOptionValue("input")

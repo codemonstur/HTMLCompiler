@@ -1,7 +1,8 @@
-package htmlcompiler.compile.html;
+package htmlcompiler.compile;
 
 import com.google.gson.Gson;
 import com.googlecode.htmlcompressor.compressor.HtmlCompressor;
+import htmlcompiler.compile.tags.TagProcessor;
 import htmlcompiler.model.ScriptBag;
 import htmlcompiler.tools.IO;
 import htmlcompiler.tools.Logger;
@@ -31,16 +32,16 @@ import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.Map;
 
-import static htmlcompiler.compile.html.Body.newBodyProcessor;
-import static htmlcompiler.compile.html.Head.newHeadProcessor;
-import static htmlcompiler.compile.html.Image.newImageProcessor;
-import static htmlcompiler.compile.html.Import.newImportProcessor;
-import static htmlcompiler.compile.html.Include.newIncludeProcessor;
-import static htmlcompiler.compile.html.Library.newLibraryProcessor;
-import static htmlcompiler.compile.html.Link.newLinkProcessor;
-import static htmlcompiler.compile.html.Script.newScriptProcessor;
-import static htmlcompiler.compile.html.Style.newStyleProcessor;
-import static htmlcompiler.compile.html.TagProcessor.NOOP;
+import static htmlcompiler.compile.tags.Body.newBodyProcessor;
+import static htmlcompiler.compile.tags.Head.newHeadProcessor;
+import static htmlcompiler.compile.tags.Image.newImageProcessor;
+import static htmlcompiler.compile.tags.Import.newImportProcessor;
+import static htmlcompiler.compile.tags.Include.newIncludeProcessor;
+import static htmlcompiler.compile.tags.Library.newLibraryProcessor;
+import static htmlcompiler.compile.tags.Link.newLinkProcessor;
+import static htmlcompiler.compile.tags.Script.newScriptProcessor;
+import static htmlcompiler.compile.tags.Style.newStyleProcessor;
+import static htmlcompiler.compile.tags.TagProcessor.NOOP;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static javax.xml.transform.OutputKeys.ENCODING;
 import static javax.xml.transform.OutputKeys.OMIT_XML_DECLARATION;
@@ -48,14 +49,12 @@ import static org.w3c.dom.Node.ELEMENT_NODE;
 
 public final class HtmlCompiler {
 
-    private final File inputDir;
     private final DOMParser parser;
     private final HtmlCompressor compressor;
     private final Map<String, TagProcessor> processors;
 
-    public HtmlCompiler(final Logger log, final File inputDir) throws MojoFailureException {
+    public HtmlCompiler(final Logger log) throws MojoFailureException {
         try {
-            this.inputDir = inputDir;
             this.parser = newDefaultDomParser();
             this.compressor = newDefaultHtmlCompressor();
             this.processors = newDefaultTagProcessors(log, this, new Gson());
@@ -98,9 +97,6 @@ public final class HtmlCompiler {
     public String compressHtmlFile(final File input) throws IOException {
         return compressor.compress(IO.toString(input));
     }
-    public String compressHtmlFile(final String filename) throws IOException {
-        return compressor.compress(IO.toString(new File(inputDir, filename)));
-    }
 
     public String compileHtmlFile(final File file) throws Exception {
         return compressHtmlCode(toHtml(processHtml(file, htmlToDocument(Files.readString(file.toPath())))));
@@ -112,21 +108,21 @@ public final class HtmlCompiler {
 
     public Document processHtml(final File file, final Document document) throws Exception {
         if (document != null && document.getDocumentElement() != null)
-            processElement(inputDir, file, document, document.getDocumentElement());
+            processElement(file, document, document.getDocumentElement());
 
         return document;
     }
 
-    private void processElement(final File inputDir, final File file, final Document document, final Element node) throws Exception {
+    private void processElement(final File file, final Document document, final Element node) throws Exception {
         final NodeList nodeList = node.getChildNodes();
         for (int i = 0; i < nodeList.getLength(); i++) {
             final Node currentNode = nodeList.item(i);
             if (currentNode.getNodeType() == ELEMENT_NODE) {
-                processElement(inputDir, file, document, (Element) currentNode);
+                processElement(file, document, (Element) currentNode);
             }
         }
 
-        processors.getOrDefault(node.getNodeName(), NOOP).process(inputDir, file, document, node);
+        processors.getOrDefault(node.getNodeName(), NOOP).process(file, document, node);
     }
 
     public Document htmlToDocument(final String html) throws IOException, SAXException {

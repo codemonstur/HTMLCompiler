@@ -1,4 +1,4 @@
-package htmlcompiler.compile.html;
+package htmlcompiler.compile.tags;
 
 import htmlcompiler.model.ScriptBag;
 import org.w3c.dom.Node;
@@ -6,7 +6,7 @@ import org.w3c.dom.Node;
 public enum Body {;
 
     public static TagProcessor newBodyProcessor(final ScriptBag scripts) {
-        return (inputDir, file, document, element) -> {
+        return (file, document, element) -> {
             final String startCode = scripts.getScriptAtBodyStart().trim();
             if (!startCode.isEmpty()) {
                 final Node scriptStart = document.createElement("script");

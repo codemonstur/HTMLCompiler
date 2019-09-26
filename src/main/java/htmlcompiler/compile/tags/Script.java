@@ -1,5 +1,6 @@
-package htmlcompiler.compile.html;
+package htmlcompiler.compile.tags;
 
+import htmlcompiler.compile.HtmlCompiler;
 import htmlcompiler.model.MoveType;
 import htmlcompiler.model.ScriptBag;
 import htmlcompiler.error.InvalidInput;
@@ -13,7 +14,7 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 
-import static htmlcompiler.compile.html.TagProcessor.*;
+import static htmlcompiler.compile.tags.TagProcessor.*;
 import static htmlcompiler.compile.js.JsCompiler.compileJavascriptFile;
 import static htmlcompiler.compile.js.JsCompiler.compressJavascriptCode;
 import static htmlcompiler.compile.js.TypeScriptCompiler.compileTypeScript;
@@ -26,7 +27,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 public enum Script {;
 
     public static TagProcessor newScriptProcessor(final Logger log, final HtmlCompiler html, final SimpleXml xml, final ScriptBag scripts) {
-        return (inputDir, file, document, element) -> {
+        return (file, document, element) -> {
 
             if (!element.hasAttribute("src") && isEmpty(element)) {
                 deleteTag(element);
@@ -63,7 +64,7 @@ public enum Script {;
                 return false;
             }
             if (element.hasAttribute("src") && !element.hasAttribute("integrity") && !element.hasAttribute("no-security")) {
-                addIntegrityAttributes(element, element.getAttribute("src"), inputDir, file, html, log);
+                addIntegrityAttributes(element, element.getAttribute("src"), file, html, log);
             }
             if (element.hasAttribute("to-absolute")) {
                 makeAbsolutePath(element, "src");

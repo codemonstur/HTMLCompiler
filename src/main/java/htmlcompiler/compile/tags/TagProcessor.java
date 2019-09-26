@@ -1,4 +1,4 @@
-package htmlcompiler.compile.html;
+package htmlcompiler.compile.tags;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -6,24 +6,14 @@ import org.w3c.dom.Element;
 import java.io.File;
 
 public interface TagProcessor {
-    TagProcessor NOOP = (loader, file, document, element) -> false;
+    TagProcessor NOOP = (file, document, element) -> false;
 
-    boolean process(File inputDir, File file, Document document, Element element) throws Exception;
+    boolean process(File file, Document document, Element element) throws Exception;
 
     static boolean isEmpty(final Element script) {
         final String code = script.getTextContent();
         return code == null || code.trim().isEmpty();
     }
-
-/*
-    static boolean notEmpty(final String code) {
-        return code != null && !code.trim().isEmpty();
-    }
-
-    static boolean notEmpty(final Element script) {
-        return code != null && !code.trim().isEmpty();
-    }
-*/
 
     static boolean isJavaScript(final Element script) {
         return !script.hasAttribute("type") || script.getAttribute("type").equalsIgnoreCase("text/javascript");

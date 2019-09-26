@@ -1,4 +1,4 @@
-package util;
+package htmlcompiler.services;
 
 public class LoopingSingleThread implements Service {
 
@@ -26,7 +26,7 @@ public class LoopingSingleThread implements Service {
     }
 
     @Override
-    public LoopingSingleThread join() throws InterruptedException {
+    public LoopingSingleThread waitUntilDone() throws InterruptedException {
         thread.join();
         return this;
     }

@@ -1,35 +1,44 @@
 package htmlcompiler;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-import com.sun.net.httpserver.HttpHandler;
-import com.sun.net.httpserver.HttpServer;
-import htmlcompiler.model.fakeapi.Endpoint;
-import htmlcompiler.model.fakeapi.Request;
+import htmlcompiler.compile.TemplateThenCompile;
+import htmlcompiler.model.Task;
+import htmlcompiler.services.LoopingSingleThread;
+import htmlcompiler.services.Service;
 import htmlcompiler.tools.LogSuppressingMojo;
+import htmlcompiler.tools.Logger;
 import org.apache.maven.plugin.MojoFailureException;
-import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.InetSocketAddress;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.HashMap;
+import java.nio.file.Paths;
+import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
-import static htmlcompiler.Tasks.*;
-import static htmlcompiler.model.fakeapi.Endpoint.toKey;
-import static htmlcompiler.model.fakeapi.Request.toHttpHandler;
+import static htmlcompiler.compile.MavenProjectReader.toInputDirectory;
+import static htmlcompiler.compile.MavenProjectReader.toOutputDirectory;
+import static htmlcompiler.compile.TemplateThenCompile.RenameFile.defaultRenamer;
+import static htmlcompiler.services.DirectoryWatcher.newDirectoryWatcher;
+import static htmlcompiler.services.Http.newHttpServer;
+import static htmlcompiler.tools.IO.relativize;
+import static htmlcompiler.tools.Logger.YYYY_MM_DD_HH_MM_SS;
 import static htmlcompiler.tools.Logger.newLogger;
-import static htmlcompiler.tools.Watcher.watchDirectory;
+import static java.lang.String.format;
+import static java.nio.file.StandardWatchEventKinds.ENTRY_CREATE;
+import static java.nio.file.StandardWatchEventKinds.ENTRY_DELETE;
+import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toSet;
 
 @Mojo( name = "host" )
-public final class MavenHost extends LogSuppressingMojo  {
+public final class MavenHost extends LogSuppressingMojo {
 
     @Parameter(defaultValue = "${project}", readonly = true)
     public MavenProject project;
@@ -40,76 +49,81 @@ public final class MavenHost extends LogSuppressingMojo  {
     @Parameter(defaultValue = "true")
     public boolean replaceExtension;
 
+    @Parameter()
+    public String watchedDirectories;
+
     @Parameter(defaultValue = "true")
     public boolean requestApiEnabled;
 
-    @Parameter(defaultValue = "")
+    @Parameter(defaultValue = "src/main/websrc/requests.json")
     public String requestApiSpecification;
 
     @Override
     public void execute() throws MojoFailureException {
-        final Log log = getLog();
+        final Logger log = newLogger(getLog()::info, getLog()::warn);
+        final File inputDir = toInputDirectory(project);
+        final File outputDir = toOutputDirectory(project);
 
         try {
-            final HttpServer server = HttpServer.create(new InetSocketAddress("127.0.0.1", port), 100);
-            server.createContext("/", newServerHandler(project, requestApiEnabled, requestApiSpecification));
+            final var server = newHttpServer(project, port, requestApiEnabled, requestApiSpecification);
+            final var ttc = new TemplateThenCompile(log, defaultRenamer(inputDir, outputDir, replaceExtension), project);
+            final var queue = new LinkedBlockingQueue<Task>();
+            final var compiler = newTaskCompiler(log, queue, ttc, toChildrenSet(inputDir));
+            final var watcher = newDirectoryWatcher()
+                .directory(inputDir.toPath())
+                .directories(toPathList(watchedDirectories))
+                .listener((event, path) -> queue.add(new Task(event, path)))
+                .build();
+
             server.start();
+            compiler.start();
+            watcher.start();
 
-            log.info("Listening on localhost:"+port);
-
-            watchDirectory(toInputDirectory(project), () -> compileHTML(newLogger(log::info, log::warn), project, replaceExtension));
+            log.info("Listening on localhost:" + port);
+            log.info(format
+                ( "[%s] Compiling supported template formats in %s to %s"
+                , LocalDateTime.now().format(YYYY_MM_DD_HH_MM_SS)
+                , relativize(project.getBasedir(), inputDir)
+                , relativize(project.getBasedir(), outputDir)
+                ));
         } catch (IOException e) {
             throw new MojoFailureException(e.getMessage());
         }
     }
 
-    private static HttpHandler newServerHandler(final MavenProject project, final boolean specEnabled, final String specFile) throws MojoFailureException, IOException {
-        final HttpHandler handler = pathHandler(toStaticDirectory(project), toOutputDirectory(project));
-        return specEnabled ? fakeApiHandler(toApiMap(fileToSpec(specFile)), handler) : handler;
-    }
+    private static Service newTaskCompiler(final Logger log, final BlockingQueue<Task> queue, final TemplateThenCompile ttc, final Set<Path> rootPages) {
+        return new LoopingSingleThread(() -> {
+            final Task take = queue.take();
+            if (take.type == ENTRY_DELETE && take.path.endsWith("/.")) return;
+            if (take.type == ENTRY_CREATE && take.path.toFile().isDirectory()) return;
 
-    private static List<Request> fileToSpec(final String filename) throws IOException {
-        final String data = Files.readString(Path.of(filename));
-        return new Gson().fromJson(data, new TypeToken<List<Request>>(){}.getType());
-    }
-    private static Map<Endpoint, HttpHandler> toApiMap(final List<Request> requests) {
-        final Map<Endpoint, HttpHandler> map = new HashMap<>();
-        for (final Request spec : requests) {
-            map.put(spec.endpoint, toHttpHandler(spec));
-        }
-        return map;
-    }
-
-    private static HttpHandler fakeApiHandler(final Map<Endpoint, HttpHandler> api, final HttpHandler next) {
-        return exchange -> api.getOrDefault(toKey(exchange), next).handle(exchange);
-    }
-
-    private static HttpHandler pathHandler(final File... directories) {
-        return exchange -> {
-            if (!"/".equals(exchange.getRequestURI().getPath())) {
-                for (final File dir : directories) {
-                    final File file = toFile(dir, exchange.getRequestURI().getPath(), null);
-                    if (file == null) continue;
-
-                    exchange.getResponseHeaders().add("Content-Type", Files.probeContentType(file.toPath()));
-                    exchange.sendResponseHeaders(200, file.length());
-                    Files.copy(file.toPath(), exchange.getResponseBody());
-                    exchange.close();
+            try {
+                final boolean doAll = rootPages.contains(take.path.normalize().toAbsolutePath());
+                if (doAll) {
+                    queue.clear();
+                    for (final var path :rootPages) {
+                        ttc.compileTemplate(path.toFile());
+                    }
                     return;
                 }
+                ttc.compileTemplate(take.path.toFile());
+            } catch (Exception e) {
+                log.warn(e.getMessage());
             }
-
-            exchange.sendResponseHeaders(404, 0);
-            exchange.close();
-        };
+        });
     }
 
-    private static File toFile(final File dir, final String requestPath, final File _default) {
-        final File requested = new File(dir, requestPath.substring(1));
-        return (!isChildOf(requested, dir) || !requested.exists() || !requested.canRead()) ? _default : requested;
+    private static List<Path> toPathList(final String semicolonSeparatedList) {
+        return Arrays.stream(semicolonSeparatedList.split(";"))
+            .map(path -> Paths.get(path))
+            .collect(toList());
     }
 
-    private static boolean isChildOf(final File child, final File parent) {
-        return child.toPath().startsWith(parent.toPath());
+    private static Set<Path> toChildrenSet(final File inputDir) {
+        final var children = requireNonNull(inputDir.listFiles());
+        return Arrays.stream(children)
+            .map(File::toPath)
+            .collect(toSet());
     }
+
 }

@@ -1,6 +1,6 @@
 package htmlcompiler.tools;
 
-import htmlcompiler.compile.html.HtmlCompiler;
+import htmlcompiler.compile.HtmlCompiler;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
@@ -11,13 +11,10 @@ import java.io.File;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 
+import static htmlcompiler.model.ImageType.toMimeType;
 import static htmlcompiler.tools.Coding.encodeBase64;
 import static htmlcompiler.tools.Coding.sha384;
-import static htmlcompiler.model.ImageType.toMimeType;
-import static htmlcompiler.tools.HTTP.isUrl;
-import static htmlcompiler.tools.HTTP.urlHasCorsAllowed;
-import static htmlcompiler.tools.HTTP.urlToByteArray;
-import static htmlcompiler.tools.IO.relativize;
+import static htmlcompiler.tools.HTTP.*;
 import static htmlcompiler.tools.IO.toByteArray;
 import static java.lang.String.format;
 
@@ -98,13 +95,13 @@ public enum HTML {;
         }
     }
 
-    public static void addIntegrityAttributes(final Element element, final String url, final File inputDir, final File file
+    public static void addIntegrityAttributes(final Element element, final String url, final File file
             , final HtmlCompiler html, final Logger log) throws IOException, NoSuchAlgorithmException, TransformerException {
         try {
             if (isUrl(url) && urlHasCorsAllowed(url)) {
                 element.setAttribute("integrity", toIntegrityValue(urlToByteArray(url)));
                 if (!element.hasAttribute("crossorigin")) element.setAttribute("crossorigin", "anonymous");
-                log.warn(format("File %s has tag without integrity, rewrote to: %s", relativize(inputDir, file), html.toHtml(element)));
+                log.warn(format("File %s has tag without integrity, rewrote to: %s", file.toPath().normalize(), html.toHtml(element)));
             }
         } catch (IOException e) {
             log.warn("Failed to get data for tag src/href attribute " + url + ", error is " + e.getMessage());

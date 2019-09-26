@@ -1,7 +1,7 @@
 package htmlcompiler.model;
 
 import htmlcompiler.compile.css.CssCompiler;
-import htmlcompiler.compile.html.HtmlCompiler;
+import htmlcompiler.compile.HtmlCompiler;
 import htmlcompiler.error.UnrecognizedCommand;
 import htmlcompiler.tools.IO;
 import htmlcompiler.tools.Logger;
@@ -22,9 +22,9 @@ import static htmlcompiler.tools.Logger.newLogger;
 public interface Command {
     void execute(File inputDir, FileType type, String filename, PrintStream out) throws Exception;
 
-    static Command newCommand(final CommandType type, final File inputDir) throws MojoFailureException, UnrecognizedCommand {
+    static Command newCommand(final CommandType type) throws MojoFailureException, UnrecognizedCommand {
         final Logger log = newLogger(System.out::println, System.err::println);
-        final HtmlCompiler html = new HtmlCompiler(log, inputDir);
+        final HtmlCompiler html = new HtmlCompiler(log);
 
         switch (type) {
             case compile: return newCompile(html);
