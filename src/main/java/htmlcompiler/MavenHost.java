@@ -33,6 +33,7 @@ import static htmlcompiler.tools.Logger.newLogger;
 import static java.lang.String.format;
 import static java.nio.file.StandardWatchEventKinds.ENTRY_CREATE;
 import static java.nio.file.StandardWatchEventKinds.ENTRY_DELETE;
+import static java.util.Collections.emptyList;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
@@ -86,7 +87,8 @@ public final class MavenHost extends LogSuppressingMojo {
                 , relativize(project.getBasedir(), inputDir)
                 , relativize(project.getBasedir(), outputDir)
                 ));
-        } catch (IOException e) {
+            watcher.waitUntilDone();
+        } catch (IOException | InterruptedException e) {
             throw new MojoFailureException(e.getMessage());
         }
     }
@@ -114,6 +116,8 @@ public final class MavenHost extends LogSuppressingMojo {
     }
 
     private static List<Path> toPathList(final String semicolonSeparatedList) {
+        if (semicolonSeparatedList == null || semicolonSeparatedList.isEmpty()) return emptyList();
+
         return Arrays.stream(semicolonSeparatedList.split(";"))
             .map(path -> Paths.get(path))
             .collect(toList());
