@@ -16,3 +16,6 @@ install:
 	@sudo cp target/htmlcompiler.jar /usr/local/bin
 	@echo "[HtmlCompiler] Execute htmlcompiler using 'java -cp /usr/local/bin/htmlcompiler.jar htmlcompiler.Cmd'"
 	@echo "[HtmlCompiler] If you haven't already you can create an alias; alias hc='java -cp /usr/local/bin/htmlcompiler.jar htmlcompiler.Cmd'"
+
+deploy:
+	@mvn clean deploy -P release
