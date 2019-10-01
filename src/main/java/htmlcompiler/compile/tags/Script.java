@@ -91,6 +91,7 @@ public enum Script {;
     }
 
     private static String compressIfRequested(final boolean requested, final String code) throws IOException {
+        if (code == null || code.isEmpty()) return code;
         return requested ? compressJavascriptCode(code) : code;
     }
 
