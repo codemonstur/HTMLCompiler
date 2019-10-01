@@ -93,24 +93,28 @@ public final class MavenHost extends LogSuppressingMojo {
         }
     }
 
-    private static Service newTaskCompiler(final Logger log, final BlockingQueue<Task> queue, final TemplateThenCompile ttc, final Set<Path> rootPages) {
+    private static Service newTaskCompiler(final Logger log, final BlockingQueue<Task> queue,
+                                           final TemplateThenCompile ttc, final Set<Path> rootPages) {
         return new LoopingSingleThread(() -> {
             final Task take = queue.take();
             if (take.type == ENTRY_DELETE && take.path.endsWith("/.")) return;
             if (take.type == ENTRY_CREATE && take.path.toFile().isDirectory()) return;
 
             try {
-                final boolean doAll = rootPages.contains(take.path.normalize().toAbsolutePath());
-                if (doAll) {
+                final boolean doOne = rootPages.contains(take.path.normalize().toAbsolutePath());
+                if (!doOne) {
                     queue.clear();
                     for (final var path :rootPages) {
                         ttc.compileTemplate(path.toFile());
                     }
+                    log.info("Compiled all files in root");
                     return;
                 }
                 ttc.compileTemplate(take.path.toFile());
+                log.info("Compiled file " + take.path);
             } catch (Exception e) {
                 log.warn(e.getMessage());
+                e.printStackTrace();
             }
         });
     }
@@ -124,9 +128,10 @@ public final class MavenHost extends LogSuppressingMojo {
     }
 
     private static Set<Path> toChildrenSet(final File inputDir) {
-        final var children = requireNonNull(inputDir.listFiles());
-        return Arrays.stream(children)
+        return Arrays.stream(requireNonNull(inputDir.listFiles()))
             .map(File::toPath)
+            .map(Path::normalize)
+            .map(Path::toAbsolutePath)
             .collect(toSet());
     }
 
