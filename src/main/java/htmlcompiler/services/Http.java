@@ -63,14 +63,19 @@ public enum Http {;
                     if (file == null) continue;
 
                     exchange.getResponseHeaders().add("Content-Type", Files.probeContentType(file.toPath()));
-                    exchange.sendResponseHeaders(200, file.length());
-                    Files.copy(file.toPath(), exchange.getResponseBody());
+                    long length = file.length();
+                    if (length > 0) {
+                        exchange.sendResponseHeaders(200, length);
+                        Files.copy(file.toPath(), exchange.getResponseBody());
+                    } else {
+                        exchange.sendResponseHeaders(200, -1);
+                    }
                     exchange.close();
                     return;
                 }
             }
 
-            exchange.sendResponseHeaders(404, 0);
+            exchange.sendResponseHeaders(404, -1);
             exchange.close();
         };
     }
