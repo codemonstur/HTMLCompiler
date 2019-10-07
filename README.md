@@ -51,7 +51,7 @@ To compile typescript the code calls `tsc`. Have it installed.
 <plugin>
     <groupId>com.github.codemonstur</groupId>
     <artifactId>htmlcompiler</artifactId>
-    <version>2.0.0</version>
+    <version>2.3.2</version>
     <executions>
         <execution><goals><goal>compile</goal></goals></execution>
     </executions>
@@ -61,7 +61,7 @@ To compile typescript the code calls `tsc`. Have it installed.
 
 The code will compile all HTML files in `src/main/websrc` to `target/classes/webbin` while mirroring the directory structure.
 
-For an example how to set this up see here: https://github.com/codemonstur/HTMLCompiler-example
+For an example how to set this up see here: in the `example` subdirectory.
 
 ### How to use from the command line
 
