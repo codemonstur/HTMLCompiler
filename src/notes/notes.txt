@@ -1,0 +1,3 @@
+htmlcompiler
+- output of script security tag should not use the selfclosable format
+- output of link tag should not use the selfclosable format
