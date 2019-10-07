@@ -31,7 +31,7 @@
             <plugin>
                 <groupId>com.github.codemonstur</groupId>
                 <artifactId>htmlcompiler</artifactId>
-                <version>2.3.0</version>
+                <version>2.3.1</version>
                 <executions>
                     <execution><goals><goal>compile</goal></goals></execution>
                     <execution>
@@ -66,15 +66,5 @@
 
         </plugins>
     </build>
-
-    <dependencies>
-
-        <dependency>
-            <groupId>io.undertow</groupId>
-            <artifactId>undertow-core</artifactId>
-            <version>2.0.22.Final</version>
-        </dependency>
-
-    </dependencies>
 
 </project>
