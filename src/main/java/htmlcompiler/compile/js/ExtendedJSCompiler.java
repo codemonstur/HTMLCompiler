@@ -16,15 +16,29 @@ import static java.lang.String.format;
 
 public enum ExtendedJSCompiler {;
 
-    public static String compileExtendedJavaScript(final String content, final File location) throws IOException {
+    public static ScriptCompiler newExtJSCompiler() {
+        return new ScriptCompiler() {
+            public String compileScript(String code, File parent) throws IOException {
+                return compileExtendedJavaScript(code, parent);
+            }
+            public String compileScript(File script) throws IOException {
+                return compileExtendedJavaScript(script);
+            }
+        };
+    }
+
+    public static String compileExtendedJavaScript(final File extJsFile) throws IOException {
+        return compileExtendedJavaScript(IO.toString(extJsFile), extJsFile);
+    }
+    public static String compileExtendedJavaScript(final String content, final File extJsFile) throws IOException {
         final Set<Path> alreadyLoaded = new HashSet<>();
 
-        if (location == null || location.toString().isEmpty())
-            throw new IllegalArgumentException(format("%s(%d): Invalid include %s", location, 0, location));
+        if (extJsFile == null || extJsFile.toString().isEmpty())
+            throw new IllegalArgumentException(format("%s(%d): Invalid include %s", extJsFile, 0, extJsFile));
         if (content == null)
-            throw new IllegalArgumentException(format("%s(%d): Missing include %s", location, 0, location));
+            throw new IllegalArgumentException(format("%s(%d): Missing include %s", extJsFile, 0, extJsFile));
 
-        List<Node> nodes = loadJs(location.toPath(), content, alreadyLoaded);
+        List<Node> nodes = loadJs(extJsFile.toPath(), content, alreadyLoaded);
         while (hasImports(nodes)) nodes = resolveIncludeStatement(nodes, alreadyLoaded);
         return concatenate(nodes);
     }

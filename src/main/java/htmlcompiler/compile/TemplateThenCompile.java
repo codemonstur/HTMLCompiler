@@ -1,67 +1,41 @@
 package htmlcompiler.compile;
 
-import htmlcompiler.templates.*;
-import htmlcompiler.tools.Logger;
-import org.apache.maven.plugin.MojoFailureException;
-import org.apache.maven.project.MavenProject;
+import htmlcompiler.templates.TemplateEngine;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Map;
 
 import static htmlcompiler.tools.Filenames.toExtension;
 import static htmlcompiler.tools.HTML.DOCTYPE;
 import static htmlcompiler.tools.IO.relativize;
-import static java.util.Map.entry;
+import static org.apache.commons.io.FileUtils.listFiles;
 
-public final class TemplateThenCompile {
+public interface TemplateThenCompile {
 
-    public interface RenameFile {
-        File toOutputFile(File inputFile);
+    void compileTemplate(final File inFile) throws Exception;
 
-        static RenameFile defaultRenamer(final File inputDir, final File outputDir, final boolean replaceExtension) {
-            return inputFile -> {
-                final File outFile = new File(outputDir, extensionize(relativize(inputDir, inputFile), replaceExtension));
-                outFile.getParentFile().mkdirs();
-                return outFile;
-            };
-        }
+    public static TemplateThenCompile newTemplateThenCompile(final Map<String, TemplateEngine> templates, final RenameFile renamer, final HtmlCompiler html) {
+        return inFile -> {
+            if (inFile == null || !inFile.exists() || !inFile.isFile()) return;
 
-        private static String extensionize(final String filename, final boolean replaceExtension) {
-            return replaceExtension ? filename.substring(0, filename.lastIndexOf('.')) + ".html" : filename+".html";
-        }
+            final TemplateEngine engine = templates.get(toExtension(inFile, null));
+            if (engine == null) return;
+
+            try (final PrintWriter out = new PrintWriter(renamer.toOutputFile(inFile))) {
+                out.print(DOCTYPE+html.compressHtmlCode(html.compileHtmlCode(inFile, engine.processTemplate(inFile))));
+            }
+        };
     }
 
-    private final Map<String, TemplateEngine> templates;
-    private final HtmlCompiler html;
-    private final RenameFile renamer;
-
-    public TemplateThenCompile(final Logger log, final RenameFile renamer, final MavenProject project)
-            throws MojoFailureException {
-        this.templates = Map.ofEntries
-            ( entry(".pebble", new Pebble(project))
-            , entry(".jade", new Jade4j(project))
-            , entry(".md", new Markdown())
-            , entry(".hb", new Handlebars(project))
-            , entry(".jinjava", new JinJava(project))
-            , entry(".twig", new JTwig(project))
-            , entry(".mustache", new Mustache(project))
-            , entry(".thymeleaf", new Thymeleaf(project))
-            , entry(".hct", new DummyEngine())
-            );
-        this.html = new HtmlCompiler(log);
-        this.renamer = renamer;
-    }
-
-    public void compileTemplate(final File inFile) throws Exception {
-        if (inFile == null || !inFile.exists() || !inFile.isFile()) return;
-
-        final TemplateEngine engine = templates.get(toExtension(inFile, null));
-        if (engine == null) return;
-
-        try (final PrintWriter out = new PrintWriter(renamer.toOutputFile(inFile))) {
-            out.print(DOCTYPE+html.compressHtmlCode(html.compileHtmlCode(inFile, engine.processTemplate(inFile))));
+    public static void compileDirectories(final File inputDir, final TemplateThenCompile ttc) throws IOException {
+        for (final File inFile : listFiles(inputDir, null, true)) {
+            try {
+                ttc.compileTemplate(inFile);
+            } catch (Exception e) {
+                throw new IOException("Exception occurred while parsing " + relativize(inputDir, inFile), e);
+            }
         }
     }
-
 }

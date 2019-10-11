@@ -15,12 +15,6 @@ public interface TagProcessor {
         return code == null || code.trim().isEmpty();
     }
 
-    static boolean isJavaScript(final Element script) {
-        return !script.hasAttribute("type") || script.getAttribute("type").equalsIgnoreCase("text/javascript");
-    }
-    static boolean isTypeScript(final Element script) {
-        return script.hasAttribute("type") && script.getAttribute("type").equalsIgnoreCase("text/typescript");
-    }
     static boolean isHtml(final Element script) {
         return script.hasAttribute("type") &&
         (  script.getAttribute("type").equalsIgnoreCase("text/x-jquery-tmpl")

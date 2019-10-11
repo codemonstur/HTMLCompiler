@@ -9,7 +9,6 @@ public final class ScriptBag {
         public final StringBuilder scriptsAtEnd = new StringBuilder();
     }
 
-
     public void addScriptAtStartOfHead(final String script) {
         head.scriptsAtStart.append(script.trim());
     }

@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import com.googlecode.htmlcompressor.compressor.HtmlCompressor;
 import htmlcompiler.compile.tags.TagProcessor;
 import htmlcompiler.model.ScriptBag;
-import htmlcompiler.tools.IO;
 import htmlcompiler.tools.Logger;
 import net.sourceforge.htmlunit.cyberneko.HTMLConfiguration;
 import org.apache.maven.plugin.MojoFailureException;
@@ -28,7 +27,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
-import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -94,13 +92,7 @@ public final class HtmlCompiler {
     public String compressHtmlCode(final String content) {
         return compressor.compress(content);
     }
-    public String compressHtmlFile(final File input) throws IOException {
-        return compressor.compress(IO.toString(input));
-    }
 
-    public String compileHtmlFile(final File file) throws Exception {
-        return compressHtmlCode(toHtml(processHtml(file, htmlToDocument(Files.readString(file.toPath())))));
-    }
     public String compileHtmlCode(final File file, final String content) throws Exception {
         if (content == null || content.trim().isEmpty()) return "";
         return toHtml(processHtml(file, htmlToDocument(content)));

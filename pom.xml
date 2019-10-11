@@ -3,7 +3,7 @@
 
     <groupId>com.github.codemonstur</groupId>
     <artifactId>htmlcompiler</artifactId>
-    <version>2.3.2</version>
+    <version>2.4.0</version>
     <packaging>maven-plugin</packaging>
 
     <name>${project.groupId}:${project.artifactId}</name>
@@ -35,6 +35,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven>3.0.5</maven>
         <maven.compiler.source>12</maven.compiler.source>
         <maven.compiler.target>12</maven.compiler.target>
         <maven.compiler.release>12</maven.compiler.release>
@@ -103,26 +104,21 @@
                 <version>3.6.0</version>
             </plugin>
 
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-shade-plugin</artifactId>
-                <version>2.4.3</version>
-                <executions>
-                    <execution>
-                        <id>shade</id>
-                        <phase>none</phase>
-                        <goals><goal>shade</goal></goals>
-                        <configuration>
-                            <createDependencyReducedPom>false</createDependencyReducedPom>
-                            <transformers>
-                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>htmlcompiler.Cmd</mainClass>
-                                </transformer>
-                            </transformers>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
+<!--            <plugin>-->
+<!--                <groupId>org.apache.maven.plugins</groupId>-->
+<!--                <artifactId>maven-shade-plugin</artifactId>-->
+<!--                <version>3.2.1</version>-->
+<!--                <executions>-->
+<!--                    <execution>-->
+<!--                        <id>shade</id>-->
+<!--                        <phase>none</phase>-->
+<!--                        <goals><goal>shade</goal></goals>-->
+<!--                        <configuration>-->
+<!--                            <createDependencyReducedPom>false</createDependencyReducedPom>-->
+<!--                        </configuration>-->
+<!--                    </execution>-->
+<!--                </executions>-->
+<!--            </plugin>-->
 
             <plugin>
                 <groupId>org.sonatype.plugins</groupId>
@@ -139,7 +135,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
-                <version>3.0.1</version>
+                <version>3.1.0</version>
                 <executions>
                     <execution>
                         <id>attach-sources</id>
@@ -151,7 +147,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <version>3.0.1</version>
+                <version>3.1.1</version>
                 <executions>
                     <execution>
                         <id>attach-javadocs</id>
@@ -168,13 +164,13 @@
         <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
-            <version>2.8.5</version>
+            <version>2.8.6</version>
         </dependency>
 
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
-            <version>2.5</version>
+            <version>2.6</version>
         </dependency>
 
         <dependency>
@@ -192,7 +188,7 @@
         <dependency>
             <groupId>net.sourceforge.htmlunit</groupId>
             <artifactId>neko-htmlunit</artifactId>
-            <version>2.25</version>
+            <version>2.36.0</version>
         </dependency>
 
         <dependency>
@@ -204,7 +200,7 @@
         <dependency>
             <groupId>com.squareup.okhttp3</groupId>
             <artifactId>okhttp</artifactId>
-            <version>3.7.0</version>
+            <version>4.2.2</version>
         </dependency>
 
         <dependency>
@@ -228,7 +224,7 @@
         <dependency>
             <groupId>com.mitchellbosecke</groupId>
             <artifactId>pebble</artifactId>
-            <version>2.1.0</version>
+            <version>2.4.0</version>
         </dependency>
         <dependency>
             <groupId>de.neuland-bfi</groupId>
@@ -299,13 +295,13 @@ https://www.stringtemplate.org/
         <dependency>
             <groupId>com.github.codemonstur</groupId>
             <artifactId>simplexml</artifactId>
-            <version>1.4.0</version>
+            <version>2.1.0</version>
         </dependency>
 
         <dependency>
             <groupId>com.google.javascript</groupId>
             <artifactId>closure-compiler</artifactId>
-            <version>v20180716</version>
+            <version>v20190929</version>
             <scope>test</scope>
         </dependency>
 
@@ -314,13 +310,13 @@ https://www.stringtemplate.org/
         <dependency>
             <groupId>org.apache.maven</groupId>
             <artifactId>maven-plugin-api</artifactId>
-            <version>3.0</version>
+            <version>3.6.2</version>
         </dependency>
 
         <dependency>
             <groupId>org.apache.maven.plugin-tools</groupId>
             <artifactId>maven-plugin-annotations</artifactId>
-            <version>3.5</version>
+            <version>3.6.0</version>
             <scope>provided</scope>
         </dependency>
 
@@ -334,14 +330,14 @@ https://www.stringtemplate.org/
         <dependency>
             <groupId>com.helger</groupId>
             <artifactId>ph-css</artifactId>
-            <version>5.0.4</version>
+            <version>6.2.0</version>
             <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>net.sourceforge.cssparser</groupId>
             <artifactId>cssparser</artifactId>
-            <version>0.9.22</version>
+            <version>0.9.27</version>
             <scope>test</scope>
         </dependency>
 

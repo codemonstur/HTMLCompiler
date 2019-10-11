@@ -1,24 +1,24 @@
 package htmlcompiler;
 
-import htmlcompiler.compile.TemplateThenCompile;
+import htmlcompiler.compile.HtmlCompiler;
 import htmlcompiler.tools.LogSuppressingMojo;
-import htmlcompiler.tools.Logger;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 
-import java.io.File;
 import java.time.LocalDateTime;
 
 import static htmlcompiler.compile.MavenProjectReader.toInputDirectory;
 import static htmlcompiler.compile.MavenProjectReader.toOutputDirectory;
-import static htmlcompiler.compile.TemplateThenCompile.RenameFile.defaultRenamer;
+import static htmlcompiler.compile.RenameFile.defaultRenamer;
+import static htmlcompiler.compile.TemplateThenCompile.compileDirectories;
+import static htmlcompiler.compile.TemplateThenCompile.newTemplateThenCompile;
+import static htmlcompiler.templates.TemplateEngine.newExtensionToEngineMap;
+import static htmlcompiler.tools.App.buildMavenTask;
 import static htmlcompiler.tools.IO.relativize;
 import static htmlcompiler.tools.Logger.YYYY_MM_DD_HH_MM_SS;
-import static htmlcompiler.tools.Logger.newLogger;
 import static java.lang.String.format;
-import static org.apache.commons.io.FileUtils.listFiles;
 import static org.apache.maven.plugins.annotations.LifecyclePhase.GENERATE_RESOURCES;
 
 @Mojo( defaultPhase = GENERATE_RESOURCES, name = "compile" )
@@ -35,26 +35,24 @@ public final class MavenCompile extends LogSuppressingMojo {
 
     public void execute() throws MojoFailureException {
         if (!enabled) return;
-        final Logger log = newLogger(getLog());
 
-        final File inputDir = toInputDirectory(project);
-        final File outputDir = toOutputDirectory(project);
+        buildMavenTask(this, log -> {
+            final var inputDir = toInputDirectory(project);
+            final var outputDir = toOutputDirectory(project);
 
-        log.info(format
-            ( "[%s] Compiling supported template formats in %s to %s"
-            , LocalDateTime.now().format(YYYY_MM_DD_HH_MM_SS)
-            , relativize(project.getBasedir(), inputDir)
-            , relativize(project.getBasedir(), outputDir)
-            ));
+            final var templates = newExtensionToEngineMap(project);
+            final var html = new HtmlCompiler(log);
+            final var ttc = newTemplateThenCompile(templates, defaultRenamer(inputDir, outputDir, replaceExtension), html);
 
-        final var ttc = new TemplateThenCompile(log, defaultRenamer(inputDir, outputDir, replaceExtension), project);
-        for (final File inFile : listFiles(inputDir, null, true)) {
-            try {
-                ttc.compileTemplate(inFile);
-            } catch (Exception e) {
-                throw new MojoFailureException("Exception occurred while parsing " + relativize(inputDir, inFile), e);
-            }
-        }
+            log.info(format
+                ( "[%s] Compiling supported template formats in %s to %s"
+                , LocalDateTime.now().format(YYYY_MM_DD_HH_MM_SS)
+                , relativize(project.getBasedir(), inputDir)
+                , relativize(project.getBasedir(), outputDir)
+                ));
+
+            compileDirectories(inputDir, ttc);
+        });
     }
 
 }

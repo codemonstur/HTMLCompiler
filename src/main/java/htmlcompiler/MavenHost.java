@@ -1,5 +1,6 @@
 package htmlcompiler;
 
+import htmlcompiler.compile.HtmlCompiler;
 import htmlcompiler.compile.TemplateThenCompile;
 import htmlcompiler.model.Task;
 import htmlcompiler.services.LoopingSingleThread;
@@ -12,7 +13,6 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
@@ -24,12 +24,14 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import static htmlcompiler.compile.MavenProjectReader.toInputDirectory;
 import static htmlcompiler.compile.MavenProjectReader.toOutputDirectory;
-import static htmlcompiler.compile.TemplateThenCompile.RenameFile.defaultRenamer;
+import static htmlcompiler.compile.RenameFile.defaultRenamer;
+import static htmlcompiler.compile.TemplateThenCompile.newTemplateThenCompile;
 import static htmlcompiler.services.DirectoryWatcher.newDirectoryWatcher;
 import static htmlcompiler.services.Http.newHttpServer;
+import static htmlcompiler.templates.TemplateEngine.newExtensionToEngineMap;
+import static htmlcompiler.tools.App.buildMavenTask;
 import static htmlcompiler.tools.IO.relativize;
 import static htmlcompiler.tools.Logger.YYYY_MM_DD_HH_MM_SS;
-import static htmlcompiler.tools.Logger.newLogger;
 import static java.lang.String.format;
 import static java.nio.file.StandardWatchEventKinds.ENTRY_CREATE;
 import static java.nio.file.StandardWatchEventKinds.ENTRY_DELETE;
@@ -61,20 +63,22 @@ public final class MavenHost extends LogSuppressingMojo {
 
     @Override
     public void execute() throws MojoFailureException {
-        final Logger log = newLogger(getLog()::info, getLog()::warn);
-        final File inputDir = toInputDirectory(project);
-        final File outputDir = toOutputDirectory(project);
+        buildMavenTask(this, log -> {
+            final var inputDir = toInputDirectory(project);
+            final var outputDir = toOutputDirectory(project);
 
-        try {
-            final var server = newHttpServer(project, port, requestApiEnabled, requestApiSpecification);
-            final var ttc = new TemplateThenCompile(log, defaultRenamer(inputDir, outputDir, replaceExtension), project);
+            final var templates = newExtensionToEngineMap(project);
+            final var html = new HtmlCompiler(log);
+            final var ttc = newTemplateThenCompile(templates, defaultRenamer(inputDir, outputDir, replaceExtension), html);
             final var queue = new LinkedBlockingQueue<Task>();
-            final var compiler = newTaskCompiler(log, queue, ttc, toChildrenSet(inputDir));
+
+            final var server = newHttpServer(project, port, requestApiEnabled, requestApiSpecification);
+            final var compiler = newTaskCompiler(log, inputDir, queue, ttc, toChildrenSet(inputDir));
             final var watcher = newDirectoryWatcher()
-                .directory(inputDir.toPath())
-                .directories(toPathList(watchedDirectories))
-                .listener((event, path) -> queue.add(new Task(event, path)))
-                .build();
+                    .directory(inputDir.toPath())
+                    .directories(toPathList(watchedDirectories))
+                    .listener((event, path) -> queue.add(new Task(event, path)))
+                    .build();
 
             server.start();
             compiler.start();
@@ -88,35 +92,40 @@ public final class MavenHost extends LogSuppressingMojo {
                 , relativize(project.getBasedir(), outputDir)
                 ));
             watcher.waitUntilDone();
-        } catch (IOException | InterruptedException e) {
-            throw new MojoFailureException(e.getMessage());
-        }
+        });
     }
 
-    private static Service newTaskCompiler(final Logger log, final BlockingQueue<Task> queue,
-                                           final TemplateThenCompile ttc, final Set<Path> rootPages) {
+    private static Service newTaskCompiler(final Logger log, final File rootDir, final BlockingQueue<Task> queue
+            , final TemplateThenCompile ttc, final Set<Path> rootPages) {
         return new LoopingSingleThread(() -> {
             final Task take = queue.take();
             if (take.type == ENTRY_DELETE && take.path.endsWith("/.")) return;
             if (take.type == ENTRY_CREATE && take.path.toFile().isDirectory()) return;
 
             try {
-                final boolean doOne = rootPages.contains(take.path.normalize().toAbsolutePath());
-                if (!doOne) {
+                final boolean isKnownTemplate = rootPages.contains(take.path.normalize().toAbsolutePath());
+                if (isKnownTemplate) {
+                    ttc.compileTemplate(take.path.toFile());
+                    log.warn("Compiled file " + take.path);
+                } else {
+                    if (isChildOf(take.path, rootDir))
+                        rootPages.add(take.path.normalize().toAbsolutePath());
+
                     queue.clear();
                     for (final var path :rootPages) {
                         ttc.compileTemplate(path.toFile());
                     }
-                    log.info("Compiled all files in root");
-                    return;
+                    log.warn("Compiled all files in root");
                 }
-                ttc.compileTemplate(take.path.toFile());
-                log.info("Compiled file " + take.path);
             } catch (Exception e) {
                 log.warn(e.getMessage());
                 e.printStackTrace();
             }
         });
+    }
+
+    private static boolean isChildOf(final Path path, final File directory) {
+        return directory.toPath().toAbsolutePath().startsWith(path.toAbsolutePath());
     }
 
     private static List<Path> toPathList(final String semicolonSeparatedList) {

@@ -60,7 +60,6 @@ public final class CssUnused {
         options.setExtractPrototypeMemberDeclarations(ExtractPrototypeMemberDeclarationsMode.USE_IIFE);
         options.setRemoveUnusedPrototypePropertiesInExterns(true);
         options.setRemoveUnusedClassProperties(true);
-        options.setRemoveUnusedConstructorProperties(true);
         options.setRemoveUnusedVariables(Reach.ALL);
         options.setCollapseAnonymousFunctions(true);
         options.setCollapseVariableDeclarations(true);
@@ -77,7 +76,7 @@ public final class CssUnused {
         options.setPreferStableNames(true);
         options.setCollapsePropertiesLevel(PropertyCollapseLevel.ALL);
         options.setCollapseObjectLiterals(true);
-        options.setDevirtualizePrototypeMethods(true);
+        options.setDevirtualizeMethods(true);
         options.setAnonymousFunctionNaming(AnonymousFunctionNamingPolicy.MAPPED);
         return options;
     }

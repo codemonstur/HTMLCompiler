@@ -4,7 +4,12 @@ import htmlcompiler.error.InvalidInput;
 
 import java.io.*;
 import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Optional;
+import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 import static java.lang.String.format;
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -42,13 +47,6 @@ public enum IO {;
         return out.toByteArray();
     }
 
-    public static File writeStringToFile(final String data, final File file) throws FileNotFoundException {
-        try (final PrintWriter out = new PrintWriter(file)) {
-            out.println(data);
-        }
-        return file;
-    }
-
     public static String relativize(final String basedir, final String outputDir) {
         return Paths.get(basedir).relativize(Paths.get(outputDir)).toString();
     }
@@ -62,5 +60,16 @@ public enum IO {;
         if (!location.exists())
             throw new InvalidInput(format(message, origin.getPath(), link));
         return location;
+    }
+
+    public static Path findBinaryInPath(final String name) throws FileNotFoundException {
+        final Optional<Path> location = Stream.of(System.getenv("PATH")
+            .split(Pattern.quote(File.pathSeparator)))
+            .map(Paths::get)
+            .map(path -> path.resolve(name))
+            .filter(path -> Files.exists(path))
+            .findAny();
+        if (location.isEmpty()) throw new FileNotFoundException("Could not find binary " + name + " in PATH");
+        return location.get();
     }
 }
