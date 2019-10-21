@@ -16,7 +16,7 @@ public enum App {;
             final Logger log = newLogger(mojo.getLog());
             task.build(log);
         } catch (Exception e) {
-            throw new MojoFailureException(e.getMessage());
+            throw new MojoFailureException(e.getMessage(), e);
         }
     }
 }
