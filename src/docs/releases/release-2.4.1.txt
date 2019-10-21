@@ -1,0 +1,4 @@
+2.4.1
+
+Better error handling
+Downgraded version of nekohtml due to a regression
