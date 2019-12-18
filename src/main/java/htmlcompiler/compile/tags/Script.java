@@ -7,6 +7,7 @@ import htmlcompiler.error.InvalidInput;
 import htmlcompiler.model.ScriptType;
 import htmlcompiler.tools.Logger;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import simplexml.SimpleXml;
 import simplexml.utils.Interfaces.CheckedIterator;
 
@@ -50,6 +51,13 @@ public enum Script {;
                 if (type != null) {
                     element.setTextContent(compressIfRequested(element, type.compile(element.getTextContent(), file)));
                     removeAttributes(element, "inline", "compress", "src", "type");
+
+                    final Node previousSibling = element.getPreviousSibling();
+                    if (isScript(previousSibling) && !isEmpty(previousSibling)) {
+                        element.setTextContent(previousSibling.getTextContent() + element.getTextContent());
+                        element.getParentNode().removeChild(previousSibling);
+                    }
+
                     return false;
                 }
             }
@@ -67,6 +75,13 @@ public enum Script {;
                 final File location = toLocation(file, element.getAttribute("src"), "script tag in %s has an invalid src location '%s'");
                 element.setTextContent(compressIfRequested(element, type.compile(location)));
                 removeAttributes(element, "inline", "compress", "src", "type");
+
+                final Node previousSibling = element.getPreviousSibling();
+                if (isScript(previousSibling) && !isEmpty(previousSibling)) {
+                    element.setTextContent(previousSibling.getTextContent() + element.getTextContent());
+                    element.getParentNode().removeChild(previousSibling);
+                }
+
                 return false;
             }
             if (element.hasAttribute("src") && !element.hasAttribute("integrity") && !element.hasAttribute("no-security")) {
@@ -78,6 +93,10 @@ public enum Script {;
             removeAttributes(element, "to-absolute", "no-security");
             return false;
         };
+    }
+
+    private static boolean isScript(final Node node) {
+        return node != null && "script".equals(node.getNodeName());
     }
 
     private static String compileScriptTag(final Element element, final ScriptType scriptType, final File parent) throws IOException, InvalidInput {

@@ -2,6 +2,7 @@ package htmlcompiler.compile.tags;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
 import java.io.File;
 
@@ -10,7 +11,7 @@ public interface TagProcessor {
 
     boolean process(File file, Document document, Element element) throws Exception;
 
-    static boolean isEmpty(final Element script) {
+    static boolean isEmpty(final Node script) {
         final String code = script.getTextContent();
         return code == null || code.trim().isEmpty();
     }
