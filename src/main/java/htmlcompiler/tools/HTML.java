@@ -1,6 +1,7 @@
 package htmlcompiler.tools;
 
 import htmlcompiler.compile.HtmlCompiler;
+import org.apache.xerces.dom.DeferredTextImpl;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
@@ -108,4 +109,31 @@ public enum HTML {;
             throw e;
         }
     }
+
+    public static Node getPreviousTagSibling(Element element, final Node defaultValue) {
+        if (element == null) return defaultValue;
+
+        Node previous = element.getPreviousSibling();
+        while (previous instanceof DeferredTextImpl) {
+            previous = previous.getPreviousSibling();
+        }
+
+        return previous;
+    }
+
+    public static boolean isInlineScript(final Node node) {
+        if (node == null) return false;
+        if (!"script".equals(node.getNodeName())) return false;
+        if (!(node instanceof Element)) return false;
+
+        final Element element = (Element) node;
+        return !element.hasAttribute("src")
+            && ( !element.hasAttribute("type")
+              || "text/javascript".equalsIgnoreCase(element.getAttribute("type"))
+               );
+    }
+    public static boolean isInlineStyle(final Node node) {
+        return node != null && "style".equals(node.getNodeName());
+    }
+
 }

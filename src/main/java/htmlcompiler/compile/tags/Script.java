@@ -1,9 +1,9 @@
 package htmlcompiler.compile.tags;
 
 import htmlcompiler.compile.HtmlCompiler;
+import htmlcompiler.error.InvalidInput;
 import htmlcompiler.model.MoveType;
 import htmlcompiler.model.ScriptBag;
-import htmlcompiler.error.InvalidInput;
 import htmlcompiler.model.ScriptType;
 import htmlcompiler.tools.Logger;
 import org.w3c.dom.Element;
@@ -15,8 +15,9 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 
-import static htmlcompiler.compile.tags.TagProcessor.*;
 import static htmlcompiler.compile.js.JsCompiler.compressJavascriptCode;
+import static htmlcompiler.compile.tags.TagProcessor.isEmpty;
+import static htmlcompiler.compile.tags.TagProcessor.isHtml;
 import static htmlcompiler.model.MoveType.storeCode;
 import static htmlcompiler.model.MoveType.toMoveType;
 import static htmlcompiler.model.ScriptType.detectScriptType;
@@ -46,14 +47,15 @@ public enum Script {;
                 deleteTag(element);
                 return true;
             }
+
             if (!isEmpty(element)) {
                 final ScriptType type = detectScriptType(element, null);
                 if (type != null) {
                     element.setTextContent(compressIfRequested(element, type.compile(element.getTextContent(), file)));
                     removeAttributes(element, "inline", "compress", "src", "type");
 
-                    final Node previousSibling = element.getPreviousSibling();
-                    if (isScript(previousSibling) && !isEmpty(previousSibling)) {
+                    final Node previousSibling = getPreviousTagSibling(element, null);
+                    if (isInlineScript(previousSibling) && !isEmpty(previousSibling)) {
                         element.setTextContent(previousSibling.getTextContent() + element.getTextContent());
                         element.getParentNode().removeChild(previousSibling);
                     }
@@ -61,6 +63,7 @@ public enum Script {;
                     return false;
                 }
             }
+
             if (isHtml(element) && !isEmpty(element)) {
                 final CheckedIterator<String> it = xml.iterateXml(new ByteArrayInputStream(element.getTextContent().getBytes(UTF_8)));
                 final StringBuilder builder = new StringBuilder();
@@ -70,14 +73,15 @@ public enum Script {;
                 element.setTextContent(builder.toString());
                 return false;
             }
+
             if (element.hasAttribute("inline")) {
                 final ScriptType type = detectScriptType(element, javascript);
                 final File location = toLocation(file, element.getAttribute("src"), "script tag in %s has an invalid src location '%s'");
                 element.setTextContent(compressIfRequested(element, type.compile(location)));
                 removeAttributes(element, "inline", "compress", "src", "type");
 
-                final Node previousSibling = element.getPreviousSibling();
-                if (isScript(previousSibling) && !isEmpty(previousSibling)) {
+                final Node previousSibling = getPreviousTagSibling(element, null);
+                if (isInlineScript(previousSibling) && !isEmpty(previousSibling)) {
                     element.setTextContent(previousSibling.getTextContent() + element.getTextContent());
                     element.getParentNode().removeChild(previousSibling);
                 }
@@ -93,10 +97,6 @@ public enum Script {;
             removeAttributes(element, "to-absolute", "no-security");
             return false;
         };
-    }
-
-    private static boolean isScript(final Node node) {
-        return node != null && "script".equals(node.getNodeName());
     }
 
     private static String compileScriptTag(final Element element, final ScriptType scriptType, final File parent) throws IOException, InvalidInput {

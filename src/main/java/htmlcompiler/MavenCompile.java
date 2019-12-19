@@ -31,6 +31,9 @@ public final class MavenCompile extends LogSuppressingMojo {
     public boolean enabled;
 
     @Parameter(defaultValue = "true")
+    public boolean recursive;
+
+    @Parameter(defaultValue = "true")
     public boolean replaceExtension;
 
     public void execute() throws MojoFailureException {
@@ -51,7 +54,7 @@ public final class MavenCompile extends LogSuppressingMojo {
                 , relativize(project.getBasedir(), outputDir)
                 ));
 
-            compileDirectories(inputDir, ttc);
+            compileDirectories(inputDir, ttc, recursive);
         });
     }
 

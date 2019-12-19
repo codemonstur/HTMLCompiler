@@ -29,8 +29,8 @@ public interface TemplateThenCompile {
         };
     }
 
-    public static void compileDirectories(final File inputDir, final TemplateThenCompile ttc) throws IOException {
-        for (final File inFile : listFiles(inputDir, null, true)) {
+    public static void compileDirectories(final File inputDir, final TemplateThenCompile ttc, final boolean recursive) throws IOException {
+        for (final File inFile : listFiles(inputDir, null, recursive)) {
             try {
                 ttc.compileTemplate(inFile);
             } catch (Exception e) {

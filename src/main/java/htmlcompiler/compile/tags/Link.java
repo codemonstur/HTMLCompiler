@@ -8,14 +8,16 @@ import htmlcompiler.tools.Logger;
 import org.lesscss.LessException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
 import java.io.File;
 import java.io.IOException;
 
 import static htmlcompiler.compile.css.CssCompiler.compileCssCode;
 import static htmlcompiler.compile.css.CssCompiler.compressCssCode;
-import static htmlcompiler.model.StyleType.toStyleType;
+import static htmlcompiler.compile.tags.TagProcessor.isEmpty;
 import static htmlcompiler.model.ImageType.toMimeType;
+import static htmlcompiler.model.StyleType.toStyleType;
 import static htmlcompiler.tools.HTML.*;
 import static htmlcompiler.tools.IO.toLocation;
 
@@ -28,7 +30,14 @@ public enum Link {;
                 return true;
             }
             if (isLinkStyleSheet(element) && element.hasAttribute("inline")) {
-                inlineStylesheet(element, file, document);
+                final Element style = inlineStylesheet(element, file, document);
+
+                final Node previousSibling = getPreviousTagSibling(style, null);
+                if (isInlineStyle(previousSibling) && !isEmpty(previousSibling)) {
+                    style.setTextContent(previousSibling.getTextContent() + style.getTextContent());
+                    style.getParentNode().removeChild(previousSibling);
+                }
+
                 return true;
             }
             if (!element.hasAttribute("integrity") && !element.hasAttribute("no-security")) {
@@ -49,7 +58,7 @@ public enum Link {;
         element.setAttribute("href", toDataUrl(type, IO.toByteArray(file)));
     }
 
-    private static void inlineStylesheet(final Element element, final File file, final Document document)
+    private static Element inlineStylesheet(final Element element, final File file, final Document document)
             throws InvalidInput, UnrecognizedFileType, IOException, LessException {
         final File location = toLocation(file, element.getAttribute("href"), "<link> in %s has an invalid href location '%s'");
 
@@ -63,6 +72,8 @@ public enum Link {;
         removeAttributes(style, "href", "rel", "inline", "compress");
 
         replaceTag(element, style);
+
+        return style;
     }
 
 }
