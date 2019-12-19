@@ -98,7 +98,7 @@ public enum HTML {;
     public static void addIntegrityAttributes(final Element element, final String url, final File file
             , final HtmlCompiler html, final Logger log) throws IOException, NoSuchAlgorithmException, TransformerException {
         try {
-            if (isUrl(url) && urlHasCorsAllowed(url)) {
+            if (isUrl(url) && (element.hasAttribute("force-security") || urlHasCorsAllowed(url))) {
                 element.setAttribute("integrity", toIntegrityValue(urlToByteArray(url)));
                 if (!element.hasAttribute("crossorigin")) element.setAttribute("crossorigin", "anonymous");
                 log.warn(format("File %s has tag without integrity, rewrote to: %s", file.toPath().normalize(), html.toHtml(element)));

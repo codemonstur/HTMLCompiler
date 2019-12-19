@@ -17,7 +17,7 @@ public enum HTTP {;
     public static boolean urlHasCorsAllowed(final String url) {
         final Request request = new Request.Builder().url(url).build();
         try (final Response response = HTTP.newCall(request).execute()) {
-            return response.isSuccessful() && response.header("Access-Control-Allow-Origin", "").equals("*");
+            return response.isSuccessful() && "*".equals(response.header("Access-Control-Allow-Origin"));
         } catch (IOException e) {
             return false;
         }
