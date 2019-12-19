@@ -1,0 +1,7 @@
+2.5.0
+
+Added configurable recursive compiling of websrc directory
+Added tag merging for link and style tags
+Added force-security attribute
+Added script tag merging
+Downgraded to 11
