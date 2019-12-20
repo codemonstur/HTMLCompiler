@@ -101,6 +101,7 @@ public enum HTML {;
         try {
             if (isUrl(url) && (element.hasAttribute("force-security") || urlHasCorsAllowed(url))) {
                 element.setAttribute("integrity", toIntegrityValue(urlToByteArray(url)));
+                element.removeAttribute("force-security");
                 if (!element.hasAttribute("crossorigin")) element.setAttribute("crossorigin", "anonymous");
                 log.warn(format("File %s has tag without integrity, rewrote to: %s", file.toPath().normalize(), html.toHtml(element)));
             }
