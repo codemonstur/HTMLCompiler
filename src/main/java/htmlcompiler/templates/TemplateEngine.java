@@ -1,6 +1,6 @@
 package htmlcompiler.templates;
 
-import htmlcompiler.error.TemplateParseException;
+import htmlcompiler.error.InvalidTemplate;
 import org.apache.maven.project.MavenProject;
 
 import java.io.File;
@@ -11,7 +11,7 @@ import static java.util.Map.entry;
 
 public interface TemplateEngine {
 
-    String processTemplate(File file) throws IOException, TemplateParseException;
+    String processTemplate(File file) throws IOException, InvalidTemplate;
 
     public static Map<String, TemplateEngine> newExtensionToEngineMap(final MavenProject project) {
         return Map.ofEntries
@@ -24,6 +24,8 @@ public interface TemplateEngine {
             , entry(".twig", new JTwig(project))
             , entry(".mustache", new Mustache(project))
             , entry(".thymeleaf", new Thymeleaf(project))
+            , entry(".htm", new DummyEngine())
+            , entry(".html", new DummyEngine())
             , entry(".hct", new DummyEngine())
             );
     }

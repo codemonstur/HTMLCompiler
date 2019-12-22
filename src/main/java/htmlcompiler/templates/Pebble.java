@@ -3,7 +3,7 @@ package htmlcompiler.templates;
 import com.mitchellbosecke.pebble.PebbleEngine;
 import com.mitchellbosecke.pebble.error.PebbleException;
 import com.mitchellbosecke.pebble.template.PebbleTemplate;
-import htmlcompiler.error.TemplateParseException;
+import htmlcompiler.error.InvalidTemplate;
 import org.apache.maven.project.MavenProject;
 
 import java.io.File;
@@ -27,7 +27,7 @@ public final class Pebble implements TemplateEngine {
         return new PebbleEngine.Builder().build();
     }
 
-    public String processTemplate(final File file) throws IOException, TemplateParseException {
+    public String processTemplate(final File file) throws IOException, InvalidTemplate {
         try {
             final PebbleTemplate template = pebble.getTemplate(file.getAbsolutePath());
             try (final StringWriter writer = new StringWriter()) {
@@ -35,7 +35,7 @@ public final class Pebble implements TemplateEngine {
                 return writer.toString();
             }
         } catch (PebbleException e) {
-            throw new TemplateParseException(e);
+            throw new InvalidTemplate(e);
         }
     }
 

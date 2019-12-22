@@ -1,7 +1,7 @@
 package htmlcompiler;
 
-import htmlcompiler.compile.HtmlCompiler;
-import htmlcompiler.compile.TemplateThenCompile;
+import htmlcompiler.compilers.html.CyberNekoCompiler;
+import htmlcompiler.compilers.TemplateThenCompile;
 import htmlcompiler.model.Task;
 import htmlcompiler.services.LoopingSingleThread;
 import htmlcompiler.services.Service;
@@ -22,10 +22,10 @@ import java.util.Set;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
-import static htmlcompiler.compile.MavenProjectReader.toInputDirectory;
-import static htmlcompiler.compile.MavenProjectReader.toOutputDirectory;
-import static htmlcompiler.compile.RenameFile.defaultRenamer;
-import static htmlcompiler.compile.TemplateThenCompile.newTemplateThenCompile;
+import static htmlcompiler.compilers.MavenProjectReader.toInputDirectory;
+import static htmlcompiler.compilers.MavenProjectReader.toOutputDirectory;
+import static htmlcompiler.compilers.RenameFile.defaultRenamer;
+import static htmlcompiler.compilers.TemplateThenCompile.newTemplateThenCompile;
 import static htmlcompiler.services.DirectoryWatcher.newDirectoryWatcher;
 import static htmlcompiler.services.Http.newHttpServer;
 import static htmlcompiler.templates.TemplateEngine.newExtensionToEngineMap;
@@ -68,7 +68,7 @@ public final class MavenHost extends LogSuppressingMojo {
             final var outputDir = toOutputDirectory(project);
 
             final var templates = newExtensionToEngineMap(project);
-            final var html = new HtmlCompiler(log);
+            final var html = new CyberNekoCompiler(log);
             final var ttc = newTemplateThenCompile(templates, defaultRenamer(inputDir, outputDir, replaceExtension), html);
             final var queue = new LinkedBlockingQueue<Task>();
 

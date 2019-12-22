@@ -1,7 +1,7 @@
 package htmlcompiler.templates;
 
 import com.github.jknack.handlebars.Template;
-import htmlcompiler.error.TemplateParseException;
+import htmlcompiler.error.InvalidTemplate;
 import org.apache.maven.project.MavenProject;
 
 import java.io.File;
@@ -21,7 +21,7 @@ public final class Handlebars implements TemplateEngine {
     }
 
     @Override
-    public String processTemplate(File file) throws IOException, TemplateParseException {
+    public String processTemplate(File file) throws IOException, InvalidTemplate {
         final Template template = handlebars.compile(file.getAbsolutePath());
         return template.apply(context);
     }

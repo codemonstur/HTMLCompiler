@@ -1,6 +1,6 @@
 package htmlcompiler.templates;
 
-import htmlcompiler.error.TemplateParseException;
+import htmlcompiler.error.InvalidTemplate;
 import org.apache.maven.project.MavenProject;
 
 import java.io.File;
@@ -21,7 +21,7 @@ public final class JinJava implements TemplateEngine {
     }
 
     @Override
-    public String processTemplate(File file) throws IOException, TemplateParseException {
+    public String processTemplate(File file) throws IOException, InvalidTemplate {
         return jinjava.render(Files.readString(file.toPath()), context);
     }
 

@@ -3,7 +3,7 @@ package htmlcompiler.templates;
 import com.vladsch.flexmark.html.HtmlRenderer;
 import com.vladsch.flexmark.parser.Parser;
 import com.vladsch.flexmark.util.data.MutableDataSet;
-import htmlcompiler.error.TemplateParseException;
+import htmlcompiler.error.InvalidTemplate;
 
 import java.io.File;
 import java.io.FileReader;
@@ -21,7 +21,7 @@ public final class Markdown implements TemplateEngine {
     }
 
     @Override
-    public String processTemplate(File file) throws IOException, TemplateParseException {
+    public String processTemplate(File file) throws IOException, InvalidTemplate {
         try (final var reader = new FileReader(file)) {
             return renderer.render(parser.parseReader(reader));
         }

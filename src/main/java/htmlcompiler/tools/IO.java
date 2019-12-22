@@ -57,8 +57,7 @@ public enum IO {;
 
     public static File toLocation(final File origin, final String link, final String message) throws InvalidInput {
         final File location = new File((origin.isDirectory()) ? origin : origin.getParentFile(), link);
-        if (!location.exists())
-            throw new InvalidInput(format(message, origin.getPath(), link));
+        if (!location.exists()) throw new InvalidInput(format(message, origin.getPath(), link));
         return location;
     }
 

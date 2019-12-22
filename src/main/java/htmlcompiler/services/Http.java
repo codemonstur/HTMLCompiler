@@ -18,8 +18,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static htmlcompiler.compile.MavenProjectReader.toOutputDirectory;
-import static htmlcompiler.compile.MavenProjectReader.toStaticDirectory;
+import static htmlcompiler.compilers.MavenProjectReader.toOutputDirectory;
+import static htmlcompiler.compilers.MavenProjectReader.toStaticDirectory;
 import static htmlcompiler.model.fakeapi.Endpoint.toKey;
 import static htmlcompiler.model.fakeapi.Request.toHttpHandler;
 

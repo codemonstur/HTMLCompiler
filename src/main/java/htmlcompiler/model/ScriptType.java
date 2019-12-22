@@ -1,15 +1,15 @@
 package htmlcompiler.model;
 
-import htmlcompiler.compile.js.ScriptCompiler;
+import htmlcompiler.compilers.js.ScriptCompiler;
 import org.w3c.dom.Element;
 
 import java.io.File;
 import java.io.IOException;
 
-import static htmlcompiler.compile.js.ExtendedJSCompiler.newExtJSCompiler;
-import static htmlcompiler.compile.js.JsppCompiler.newJsppCompiler;
-import static htmlcompiler.compile.js.ScriptCompiler.newNopCompiler;
-import static htmlcompiler.compile.js.TypeScriptCompiler.newTypescriptCompiler;
+import static htmlcompiler.compilers.js.ExtendedJSCompiler.newExtJSCompiler;
+import static htmlcompiler.compilers.js.JsppCompiler.newJsppCompiler;
+import static htmlcompiler.compilers.js.ScriptCompiler.newNopCompiler;
+import static htmlcompiler.compilers.js.TypeScriptCompiler.newTypescriptCompiler;
 
 public enum ScriptType {
     minified_javascript(newNopCompiler()),
@@ -33,6 +33,14 @@ public enum ScriptType {
         final String contentType = element.getAttribute("type");
         if (contentType != null) return contentTypeToScriptType(contentType, defaultValue);
         final String fileName = element.getAttribute("src");
+        if (fileName != null) return filenameToScriptType(fileName, defaultValue);
+        return defaultValue;
+    }
+
+    public static ScriptType detectScriptType(final org.jsoup.nodes.Element element, final ScriptType defaultValue) {
+        final String contentType = element.attr("type");
+        if (contentType != null) return contentTypeToScriptType(contentType, defaultValue);
+        final String fileName = element.attr("src");
         if (fileName != null) return filenameToScriptType(fileName, defaultValue);
         return defaultValue;
     }

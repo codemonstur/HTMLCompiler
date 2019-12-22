@@ -1,6 +1,6 @@
 package htmlcompiler;
 
-import htmlcompiler.compile.HtmlCompiler;
+import htmlcompiler.compilers.html.CyberNekoCompiler;
 import htmlcompiler.tools.LogSuppressingMojo;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Mojo;
@@ -9,11 +9,11 @@ import org.apache.maven.project.MavenProject;
 
 import java.time.LocalDateTime;
 
-import static htmlcompiler.compile.MavenProjectReader.toInputDirectory;
-import static htmlcompiler.compile.MavenProjectReader.toOutputDirectory;
-import static htmlcompiler.compile.RenameFile.defaultRenamer;
-import static htmlcompiler.compile.TemplateThenCompile.compileDirectories;
-import static htmlcompiler.compile.TemplateThenCompile.newTemplateThenCompile;
+import static htmlcompiler.compilers.MavenProjectReader.toInputDirectory;
+import static htmlcompiler.compilers.MavenProjectReader.toOutputDirectory;
+import static htmlcompiler.compilers.RenameFile.defaultRenamer;
+import static htmlcompiler.compilers.TemplateThenCompile.compileDirectories;
+import static htmlcompiler.compilers.TemplateThenCompile.newTemplateThenCompile;
 import static htmlcompiler.templates.TemplateEngine.newExtensionToEngineMap;
 import static htmlcompiler.tools.App.buildMavenTask;
 import static htmlcompiler.tools.IO.relativize;
@@ -44,7 +44,7 @@ public final class MavenCompile extends LogSuppressingMojo {
             final var outputDir = toOutputDirectory(project);
 
             final var templates = newExtensionToEngineMap(project);
-            final var html = new HtmlCompiler(log);
+            final var html = new CyberNekoCompiler(log);
             final var ttc = newTemplateThenCompile(templates, defaultRenamer(inputDir, outputDir, replaceExtension), html);
 
             log.info(format

@@ -1,6 +1,6 @@
 package htmlcompiler.templates;
 
-import htmlcompiler.error.TemplateParseException;
+import htmlcompiler.error.InvalidTemplate;
 import org.apache.maven.project.MavenProject;
 import org.jtwig.JtwigModel;
 import org.jtwig.JtwigTemplate;
@@ -19,7 +19,7 @@ public final class JTwig implements TemplateEngine {
     }
 
     @Override
-    public String processTemplate(File file) throws IOException, TemplateParseException {
+    public String processTemplate(File file) throws IOException, InvalidTemplate {
         return JtwigTemplate.fileTemplate(file).render(model);
     }
 

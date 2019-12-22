@@ -1,6 +1,6 @@
 package htmlcompiler.templates;
 
-import htmlcompiler.error.TemplateParseException;
+import htmlcompiler.error.InvalidTemplate;
 import org.apache.maven.project.MavenProject;
 import org.thymeleaf.context.IContext;
 
@@ -37,7 +37,7 @@ public class Thymeleaf implements TemplateEngine {
     }
 
     @Override
-    public String processTemplate(File file) throws IOException, TemplateParseException {
+    public String processTemplate(File file) throws IOException, InvalidTemplate {
         engine.process(Files.readString(file.toPath()), context);
         return null;
     }

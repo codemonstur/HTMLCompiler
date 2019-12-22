@@ -1,6 +1,6 @@
 package htmlcompiler.templates;
 
-import htmlcompiler.error.TemplateParseException;
+import htmlcompiler.error.InvalidTemplate;
 import org.apache.maven.project.MavenProject;
 import org.trimou.engine.MustacheEngine;
 import org.trimou.engine.MustacheEngineBuilder;
@@ -21,7 +21,7 @@ public class Mustache implements TemplateEngine {
         this.model = applyMavenProjectContext(applyEnvironmentContext(new HashMap<>()), project);
     }
     @Override
-    public String processTemplate(File file) throws IOException, TemplateParseException {
+    public String processTemplate(File file) throws IOException, InvalidTemplate {
         return engine.compileMustache(Files.readString(file.toPath())).render(model);
     }
 
