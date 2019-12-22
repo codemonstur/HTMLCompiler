@@ -163,6 +163,11 @@
             <artifactId>neko-htmlunit</artifactId>
             <version>2.36.0</version>
         </dependency>
+        <dependency>
+            <groupId>net.sourceforge.nekohtml</groupId>
+            <artifactId>nekohtml</artifactId>
+            <version>1.9.22</version>
+        </dependency>
 
         <!--
         Necessary to avoid a META tag from being added to the HTML output

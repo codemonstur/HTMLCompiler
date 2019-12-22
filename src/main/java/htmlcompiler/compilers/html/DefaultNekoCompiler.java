@@ -49,7 +49,7 @@ public abstract class DefaultNekoCompiler implements NekoCompiler {
     private final HtmlCompressor compressor;
     private final Map<String, TagProcessor> processors;
 
-    public DefaultNekoCompiler(final Logger log, final DOMParser parser) throws IOException {
+    public DefaultNekoCompiler(final Logger log, final DOMParser parser) {
         this.parser = parser;
         this.compressor = newDefaultHtmlCompressor();
         this.processors = newDefaultTagProcessors(log, this, new LibraryArchive(new Gson()));

@@ -10,11 +10,11 @@ import java.io.IOException;
 
 public final class HtmlUnitCompiler extends DefaultNekoCompiler {
 
-    public HtmlUnitCompiler(final Logger log) throws IOException {
+    public HtmlUnitCompiler(final Logger log) {
         super(log, newCyberNekoParser());
     }
 
-    private static DOMParser newCyberNekoParser() throws IOException {
+    private static DOMParser newCyberNekoParser() {
         try {
             final DOMParser parser = new DOMParser(new HTMLConfiguration());
             parser.setProperty("http://cyberneko.org/html/properties/default-encoding", "UTF-8");
@@ -22,7 +22,7 @@ public final class HtmlUnitCompiler extends DefaultNekoCompiler {
             parser.setFeature("http://cyberneko.org/html/features/document-fragment",true);
             return parser;
         } catch (SAXNotRecognizedException | SAXNotSupportedException e) {
-            throw new IOException("Initialization error", e);
+            throw new IllegalStateException("Initialization error", e);
         }
     }
 

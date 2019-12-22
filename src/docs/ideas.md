@@ -1,9 +1,56 @@
 
-- Update to latest version of nekohtml
-- File bug reports to make nekohtml actually work
-- File bug reports to make Jsoup actually work
 - Add validation features of HTML
-  - Discovered style attribute
-  - Discovered upper case tags or attributes
   - WIA
-  
+  - Warn on use of nonce in script tag (these must be generated at runtime, not compile time)
+  - Warn on unknown html tag
+  - Warn on unknown html attribute
+  - Missing alt text for images
+  - Missing placeholder for email fields
+  - Body tags in head
+  - Head tags in body
+  - Use of bad tags: marquee, blink
+  - Use of bad attributes; marginwidth in body tag
+  - table without th children
+  - absmiddle value in align attribute
+  - block elements inside inline elements
+  - report use of <b> (should be <strong>)
+  - report use of <string> (should be <b>)
+  - report use of <i> (should be <em>)
+  - report use of <em> (should be <i>)
+  - report use of tags b, i, strong or em, should be CSS
+  - Warn on border attribute, use CSS instead
+  - Warn on use of deprecated elements; https://uzzal.wordpress.com/2009/10/08/fobidden-deprecated-html-tags-and-attributes/
+  - Missing stylesheet for printing pages: <link rel =”stylesheet” href =”print.css” media =”print” />
+  - Warn on use of tables, structured divs are better: https://divtable.com/table-styler/
+  - default size of your fonts should be 16px – 20px,
+  - 1.5 – 1.85 would be a nice default line-height,
+  - avoid full black #000000 when it comes to colours (you can replace it with dark grey),
+  - for the page background, white #ffffff is a conventional choice,
+  - to turn down the contrast for the page background, use slightly-off-white colours, like #f9f9f9
+  - Using label tag with for attribute: https://medium.com/@joelennon/common-html-mistakes-de28db16b964
+  - Warn on form elements without validation; https://html.spec.whatwg.org/multipage/forms.html#client-side-form-validation
+  - non-html5 tags and attributes; https://www.tutorialspoint.com/html5/html5_deprecated_tags.htm
+  - spelling mistakes
+  - event handlers
+  - missing seo meta tags
+  - input field without a label
+  - empty alt attribute
+  - unencoded HTML entities
+- Make validation checks work for neko compilers
+- Allow for check hints inside HTML pages
+- Run lighthouse on some code and turn all its warnings into checks
+- Adaptive compiling
+  Keep track of which file get touched by which root file
+  When a dependent file gets changed compile the root file
+- Implement tag merging with neko compilers
+- Implement HtmlCompiler based on codemonstur htmlparser
+- Fix html namespace addition in neko compilers
+- Run checks post processing
+- Fix bug with wrong output of script tag in warning on integrity
+- Create html tags for including common components
+  - From material
+  - From gentelella
+  - From coreui
+- Support more library tags
+  Look at CDNs and how they store their stuff, should be able to extract a bunch of libraries
+- Add support for stylus: http://stylus-lang.com/, https://github.com/stylus/stylus 

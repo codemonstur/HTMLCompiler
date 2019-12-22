@@ -2,19 +2,17 @@ package htmlcompiler.compilers.html;
 
 import htmlcompiler.tools.Logger;
 import org.apache.xerces.parsers.DOMParser;
-import org.codelibs.nekohtml.HTMLConfiguration;
+import org.cyberneko.html.HTMLConfiguration;
 import org.xml.sax.SAXNotRecognizedException;
 import org.xml.sax.SAXNotSupportedException;
 
-import java.io.IOException;
+public final class CyberNekoCompiler extends DefaultNekoCompiler {
 
-public final class CodelibsCompiler extends DefaultNekoCompiler {
-
-    public CodelibsCompiler(final Logger log) {
-        super(log, newCodelibsParser());
+    public CyberNekoCompiler(final Logger log) {
+        super(log, newCyberNekoParser());
     }
 
-    private static DOMParser newCodelibsParser() {
+    private static DOMParser newCyberNekoParser() {
         try {
             final DOMParser parser = new DOMParser(new HTMLConfiguration());
             parser.setProperty("http://cyberneko.org/html/properties/default-encoding", "UTF-8");

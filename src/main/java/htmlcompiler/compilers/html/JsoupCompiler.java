@@ -42,7 +42,7 @@ public final class JsoupCompiler implements HtmlCompiler {
     private final Map<String, TagVisitor> processors;
     private final List<TagChecker> checkers;
 
-    public JsoupCompiler(final Logger log) throws IOException {
+    public JsoupCompiler(final Logger log) {
         this.log = log;
         this.compressor = newDefaultHtmlCompressor();
         this.processors = newDefaultTagProcessors(log, this, new LibraryArchive(new Gson()));

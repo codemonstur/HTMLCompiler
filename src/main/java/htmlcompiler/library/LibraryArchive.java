@@ -16,13 +16,15 @@ import java.util.Map;
 public final class LibraryArchive {
 
     private final Map<LibraryKey, LibraryDescription> archive;
-    public LibraryArchive(final Gson gson) throws IOException {
+    public LibraryArchive(final Gson gson) {
         this.archive = new HashMap<>();
         try (final Reader reader = new InputStreamReader(LibraryArchive.class.getResourceAsStream("/library-archive.json"))) {
             final List<LibraryRecord> list = gson.fromJson(reader, new TypeToken<ArrayList<LibraryRecord>>(){}.getType());
             for (final LibraryRecord record : list) {
                 archive.put(LibraryKey.toLibraryKey(record), LibraryDescription.toLibraryDescription(record));
             }
+        } catch (IOException e) {
+            throw new IllegalStateException("Missing /library-archive.json resource");
         }
     }
 

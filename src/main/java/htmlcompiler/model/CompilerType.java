@@ -1,21 +1,17 @@
 package htmlcompiler.model;
 
-import htmlcompiler.compilers.html.CodelibsCompiler;
-import htmlcompiler.compilers.html.HtmlCompiler;
-import htmlcompiler.compilers.html.HtmlUnitCompiler;
-import htmlcompiler.compilers.html.JsoupCompiler;
+import htmlcompiler.compilers.html.*;
 import htmlcompiler.tools.Logger;
-
-import java.io.IOException;
 
 public enum CompilerType {
 
     jsoup(JsoupCompiler::new),
     codelibs(CodelibsCompiler::new),
-    htmlunit(HtmlUnitCompiler::new);
+    htmlunit(HtmlUnitCompiler::new),
+    cyberneko(CyberNekoCompiler::new);
 
     public interface HtmlCompilerContructor {
-        HtmlCompiler newCompiler(Logger log) throws IOException;
+        HtmlCompiler newCompiler(Logger log);
     }
 
     private final HtmlCompilerContructor constructor;
@@ -23,7 +19,7 @@ public enum CompilerType {
         this.constructor = constructor;
     }
 
-    public HtmlCompiler newHtmlCompiler(final Logger log) throws IOException {
+    public HtmlCompiler newHtmlCompiler(final Logger log) {
         return constructor.newCompiler(log);
     }
 
