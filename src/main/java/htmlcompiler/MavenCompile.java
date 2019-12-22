@@ -1,6 +1,7 @@
 package htmlcompiler;
 
 import htmlcompiler.compilers.html.JsoupCompiler;
+import htmlcompiler.model.CompilerType;
 import htmlcompiler.tools.LogSuppressingMojo;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Mojo;
@@ -29,12 +30,12 @@ public final class MavenCompile extends LogSuppressingMojo {
 
     @Parameter(defaultValue = "true")
     public boolean enabled;
-
     @Parameter(defaultValue = "true")
     public boolean recursive;
-
     @Parameter(defaultValue = "true")
     public boolean replaceExtension;
+    @Parameter(defaultValue = "jsoup")
+    public CompilerType type;
 
     public void execute() throws MojoFailureException {
         if (!enabled) return;
@@ -44,7 +45,7 @@ public final class MavenCompile extends LogSuppressingMojo {
             final var outputDir = toOutputDirectory(project);
 
             final var templates = newExtensionToEngineMap(project);
-            final var html = new JsoupCompiler(log);
+            final var html = type.newHtmlCompiler(log);
             final var ttc = newTemplateThenCompile(templates, defaultRenamer(inputDir, outputDir, replaceExtension), html);
 
             log.info(format

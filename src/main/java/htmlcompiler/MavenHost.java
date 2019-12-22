@@ -1,7 +1,7 @@
 package htmlcompiler;
 
 import htmlcompiler.compilers.TemplateThenCompile;
-import htmlcompiler.compilers.html.JsoupCompiler;
+import htmlcompiler.model.CompilerType;
 import htmlcompiler.model.Task;
 import htmlcompiler.services.LoopingSingleThread;
 import htmlcompiler.services.Service;
@@ -51,15 +51,14 @@ public final class MavenHost extends LogSuppressingMojo {
 
     @Parameter(defaultValue = "true")
     public boolean replaceExtension;
-
-    @Parameter()
+    @Parameter(defaultValue = "src/main/webinc")
     public String watchedDirectories;
-
     @Parameter(defaultValue = "true")
     public boolean requestApiEnabled;
-
     @Parameter(defaultValue = "src/main/websrc/requests.json")
     public String requestApiSpecification;
+    @Parameter(defaultValue = "jsoup")
+    public CompilerType type;
 
     @Override
     public void execute() throws MojoFailureException {
@@ -68,7 +67,7 @@ public final class MavenHost extends LogSuppressingMojo {
             final var outputDir = toOutputDirectory(project);
 
             final var templates = newExtensionToEngineMap(project);
-            final var html = new JsoupCompiler(log);
+            final var html = type.newHtmlCompiler(log);
             final var ttc = newTemplateThenCompile(templates, defaultRenamer(inputDir, outputDir, replaceExtension), html);
             final var queue = new LinkedBlockingQueue<Task>();
 

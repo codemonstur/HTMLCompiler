@@ -8,9 +8,9 @@ import org.xml.sax.SAXNotSupportedException;
 
 import java.io.IOException;
 
-public final class CyberNekoCompiler extends DefaultNekoCompiler {
+public final class HtmlUnitCompiler extends DefaultNekoCompiler {
 
-    public CyberNekoCompiler(final Logger log) throws IOException {
+    public HtmlUnitCompiler(final Logger log) throws IOException {
         super(log, newCyberNekoParser());
     }
 
