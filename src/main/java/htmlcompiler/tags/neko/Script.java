@@ -7,7 +7,6 @@ import htmlcompiler.model.ScriptBag;
 import htmlcompiler.model.ScriptType;
 import htmlcompiler.tools.Logger;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 import simplexml.SimpleXml;
 import simplexml.utils.Interfaces.CheckedIterator;
 
@@ -20,8 +19,6 @@ import static htmlcompiler.model.MoveType.storeCode;
 import static htmlcompiler.model.MoveType.toMoveType;
 import static htmlcompiler.model.ScriptType.detectScriptType;
 import static htmlcompiler.model.ScriptType.javascript;
-import static htmlcompiler.tags.neko.TagProcessor.isEmpty;
-import static htmlcompiler.tags.neko.TagProcessor.isHtml;
 import static htmlcompiler.tags.neko.TagParsingNeko.*;
 import static htmlcompiler.tools.IO.toLocation;
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -55,11 +52,15 @@ public enum Script {;
                     element.setTextContent(compressIfRequested(element, type.compile(element.getTextContent(), file)));
                     removeAttributes(element, "inline", "compress", "src", "type");
 
+/*
+                    This code is supposed to merge adjacent tags together. It does not work.
+
                     final Node previousSibling = getPreviousTagSibling(element, null);
                     if (isInlineScript(previousSibling) && !isEmpty(previousSibling)) {
                         element.setTextContent(previousSibling.getTextContent() + element.getTextContent());
                         element.getParentNode().removeChild(previousSibling);
                     }
+*/
 
                     return false;
                 }
@@ -81,21 +82,25 @@ public enum Script {;
                 element.setTextContent(compressIfRequested(element, type.compile(location)));
                 removeAttributes(element, "inline", "compress", "src", "type");
 
+/*
+                This code is supposed to merge adjacent tags together. It does not work.
+
                 final Node previousSibling = getPreviousTagSibling(element, null);
                 if (isInlineScript(previousSibling) && !isEmpty(previousSibling)) {
                     element.setTextContent(previousSibling.getTextContent() + element.getTextContent());
                     element.getParentNode().removeChild(previousSibling);
                 }
+*/
 
                 return false;
             }
-            if (element.hasAttribute("src") && !element.hasAttribute("integrity") && !element.hasAttribute("no-security")) {
+            if (element.hasAttribute("src") && !element.hasAttribute("integrity") && !element.hasAttribute("no-integrity")) {
                 addIntegrityAttributes(element, element.getAttribute("src"), file, html, log);
             }
             if (element.hasAttribute("to-absolute")) {
                 makeAbsolutePath(element, "src");
             }
-            removeAttributes(element, "to-absolute", "no-security");
+            removeAttributes(element, "to-absolute", "no-integrity");
             return false;
         };
     }

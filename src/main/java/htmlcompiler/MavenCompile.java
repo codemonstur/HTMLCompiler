@@ -1,6 +1,6 @@
 package htmlcompiler;
 
-import htmlcompiler.compilers.html.CyberNekoCompiler;
+import htmlcompiler.compilers.html.JsoupCompiler;
 import htmlcompiler.tools.LogSuppressingMojo;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Mojo;
@@ -44,7 +44,7 @@ public final class MavenCompile extends LogSuppressingMojo {
             final var outputDir = toOutputDirectory(project);
 
             final var templates = newExtensionToEngineMap(project);
-            final var html = new CyberNekoCompiler(log);
+            final var html = new JsoupCompiler(log);
             final var ttc = newTemplateThenCompile(templates, defaultRenamer(inputDir, outputDir, replaceExtension), html);
 
             log.info(format

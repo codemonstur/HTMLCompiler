@@ -158,22 +158,20 @@
             <artifactId>nekohtml</artifactId>
             <version>2.1.0</version>
         </dependency>
-<!--
-        Will throw an exception upon initialization:
-
-        org.xml.sax.SAXNotRecognizedException: Property 'http://cyberneko.org/html/properties/names/elems' is not recognized.
-	        at org.apache.xerces.parsers.DOMParser.setProperty(Unknown Source)
-
         <dependency>
             <groupId>net.sourceforge.htmlunit</groupId>
             <artifactId>neko-htmlunit</artifactId>
             <version>2.36.0</version>
         </dependency>
--->
+
+        <!--
+        Necessary to avoid a META tag from being added to the HTML output
+        https://stackoverflow.com/questions/1409091/how-do-i-prevent-the-java-xml-transformer-using-html-method-from-adding-meta
+         -->
         <dependency>
-            <groupId>net.sourceforge.htmlunit</groupId>
-            <artifactId>neko-htmlunit</artifactId>
-            <version>2.25</version>
+            <groupId>xalan</groupId>
+            <artifactId>xalan</artifactId>
+            <version>2.7.2</version>
         </dependency>
 
         <dependency>

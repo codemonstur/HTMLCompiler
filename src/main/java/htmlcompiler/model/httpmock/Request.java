@@ -1,4 +1,4 @@
-package htmlcompiler.model.fakeapi;
+package htmlcompiler.model.httpmock;
 
 import com.sun.net.httpserver.HttpHandler;
 

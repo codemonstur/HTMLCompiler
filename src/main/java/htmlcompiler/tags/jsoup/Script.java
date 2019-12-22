@@ -77,13 +77,13 @@ public enum Script {;
 
                 return;
             }
-            if (node.hasAttr("src") && !node.hasAttr("integrity") && !node.hasAttr("no-security")) {
+            if (node.hasAttr("src") && !node.hasAttr("integrity") && !node.hasAttr("no-integrity")) {
                 addIntegrityAttributes(node, node.attr("src"), file, log);
             }
             if (node.hasAttr("to-absolute")) {
                 makeAbsolutePath(node, "src");
             }
-            removeAttributes(node, "to-absolute", "no-security");
+            removeAttributes(node, "to-absolute", "no-integrity");
         };
     }
 

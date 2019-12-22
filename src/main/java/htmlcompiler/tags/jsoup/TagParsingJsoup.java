@@ -67,9 +67,9 @@ public enum TagParsingJsoup {;
     public static void addIntegrityAttributes(final Element element, final String url
             , final File file, final Logger log) throws IOException, NoSuchAlgorithmException {
         try {
-            if (isUrl(url) && (element.hasAttr("force-security") || urlHasCorsAllowed(url))) {
+            if (isUrl(url) && (element.hasAttr("force-integrity") || urlHasCorsAllowed(url))) {
                 element.attr("integrity", toIntegrityValue(urlToByteArray(url)));
-                element.removeAttr("force-security");
+                element.removeAttr("force-integrity");
                 if (!element.hasAttr("crossorigin")) element.attr("crossorigin", "anonymous");
                 log.warn(format("File %s has tag without integrity, rewrote to: %s", file.toPath().normalize(), element.html()));
             }

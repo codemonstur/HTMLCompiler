@@ -8,7 +8,6 @@ import htmlcompiler.tools.Logger;
 import org.lesscss.LessException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 
 import java.io.File;
 import java.io.IOException;
@@ -17,7 +16,6 @@ import static htmlcompiler.compilers.css.CssCompiler.compileCssCode;
 import static htmlcompiler.compilers.css.CssCompiler.compressCssCode;
 import static htmlcompiler.model.ImageType.toMimeType;
 import static htmlcompiler.model.StyleType.toStyleType;
-import static htmlcompiler.tags.neko.TagProcessor.isEmpty;
 import static htmlcompiler.tags.neko.TagParsingNeko.*;
 import static htmlcompiler.tools.IO.toLocation;
 
@@ -30,23 +28,27 @@ public enum Link {;
                 return true;
             }
             if (isLinkStyleSheet(element) && element.hasAttribute("inline")) {
-                final Element style = inlineStylesheet(element, file, document);
+                inlineStylesheet(element, file, document);
+
+/*
+                This code is supposed to merge adjacent tags together. It does not work.
 
                 final Node previousSibling = getPreviousTagSibling(style, null);
                 if (isInlineStyle(previousSibling) && !isEmpty(previousSibling)) {
                     style.setTextContent(previousSibling.getTextContent() + style.getTextContent());
                     style.getParentNode().removeChild(previousSibling);
                 }
+*/
 
-                return true;
+                return false;
             }
-            if (!element.hasAttribute("integrity") && !element.hasAttribute("no-security")) {
+            if (!element.hasAttribute("integrity") && !element.hasAttribute("no-integrity")) {
                 addIntegrityAttributes(element, element.getAttribute("href"), file, html, log);
             }
             if (element.hasAttribute("to-absolute")) {
                 makeAbsolutePath(element, "href");
             }
-            removeAttributes(element, "to-absolute", "no-security");
+            removeAttributes(element, "to-absolute", "no-integrity");
             return false;
         };
     }
@@ -58,7 +60,7 @@ public enum Link {;
         element.setAttribute("href", toDataUrl(type, IO.toByteArray(file)));
     }
 
-    private static Element inlineStylesheet(final Element element, final File file, final Document document)
+    private static void inlineStylesheet(final Element element, final File file, final Document document)
             throws InvalidInput, UnrecognizedFileType, IOException, LessException {
         final File location = toLocation(file, element.getAttribute("href"), "<link> in %s has an invalid href location '%s'");
 
@@ -72,8 +74,6 @@ public enum Link {;
         removeAttributes(style, "href", "rel", "inline", "compress");
 
         replaceTag(element, style);
-
-        return style;
     }
 
 }

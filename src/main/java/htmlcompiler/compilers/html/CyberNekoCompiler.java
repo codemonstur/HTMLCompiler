@@ -18,7 +18,7 @@ public final class CyberNekoCompiler extends DefaultNekoCompiler {
         try {
             final DOMParser parser = new DOMParser(new HTMLConfiguration());
             parser.setProperty("http://cyberneko.org/html/properties/default-encoding", "UTF-8");
-            parser.setProperty("http://cyberneko.org/html/properties/names/elems", "lower");
+//            parser.setProperty("http://cyberneko.org/html/properties/names/elems", "lower");
             parser.setFeature("http://cyberneko.org/html/features/document-fragment",true);
             return parser;
         } catch (SAXNotRecognizedException | SAXNotSupportedException e) {

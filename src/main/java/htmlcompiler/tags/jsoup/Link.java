@@ -40,13 +40,13 @@ public enum Link {;
                 replaceWith(node, style);
                 return;
             }
-            if (!node.hasAttr("integrity") && !node.hasAttr("no-security")) {
+            if (!node.hasAttr("integrity") && !node.hasAttr("no-integrity")) {
                 addIntegrityAttributes(node, node.attr("href"), file, log);
             }
             if (node.hasAttr("to-absolute")) {
                 makeAbsolutePath(node, "href");
             }
-            removeAttributes(node, "to-absolute", "no-security");
+            removeAttributes(node, "to-absolute", "no-integrity");
         };
     }
 

@@ -31,4 +31,14 @@ public class TestSimpleCompile {
         assertEquals("Invalid generated HTML", output_html_doctype, output);
     }
 
+    private static final String html_output_uppercase =
+        "<!DOCTYPE html><html><head><title>Test html</title></head><body></body></html>";
+
+    @ParameterizedTest
+    @MethodSource("util.Factory#provideCompilers")
+    public void compileUppercase(final HtmlCompiler compiler) throws IOException, InvalidInput {
+        final String output = Parsing.compileFile(compiler, "src/test/resources/html/uppercase.html");
+        assertEquals("Invalid generated HTML", html_output_uppercase, output);
+    }
+
 }

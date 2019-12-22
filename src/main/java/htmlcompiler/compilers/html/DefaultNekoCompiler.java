@@ -40,8 +40,7 @@ import static htmlcompiler.tags.neko.Script.newScriptProcessor;
 import static htmlcompiler.tags.neko.Style.newStyleProcessor;
 import static htmlcompiler.tags.neko.TagProcessor.NOOP;
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static javax.xml.transform.OutputKeys.ENCODING;
-import static javax.xml.transform.OutputKeys.OMIT_XML_DECLARATION;
+import static javax.xml.transform.OutputKeys.*;
 import static org.w3c.dom.Node.ELEMENT_NODE;
 
 public abstract class DefaultNekoCompiler implements NekoCompiler {
@@ -123,6 +122,7 @@ public abstract class DefaultNekoCompiler implements NekoCompiler {
         final Transformer transformer = TransformerFactory.newInstance().newTransformer();
         transformer.setOutputProperty(ENCODING, UTF_8.toString());
         transformer.setOutputProperty(OMIT_XML_DECLARATION, "yes");
+        transformer.setOutputProperty("{http://xml.apache.org/xalan}omit-meta-tag", "yes");
 
         try (final StringWriter writer = new StringWriter()) {
             transformer.transform(new DOMSource(node), new StreamResult(writer));

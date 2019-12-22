@@ -2,6 +2,7 @@ package htmlcompiler.compilers.html;
 
 import com.google.gson.Gson;
 import com.googlecode.htmlcompressor.compressor.HtmlCompressor;
+import htmlcompiler.checks.jsoup.TagChecker;
 import htmlcompiler.library.LibraryArchive;
 import htmlcompiler.tags.jsoup.TagVisitor;
 import htmlcompiler.error.InvalidInput;
@@ -20,6 +21,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static htmlcompiler.checks.jsoup.StyleAttribute.newStyleAttribute;
+import static htmlcompiler.checks.jsoup.UppercaseTagsOrAttributes.newUppercaseTagsOrAttributes;
 import static htmlcompiler.tags.jsoup.Body.newBodyVisitor;
 import static htmlcompiler.tags.jsoup.Head.newHeadVisitor;
 import static htmlcompiler.tags.jsoup.Image.newImageVisitor;
@@ -37,11 +40,13 @@ public final class JsoupCompiler implements HtmlCompiler {
     private final Logger log;
     private final HtmlCompressor compressor;
     private final Map<String, TagVisitor> processors;
+    private final List<TagChecker> checkers;
 
     public JsoupCompiler(final Logger log) throws IOException {
         this.log = log;
         this.compressor = newDefaultHtmlCompressor();
         this.processors = newDefaultTagProcessors(log, this, new LibraryArchive(new Gson()));
+        this.checkers = newDefaultTagCheckers(log);
     }
 
     private static HtmlCompressor newDefaultHtmlCompressor() {
@@ -65,6 +70,12 @@ public final class JsoupCompiler implements HtmlCompiler {
         processors.put("meta", newMetaVisitor(archive));
         return processors;
     }
+    private static List<TagChecker> newDefaultTagCheckers(final Logger log) {
+        return List.of
+            ( newUppercaseTagsOrAttributes(log)
+            , newStyleAttribute(log)
+            );
+    }
 
     public String doctypeCompressCompile(final File file, final String content) throws InvalidInput {
         return "<!DOCTYPE html>"+compressHtmlCode(compileHtmlCode(file, content));
@@ -84,12 +95,14 @@ public final class JsoupCompiler implements HtmlCompiler {
 
     private Element applyVisitors(final File file, final Element element) throws InvalidInput {
         final List<Exception> errors = new ArrayList<>();
-
         element.traverse(new NodeVisitor() {
             public void head(Node node, int depth) {
                 if (node instanceof Element) {
+                    final Element elem = (Element) node;
+                    for (final var checker : checkers) checker.head(file, elem);
+
                     try {
-                        processors.getOrDefault(node.nodeName(), NOOP).head(file, (Element) node, depth);
+                        processors.getOrDefault(node.nodeName(), NOOP).head(file, elem, depth);
                     } catch (Exception e) {
                         errors.add(e);
                     }
@@ -97,8 +110,11 @@ public final class JsoupCompiler implements HtmlCompiler {
             }
             public void tail(Node node, int depth) {
                 if (node instanceof Element) {
+                    final Element elem = (Element) node;
+                    for (final var checker : checkers) checker.tail(file, elem);
+
                     try {
-                        processors.getOrDefault(node.nodeName(), NOOP).tail(file, (Element) node, depth);
+                        processors.getOrDefault(node.nodeName(), NOOP).tail(file, elem, depth);
                     } catch (Exception e) {
                         errors.add(e);
                     }

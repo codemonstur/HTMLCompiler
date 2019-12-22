@@ -101,9 +101,9 @@ public enum TagParsingNeko {;
     public static void addIntegrityAttributes(final Element element, final String url, final File file
             , final NekoCompiler html, final Logger log) throws IOException, NoSuchAlgorithmException, TransformerException {
         try {
-            if (isUrl(url) && (element.hasAttribute("force-security") || urlHasCorsAllowed(url))) {
+            if (isUrl(url) && (element.hasAttribute("force-integrity") || urlHasCorsAllowed(url))) {
                 element.setAttribute("integrity", toIntegrityValue(urlToByteArray(url)));
-                element.removeAttribute("force-security");
+                element.removeAttribute("force-integrity");
                 if (!element.hasAttribute("crossorigin")) element.setAttribute("crossorigin", "anonymous");
                 log.warn(format("File %s has tag without integrity, rewrote to: %s", file.toPath().normalize(), html.toHtml(element)));
             }
@@ -137,6 +137,21 @@ public enum TagParsingNeko {;
     }
     public static boolean isInlineStyle(final Node node) {
         return node != null && "style".equals(node.getNodeName());
+    }
+
+    public static boolean isEmpty(final Node script) {
+        final String code = script.getTextContent();
+        return code == null || code.trim().isEmpty();
+    }
+
+    public static boolean isHtml(final Element script) {
+        return script.hasAttribute("type") &&
+                (  script.getAttribute("type").equalsIgnoreCase("text/x-jquery-tmpl")
+                        || script.getAttribute("type").equalsIgnoreCase("text/html")
+                );
+    }
+    public static boolean isCss(final Element link) {
+        return !link.hasAttribute("type") || link.getAttribute("type").equalsIgnoreCase("text/css");
     }
 
 }
