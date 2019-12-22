@@ -104,6 +104,7 @@ public final class MavenHost extends LogSuppressingMojo {
             try {
                 final boolean isKnownTemplate = rootPages.contains(take.path.normalize().toAbsolutePath());
                 if (isKnownTemplate) {
+                    log.warn("Compiling file " + take.path);
                     ttc.compileTemplate(take.path.toFile());
                     log.warn("Compiled file " + take.path);
                 } else {
@@ -111,8 +112,11 @@ public final class MavenHost extends LogSuppressingMojo {
                         rootPages.add(take.path.normalize().toAbsolutePath());
 
                     queue.clear();
-                    for (final var path :rootPages) {
+                    log.warn("Compiling all files in root");
+                    for (final var path : rootPages) {
+                        log.warn("Compiling file " + take.path);
                         ttc.compileTemplate(path.toFile());
+                        log.warn("Compiled file " + take.path);
                     }
                     log.warn("Compiled all files in root");
                 }
