@@ -13,3 +13,4 @@ Renamed no-security to no-integrity
 Added meta tag for selecting a library
 Updated HtmlUnit Neko to latest version
 Added tag merging for script and style tags in Jsoup compiler
+Added validation checks to Jsoup Compiler
