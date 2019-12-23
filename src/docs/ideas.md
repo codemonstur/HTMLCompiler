@@ -1,41 +1,21 @@
 
 - Add validation features of HTML
   - WIA
-  - Warn on use of nonce in script tag (these must be generated at runtime, not compile time)
-  - Warn on unknown html tag
-  - Warn on unknown html attribute
-  - Missing alt text for images
-  - Missing placeholder for email fields
-  - Body tags in head
-  - Head tags in body
-  - Use of bad tags: marquee, blink
-  - Use of bad attributes; marginwidth in body tag
   - table without th children
-  - absmiddle value in align attribute
-  - block elements inside inline elements
-  - report use of <b> (should be <strong>)
-  - report use of <string> (should be <b>)
-  - report use of <i> (should be <em>)
-  - report use of <em> (should be <i>)
-  - report use of tags b, i, strong or em, should be CSS
-  - Warn on border attribute, use CSS instead
-  - Warn on use of deprecated elements; https://uzzal.wordpress.com/2009/10/08/fobidden-deprecated-html-tags-and-attributes/
-  - Missing stylesheet for printing pages: <link rel =”stylesheet” href =”print.css” media =”print” />
   - Warn on use of tables, structured divs are better: https://divtable.com/table-styler/
   - default size of your fonts should be 16px – 20px,
   - 1.5 – 1.85 would be a nice default line-height,
   - avoid full black #000000 when it comes to colours (you can replace it with dark grey),
   - for the page background, white #ffffff is a conventional choice,
   - to turn down the contrast for the page background, use slightly-off-white colours, like #f9f9f9
-  - Using label tag with for attribute: https://medium.com/@joelennon/common-html-mistakes-de28db16b964
-  - Warn on form elements without validation; https://html.spec.whatwg.org/multipage/forms.html#client-side-form-validation
-  - non-html5 tags and attributes; https://www.tutorialspoint.com/html5/html5_deprecated_tags.htm
   - spelling mistakes
-  - event handlers
   - missing seo meta tags
   - input field without a label
   - empty alt attribute
   - unencoded HTML entities
+  - Body tags in head
+  - Head tags in body
+  - block elements inside inline elements
 - Make validation checks work for neko compilers
 - Allow for check hints inside HTML pages
 - Run lighthouse on some code and turn all its warnings into checks

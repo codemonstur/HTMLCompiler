@@ -2,11 +2,12 @@ package htmlcompiler.compilers.html;
 
 import com.google.gson.Gson;
 import com.googlecode.htmlcompressor.compressor.HtmlCompressor;
-import htmlcompiler.checks.jsoup.TagChecker;
-import htmlcompiler.library.LibraryArchive;
-import htmlcompiler.tags.jsoup.TagVisitor;
+import htmlcompiler.checks.jsoup.JsoupElementChecks;
+import htmlcompiler.checks.jsoup.JsoupElementChecks.JsoupElementCheck;
 import htmlcompiler.error.InvalidInput;
+import htmlcompiler.library.LibraryArchive;
 import htmlcompiler.model.ScriptBag;
+import htmlcompiler.tags.jsoup.TagVisitor;
 import htmlcompiler.tools.Logger;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -15,14 +16,11 @@ import org.jsoup.nodes.Node;
 import org.jsoup.select.NodeVisitor;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static htmlcompiler.checks.jsoup.StyleAttribute.newStyleAttribute;
-import static htmlcompiler.checks.jsoup.UppercaseTagsOrAttributes.newUppercaseTagsOrAttributes;
 import static htmlcompiler.tags.jsoup.Body.newBodyVisitor;
 import static htmlcompiler.tags.jsoup.Head.newHeadVisitor;
 import static htmlcompiler.tags.jsoup.Image.newImageVisitor;
@@ -40,13 +38,13 @@ public final class JsoupCompiler implements HtmlCompiler {
     private final Logger log;
     private final HtmlCompressor compressor;
     private final Map<String, TagVisitor> processors;
-    private final List<TagChecker> checkers;
+    private final List<JsoupElementCheck> checkers;
 
     public JsoupCompiler(final Logger log) {
         this.log = log;
         this.compressor = newDefaultHtmlCompressor();
         this.processors = newDefaultTagProcessors(log, this, new LibraryArchive(new Gson()));
-        this.checkers = newDefaultTagCheckers(log);
+        this.checkers = newDefaultTagCheckers();
     }
 
     private static HtmlCompressor newDefaultHtmlCompressor() {
@@ -70,10 +68,31 @@ public final class JsoupCompiler implements HtmlCompiler {
         processors.put("meta", newMetaVisitor(archive));
         return processors;
     }
-    private static List<TagChecker> newDefaultTagCheckers(final Logger log) {
+    private static List<JsoupElementCheck> newDefaultTagCheckers() {
         return List.of
-            ( newUppercaseTagsOrAttributes(log)
-            , newStyleAttribute(log)
+            ( JsoupElementChecks::dontUseMarquee
+            , JsoupElementChecks::dontUseBlink
+            , JsoupElementChecks::hasBorderAttribute
+            , JsoupElementChecks::hasStyleAttribute
+            , JsoupElementChecks::hasUppercaseTagsOrAttributes
+            , JsoupElementChecks::missingAltForImages
+            , JsoupElementChecks::missingPlaceholderForInputs
+            , JsoupElementChecks::dontUseBold
+            , JsoupElementChecks::dontUseItalic
+            , JsoupElementChecks::dontUseStrong
+            , JsoupElementChecks::dontUseEm
+            , JsoupElementChecks::dontUseStyling
+            , JsoupElementChecks::marginWidthInBody
+            , JsoupElementChecks::alignAttributeContainsAbsmiddle
+            , JsoupElementChecks::hasDeprecatedTag
+            , JsoupElementChecks::hasDeprecatedAttribute
+            , JsoupElementChecks::scriptWithHardcodedNonce
+            , JsoupElementChecks::styleWithHardcodedNonce
+            , JsoupElementChecks::labelWithForAttribute
+            , JsoupElementChecks::inputWithoutMaxLength
+            , JsoupElementChecks::hasEventHandlerAttribute
+            , JsoupElementChecks::isValidTag
+            , JsoupElementChecks::isValidAttribute
             );
     }
 
@@ -99,8 +118,6 @@ public final class JsoupCompiler implements HtmlCompiler {
             public void head(Node node, int depth) {
                 if (node instanceof Element) {
                     final Element elem = (Element) node;
-                    for (final var checker : checkers) checker.head(file, elem);
-
                     try {
                         processors.getOrDefault(node.nodeName(), NOOP).head(file, elem, depth);
                     } catch (Exception e) {
@@ -111,8 +128,6 @@ public final class JsoupCompiler implements HtmlCompiler {
             public void tail(Node node, int depth) {
                 if (node instanceof Element) {
                     final Element elem = (Element) node;
-                    for (final var checker : checkers) checker.tail(file, elem);
-
                     try {
                         processors.getOrDefault(node.nodeName(), NOOP).tail(file, elem, depth);
                     } catch (Exception e) {
@@ -122,6 +137,15 @@ public final class JsoupCompiler implements HtmlCompiler {
             }
         });
         element.select("*[htmlcompiler=delete-me]").remove();
+        element.traverse(new NodeVisitor() {
+            public void head(Node node, int depth) {
+                if (node instanceof Element) {
+                    final Element elem = (Element) node;
+                    for (final var checker : checkers) checker.checkElement(log, file, elem);
+                }
+            }
+            public void tail(Node node, int depth) {}
+        });
 
         for (final Exception e : errors) {
             log.warn("Error occurred: " + e.getMessage());
