@@ -2,18 +2,18 @@ package htmlcompiler.tags.jsoup;
 
 import htmlcompiler.compilers.html.JsoupCompiler;
 import htmlcompiler.error.InvalidInput;
+import htmlcompiler.tags.jsoup.TagVisitor.TailVisitor;
 import htmlcompiler.tools.IO;
 import org.jsoup.nodes.Node;
 
 import java.io.File;
 
-import static htmlcompiler.tags.jsoup.TagParsingJsoup.replaceWith;
 import static htmlcompiler.tools.IO.toLocation;
 
 public enum Import {;
 
     public static TagVisitor newImportVisitor(final JsoupCompiler compiler) {
-        return (TagVisitor.TailVisitor) (file, node, depth) -> {
+        return (TailVisitor) (file, node, depth) -> {
             final File include = toSourceLocation(node, "src", file);
             final String content = IO.toString(include);
             if (content.isEmpty()) node.remove();

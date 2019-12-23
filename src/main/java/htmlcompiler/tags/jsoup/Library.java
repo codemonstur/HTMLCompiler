@@ -13,7 +13,9 @@ import static simplexml.utils.Functions.isNullOrEmpty;
 public enum Library {;
 
     public static TagVisitor newLibraryVisitor(final LibraryArchive archive) {
-        return (TailVisitor) (file, node, depth) -> replaceWith(node, createTag(node, archive));
+        return (TailVisitor) (file, node, depth) -> {
+            replaceWith(node, createTag(node, archive));
+        };
     }
 
     public static Element createTag(final Element element, final LibraryArchive library) throws InvalidInput {

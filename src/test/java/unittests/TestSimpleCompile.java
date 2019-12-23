@@ -41,4 +41,14 @@ public class TestSimpleCompile {
         assertEquals("Invalid generated HTML", html_output_uppercase, output);
     }
 
+    private static final String html_output_empty_script =
+        "<!DOCTYPE html><html><head><title>Test html</title></head><body></body></html>";
+
+    @ParameterizedTest
+    @MethodSource("util.Factory#provideCompilers")
+    public void compileEmptyScript(final HtmlCompiler compiler) throws IOException, InvalidInput {
+        final String output = Parsing.compileFile(compiler, "src/test/resources/html/empty-script.html");
+        assertEquals("Invalid generated HTML", html_output_empty_script, output);
+    }
+
 }

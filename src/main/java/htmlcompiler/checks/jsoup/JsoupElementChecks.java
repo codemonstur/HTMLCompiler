@@ -232,7 +232,7 @@ public enum JsoupElementChecks {;
     public static void isValidAttribute(final Logger log, final File file, final Element element) {
         for (final var attribute : element.attributes()) {
             if (!known_attributes.contains(attribute.getKey().toLowerCase()))
-                log.warn("File " + file.getPath() + " contains an unknown tag " + attribute.getKey());
+                log.warn("File " + file.getPath() + " contains a tag " + element.tagName() + " with an unknown attribute " + attribute.getKey());
         }
     }
 

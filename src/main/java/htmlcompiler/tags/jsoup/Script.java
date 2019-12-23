@@ -30,7 +30,7 @@ public enum Script {;
                 throw new InvalidInput("script tag has both src tag and text content");
 
             if (!node.hasAttr("src") && isEmpty(node)) {
-                node.remove();
+                node.attr("htmlcompiler", "delete-me");
                 return;
             }
             if (node.hasAttr("move")) {
@@ -38,7 +38,8 @@ public enum Script {;
                 final ScriptType scriptType = detectScriptType(node, javascript);
                 final String code = compileScriptTag(node, scriptType, file);
                 storeCode(compressIfRequested(node, code), type, scripts);
-                node.remove();
+                node.text("");
+                node.attr("htmlcompiler", "delete-me");
                 return;
             }
 
@@ -51,7 +52,7 @@ public enum Script {;
                     final Element previousSibling = previousElementSibling(node);
                     if (isInlineScript(previousSibling) && !isEmpty(previousSibling)) {
                         node.text(previousSibling.text() + node.text());
-                        previousSibling.remove();
+                        previousSibling.attr("htmlcompiler", "delete-me");
                     }
 
                     return;
@@ -72,7 +73,7 @@ public enum Script {;
                 final Element previousSibling = previousElementSibling(node);
                 if (isInlineScript(previousSibling) && !isEmpty(previousSibling)) {
                     node.text(previousSibling.text() + node.text());
-                    previousSibling.remove();
+                    previousSibling.attr("htmlcompiler", "delete-me");
                 }
 
                 return;
