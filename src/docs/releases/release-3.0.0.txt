@@ -1,0 +1,15 @@
+3.0.0
+
+Added dependencies maven task
+Improved logging in MavenHost plugin
+Implemented multiple HtmlCompiler backends
+- Jsoup, CyberNeko, HtmlUnit Neko, Codelibs Neko
+Added abilty to select HtmlCompiler to use, Jsoup is default
+Added src/main/webinc as default watched dir in host task
+Remove META tag from output with Neko parsers
+Added tag checks with warnings
+Added force-integrity tag
+Renamed no-security to no-integrity
+Added meta tag for selecting a library
+Updated HtmlUnit Neko to latest version
+Added tag merging for script and style tags in Jsoup compiler

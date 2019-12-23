@@ -53,4 +53,7 @@
   - From coreui
 - Support more library tags
   Look at CDNs and how they store their stuff, should be able to extract a bunch of libraries
-- Add support for stylus: http://stylus-lang.com/, https://github.com/stylus/stylus 
+- Add support for stylus: http://stylus-lang.com/, https://github.com/stylus/stylus
+- Add option to select 'latest' library
+- Add version testing for external binaries
+
