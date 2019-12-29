@@ -18,22 +18,23 @@ public enum Style {;
                 final File location = toLocation(file, element.attr("src"), "style tag in %s has an invalid src location '%s'");
 
                 removeAttributes(element, "inline", "src");
-                element.text(compressCssCode(IO.toString(location)));
+                setData(element, compressCssCode(IO.toString(location)));
 
                 final Element previousSibling = previousElementSibling(element);
                 if (isInlineStyle(previousSibling) && !isEmpty(previousSibling)) {
-                    element.text(previousSibling.text() + element.text());
-                    previousSibling.remove();
+                    setData(element, previousSibling.data() + element.data());
+                    previousSibling.attr("htmlcompiler", "delete-me");
                 }
                 return;
             }
+
             if (!isEmpty(element)) {
-                element.text(compressCssCode(element.text()));
+                setData(element, compressCssCode(element.data()));
 
                 final Element previousSibling = previousElementSibling(element);
                 if (isInlineStyle(previousSibling) && !isEmpty(previousSibling)) {
-                    element.text(previousSibling.text() + element.text());
-                    previousSibling.remove();
+                    setData(element, previousSibling.data() + element.data());
+                    previousSibling.attr("htmlcompiler", "delete-me");
                 }
 
                 return;

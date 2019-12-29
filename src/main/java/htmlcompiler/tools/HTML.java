@@ -34,6 +34,7 @@ public enum HTML {;
         "step", "style", "summary", "tabindex", "target", "title", "translate", "type", "usemap", "value",
         "width", "wrap", "onafterprint", "onbeforeprint", "onbeforeunload", "onerror", "onhashchange",
         "onload", "onmessage", "onoffline", "ononline", "onpagehide", "onpageshow", "onpopstate",
-        "onresize", "onstorage", "onunload", "role", "aria-valuenow", "aria-valuemin", "aria-valuemax");
+        "onresize", "onstorage", "onunload", "role", "aria-valuenow", "aria-valuemin", "aria-valuemax",
+        "aria-haspopup", "aria-expanded", "aria-hidden", "aria-controls", "aria-label");
 
 }

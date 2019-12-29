@@ -1,6 +1,7 @@
 package htmlcompiler;
 
-import htmlcompiler.compilers.html.JsoupCompiler;
+import com.google.gson.Gson;
+import htmlcompiler.library.LibraryArchive;
 import htmlcompiler.model.CompilerType;
 import htmlcompiler.tools.LogSuppressingMojo;
 import org.apache.maven.plugin.MojoFailureException;
@@ -10,6 +11,7 @@ import org.apache.maven.project.MavenProject;
 
 import java.time.LocalDateTime;
 
+import static htmlcompiler.checks.ReadCheckConfiguration.readChecksConfiguration;
 import static htmlcompiler.compilers.MavenProjectReader.toInputDirectory;
 import static htmlcompiler.compilers.MavenProjectReader.toOutputDirectory;
 import static htmlcompiler.compilers.RenameFile.defaultRenamer;
@@ -36,6 +38,8 @@ public final class MavenCompile extends LogSuppressingMojo {
     public boolean replaceExtension;
     @Parameter(defaultValue = "jsoup")
     public CompilerType type;
+    @Parameter(defaultValue = "src/main/websrc/validation.json")
+    public String validation;
 
     public void execute() throws MojoFailureException {
         if (!enabled) return;
@@ -44,8 +48,11 @@ public final class MavenCompile extends LogSuppressingMojo {
             final var inputDir = toInputDirectory(project);
             final var outputDir = toOutputDirectory(project);
 
+            final var gson = new Gson();
+            final var libs = new LibraryArchive(gson);
+            final var checksSettings = readChecksConfiguration(validation, gson);
             final var templates = newExtensionToEngineMap(project);
-            final var html = type.newHtmlCompiler(log);
+            final var html = type.newHtmlCompiler(log, libs, checksSettings);
             final var ttc = newTemplateThenCompile(templates, defaultRenamer(inputDir, outputDir, replaceExtension), html);
 
             log.info(format

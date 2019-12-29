@@ -1,17 +1,18 @@
 package htmlcompiler.compilers.html;
 
+import htmlcompiler.library.LibraryArchive;
 import htmlcompiler.tools.Logger;
 import org.apache.xerces.parsers.DOMParser;
 import org.codelibs.nekohtml.HTMLConfiguration;
 import org.xml.sax.SAXNotRecognizedException;
 import org.xml.sax.SAXNotSupportedException;
 
-import java.io.IOException;
+import java.util.Map;
 
 public final class CodelibsCompiler extends DefaultNekoCompiler {
 
-    public CodelibsCompiler(final Logger log) {
-        super(log, newCodelibsParser());
+    public CodelibsCompiler(final Logger log, final LibraryArchive archive, final Map<String, Boolean> checksConfiguration) {
+        super(log, archive, newCodelibsParser());
     }
 
     private static DOMParser newCodelibsParser() {

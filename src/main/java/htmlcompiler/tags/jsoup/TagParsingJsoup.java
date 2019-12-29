@@ -2,6 +2,7 @@ package htmlcompiler.tags.jsoup;
 
 import htmlcompiler.tools.Logger;
 import org.jsoup.nodes.Attribute;
+import org.jsoup.nodes.DataNode;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
@@ -71,7 +72,7 @@ public enum TagParsingJsoup {;
                 element.attr("integrity", toIntegrityValue(urlToByteArray(url)));
                 element.removeAttr("force-integrity");
                 if (!element.hasAttr("crossorigin")) element.attr("crossorigin", "anonymous");
-                log.warn(format("File %s has tag without integrity, rewrote to: %s", file.toPath().normalize(), element.html()));
+                log.warn(format("File %s has tag without integrity, rewrote to: %s", file.toPath().normalize(), element.outerHtml()));
             }
         } catch (IOException e) {
             log.warn("Failed to get data for tag src/href attribute " + url + ", error is " + e.getMessage());
@@ -93,8 +94,15 @@ public enum TagParsingJsoup {;
     }
 
     public static boolean isEmpty(final Element script) {
-        final String code = script.text();
+        final String code = script.data();
         return code == null || code.trim().isEmpty();
+    }
+
+    public static void setData(final Element script, final String data) {
+        for (final DataNode dataNode : script.dataNodes()) {
+            dataNode.remove();
+        }
+        script.appendChild(new DataNode(data));
     }
 
     public static boolean isHtml(final Element script) {

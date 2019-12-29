@@ -1,15 +1,18 @@
 package htmlcompiler.compilers.html;
 
+import htmlcompiler.library.LibraryArchive;
 import htmlcompiler.tools.Logger;
 import org.apache.xerces.parsers.DOMParser;
 import org.cyberneko.html.HTMLConfiguration;
 import org.xml.sax.SAXNotRecognizedException;
 import org.xml.sax.SAXNotSupportedException;
 
+import java.util.Map;
+
 public final class CyberNekoCompiler extends DefaultNekoCompiler {
 
-    public CyberNekoCompiler(final Logger log) {
-        super(log, newCyberNekoParser());
+    public CyberNekoCompiler(final Logger log, final LibraryArchive archive, final Map<String, Boolean> checksConfiguration) {
+        super(log, archive, newCyberNekoParser());
     }
 
     private static DOMParser newCyberNekoParser() {

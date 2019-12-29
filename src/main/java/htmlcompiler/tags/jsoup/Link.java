@@ -33,8 +33,8 @@ public enum Link {;
 
                 final Element previousSibling = previousElementSibling(node);
                 if (isInlineStyle(previousSibling) && !isEmpty(previousSibling)) {
-                    style.text(previousSibling.text() + style.text());
-                    previousSibling.remove();
+                    setData(style, previousSibling.data() + style.data());
+                    previousSibling.attr("htmlcompiler", "delete-me");
                 }
 
                 replaceWith(node, style);
@@ -62,10 +62,10 @@ public enum Link {;
         final File location = toLocation(file, element.attr("href"), "<link> in %s has an invalid href location '%s'");
 
         final Element style = document.createElement("style");
-        style.text(compileCssCode(toStyleType(location.getName()), IO.toString(location)));
+        setData(style, compileCssCode(toStyleType(location.getName()), IO.toString(location)));
 
         if (element.hasAttr("compress"))
-            style.text(compressCssCode(style.text()));
+            setData(style, compressCssCode(style.data()));
 
         removeAttributes(element, "href", "rel", "inline", "compress");
         copyAttributes(element, style);

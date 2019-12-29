@@ -1,8 +1,6 @@
 package htmlcompiler.compilers.html;
 
-import com.google.gson.Gson;
 import com.googlecode.htmlcompressor.compressor.HtmlCompressor;
-import htmlcompiler.checks.jsoup.JsoupElementChecks;
 import htmlcompiler.checks.jsoup.JsoupElementChecks.JsoupElementCheck;
 import htmlcompiler.error.InvalidInput;
 import htmlcompiler.library.LibraryArchive;
@@ -21,6 +19,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static htmlcompiler.checks.jsoup.JsoupCheckListBuilder.newJsoupCheckList;
+import static htmlcompiler.compilers.html.HtmlCompiler.newDefaultHtmlCompressor;
 import static htmlcompiler.tags.jsoup.Body.newBodyVisitor;
 import static htmlcompiler.tags.jsoup.Head.newHeadVisitor;
 import static htmlcompiler.tags.jsoup.Image.newImageVisitor;
@@ -40,19 +40,16 @@ public final class JsoupCompiler implements HtmlCompiler {
     private final Map<String, TagVisitor> processors;
     private final List<JsoupElementCheck> checkers;
 
-    public JsoupCompiler(final Logger log) {
+    public JsoupCompiler(final Logger log, final LibraryArchive archive, final Map<String, Boolean> checksConfiguration) {
         this.log = log;
         this.compressor = newDefaultHtmlCompressor();
-        this.processors = newDefaultTagProcessors(log, this, new LibraryArchive(new Gson()));
-        this.checkers = newDefaultTagCheckers();
+        this.processors = newDefaultTagProcessors(log, this, archive);
+        this.checkers = newJsoupCheckList()
+            .addConfiguration(checksConfiguration)
+            .addAllEnabled()
+            .build();
     }
 
-    private static HtmlCompressor newDefaultHtmlCompressor() {
-        final HtmlCompressor compressor = new HtmlCompressor();
-        compressor.setRemoveComments(true);
-        compressor.setRemoveIntertagSpaces(true);
-        return compressor;
-    }
     private static Map<String, TagVisitor> newDefaultTagProcessors(final Logger log, final JsoupCompiler html, final LibraryArchive archive) {
         final ScriptBag scripts = new ScriptBag();
         final Map<String, TagVisitor> processors = new HashMap<>();
@@ -67,33 +64,6 @@ public final class JsoupCompiler implements HtmlCompiler {
         processors.put("library", newLibraryVisitor(archive));
         processors.put("meta", newMetaVisitor(archive));
         return processors;
-    }
-    private static List<JsoupElementCheck> newDefaultTagCheckers() {
-        return List.of
-            ( JsoupElementChecks::dontUseMarquee
-            , JsoupElementChecks::dontUseBlink
-            , JsoupElementChecks::hasBorderAttribute
-            , JsoupElementChecks::hasStyleAttribute
-            , JsoupElementChecks::hasUppercaseTagsOrAttributes
-            , JsoupElementChecks::missingAltForImages
-            , JsoupElementChecks::missingPlaceholderForInputs
-            , JsoupElementChecks::dontUseBold
-            , JsoupElementChecks::dontUseItalic
-            , JsoupElementChecks::dontUseStrong
-            , JsoupElementChecks::dontUseEm
-            , JsoupElementChecks::dontUseStyling
-            , JsoupElementChecks::marginWidthInBody
-            , JsoupElementChecks::alignAttributeContainsAbsmiddle
-            , JsoupElementChecks::hasDeprecatedTag
-            , JsoupElementChecks::hasDeprecatedAttribute
-            , JsoupElementChecks::scriptWithHardcodedNonce
-            , JsoupElementChecks::styleWithHardcodedNonce
-            , JsoupElementChecks::labelWithForAttribute
-            , JsoupElementChecks::inputWithoutMaxLength
-            , JsoupElementChecks::hasEventHandlerAttribute
-            , JsoupElementChecks::isValidTag
-            , JsoupElementChecks::isValidAttribute
-            );
     }
 
     public String doctypeCompressCompile(final File file, final String content) throws InvalidInput {
