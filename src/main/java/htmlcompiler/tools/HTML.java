@@ -14,7 +14,7 @@ public enum HTML {;
         "nav", "noscript", "object", "ol", "optgroup", "option", "output", "p", "param", "pre", "progress",
         "q", "rb", "rp", "rt", "rtc", "ruby", "s", "samp", "script", "section", "select", "small", "source",
         "span", "strong", "style", "sub", "summary", "sup", "table", "tbody", "td", "template", "textarea",
-        "tfoot", "th", "thead", "time", "title", "tr", "track", "u", "ul", "var", "video", "wbr");
+        "tfoot", "th", "thead", "time", "title", "tr", "track", "u", "ul", "var", "video", "wbr", "#root");
 
     // https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes
     public static final Set<String> known_attributes = Set.of("accept", "accept-charset", "accesskey",
@@ -34,6 +34,7 @@ public enum HTML {;
         "step", "style", "summary", "tabindex", "target", "title", "translate", "type", "usemap", "value",
         "width", "wrap", "onafterprint", "onbeforeprint", "onbeforeunload", "onerror", "onhashchange",
         "onload", "onmessage", "onoffline", "ononline", "onpagehide", "onpageshow", "onpopstate",
-        "onresize", "onstorage", "onunload");
+        "onresize", "onstorage", "onunload", "role", "aria-valuenow", "aria-valuemin", "aria-valuemax",
+        "aria-haspopup", "aria-expanded", "aria-hidden", "aria-controls", "aria-label");
 
 }

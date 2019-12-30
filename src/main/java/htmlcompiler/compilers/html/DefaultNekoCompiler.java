@@ -1,6 +1,5 @@
 package htmlcompiler.compilers.html;
 
-import com.google.gson.Gson;
 import com.googlecode.htmlcompressor.compressor.HtmlCompressor;
 import htmlcompiler.error.InvalidInput;
 import htmlcompiler.library.LibraryArchive;
@@ -28,6 +27,7 @@ import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
 
+import static htmlcompiler.compilers.html.HtmlCompiler.newDefaultHtmlCompressor;
 import static htmlcompiler.tags.neko.Body.newBodyProcessor;
 import static htmlcompiler.tags.neko.Head.newHeadProcessor;
 import static htmlcompiler.tags.neko.Image.newImageProcessor;
@@ -40,7 +40,8 @@ import static htmlcompiler.tags.neko.Script.newScriptProcessor;
 import static htmlcompiler.tags.neko.Style.newStyleProcessor;
 import static htmlcompiler.tags.neko.TagProcessor.NOOP;
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static javax.xml.transform.OutputKeys.*;
+import static javax.xml.transform.OutputKeys.ENCODING;
+import static javax.xml.transform.OutputKeys.OMIT_XML_DECLARATION;
 import static org.w3c.dom.Node.ELEMENT_NODE;
 
 public abstract class DefaultNekoCompiler implements NekoCompiler {
@@ -49,18 +50,12 @@ public abstract class DefaultNekoCompiler implements NekoCompiler {
     private final HtmlCompressor compressor;
     private final Map<String, TagProcessor> processors;
 
-    public DefaultNekoCompiler(final Logger log, final DOMParser parser) {
+    public DefaultNekoCompiler(final Logger log, final LibraryArchive archive, final DOMParser parser) {
         this.parser = parser;
         this.compressor = newDefaultHtmlCompressor();
-        this.processors = newDefaultTagProcessors(log, this, new LibraryArchive(new Gson()));
+        this.processors = newDefaultTagProcessors(log, this, archive);
     }
 
-    private static HtmlCompressor newDefaultHtmlCompressor() {
-        final HtmlCompressor compressor = new HtmlCompressor();
-        compressor.setRemoveComments(true);
-        compressor.setRemoveIntertagSpaces(true);
-        return compressor;
-    }
     private static Map<String, TagProcessor> newDefaultTagProcessors(final Logger log, final NekoCompiler html, final LibraryArchive archive) {
         final ScriptBag scripts = new ScriptBag();
         final Map<String, TagProcessor> processors = new HashMap<>();

@@ -34,15 +34,17 @@ public enum ScriptType {
         if (contentType != null) return contentTypeToScriptType(contentType, defaultValue);
         final String fileName = element.getAttribute("src");
         if (fileName != null) return filenameToScriptType(fileName, defaultValue);
-        return defaultValue;
+        return javascript;
     }
 
     public static ScriptType detectScriptType(final org.jsoup.nodes.Element element, final ScriptType defaultValue) {
-        final String contentType = element.attr("type");
-        if (contentType != null) return contentTypeToScriptType(contentType, defaultValue);
-        final String fileName = element.attr("src");
-        if (fileName != null) return filenameToScriptType(fileName, defaultValue);
-        return defaultValue;
+        if (element.hasAttr("type")) {
+            return contentTypeToScriptType(element.attr("type"), defaultValue);
+        }
+        if (element.hasAttr("src")) {
+            return filenameToScriptType(element.attr("src"), defaultValue);
+        }
+        return javascript;
     }
 
     private static ScriptType contentTypeToScriptType(final String contentType, final ScriptType defaultValue) {

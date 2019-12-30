@@ -1,6 +1,8 @@
 package htmlcompiler;
 
+import com.google.gson.Gson;
 import htmlcompiler.compilers.TemplateThenCompile;
+import htmlcompiler.library.LibraryArchive;
 import htmlcompiler.model.CompilerType;
 import htmlcompiler.model.Task;
 import htmlcompiler.services.LoopingSingleThread;
@@ -22,6 +24,7 @@ import java.util.Set;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import static htmlcompiler.checks.ReadCheckConfiguration.readChecksConfiguration;
 import static htmlcompiler.compilers.MavenProjectReader.toInputDirectory;
 import static htmlcompiler.compilers.MavenProjectReader.toOutputDirectory;
 import static htmlcompiler.compilers.RenameFile.defaultRenamer;
@@ -37,8 +40,7 @@ import static java.nio.file.StandardWatchEventKinds.ENTRY_CREATE;
 import static java.nio.file.StandardWatchEventKinds.ENTRY_DELETE;
 import static java.util.Collections.emptyList;
 import static java.util.Objects.requireNonNull;
-import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.toSet;
+import static java.util.stream.Collectors.*;
 
 @Mojo( name = "host" )
 public final class MavenHost extends LogSuppressingMojo {
@@ -57,6 +59,8 @@ public final class MavenHost extends LogSuppressingMojo {
     public boolean requestApiEnabled;
     @Parameter(defaultValue = "src/main/websrc/requests.json")
     public String requestApiSpecification;
+    @Parameter(defaultValue = "src/main/websrc/validation.json")
+    public String validation;
     @Parameter(defaultValue = "jsoup")
     public CompilerType type;
 
@@ -66,8 +70,11 @@ public final class MavenHost extends LogSuppressingMojo {
             final var inputDir = toInputDirectory(project);
             final var outputDir = toOutputDirectory(project);
 
+            final var gson = new Gson();
+            final var libs = new LibraryArchive(gson);
             final var templates = newExtensionToEngineMap(project);
-            final var html = type.newHtmlCompiler(log);
+            final var checksSettings = readChecksConfiguration(validation, gson);
+            final var html = type.newHtmlCompiler(log, libs, checksSettings);
             final var ttc = newTemplateThenCompile(templates, defaultRenamer(inputDir, outputDir, replaceExtension), html);
             final var queue = new LinkedBlockingQueue<Task>();
 
