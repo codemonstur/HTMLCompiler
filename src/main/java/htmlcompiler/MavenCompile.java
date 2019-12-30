@@ -1,6 +1,5 @@
 package htmlcompiler;
 
-import htmlcompiler.compilers.html.JsoupCompiler;
 import htmlcompiler.model.CompilerType;
 import htmlcompiler.tools.LogSuppressingMojo;
 import org.apache.maven.plugin.MojoFailureException;
