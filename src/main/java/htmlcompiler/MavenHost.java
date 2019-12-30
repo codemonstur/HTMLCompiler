@@ -25,8 +25,8 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import static htmlcompiler.checks.ReadCheckConfiguration.readChecksConfiguration;
-import static htmlcompiler.compilers.MavenProjectReader.toInputDirectory;
-import static htmlcompiler.compilers.MavenProjectReader.toOutputDirectory;
+import static htmlcompiler.MavenProjectReader.toInputDirectory;
+import static htmlcompiler.MavenProjectReader.toOutputDirectory;
 import static htmlcompiler.compilers.RenameFile.defaultRenamer;
 import static htmlcompiler.compilers.TemplateThenCompile.newTemplateThenCompile;
 import static htmlcompiler.services.DirectoryWatcher.newDirectoryWatcher;

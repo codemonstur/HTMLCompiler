@@ -1,4 +1,4 @@
-package htmlcompiler.compilers;
+package htmlcompiler;
 
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.project.MavenProject;

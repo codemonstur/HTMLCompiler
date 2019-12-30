@@ -1,23 +1,22 @@
 package htmlcompiler.tags.jsoup;
 
-import htmlcompiler.tags.jsoup.TagVisitor.TailVisitor;
 import htmlcompiler.error.InvalidInput;
-import htmlcompiler.error.UnrecognizedFileType;
+import htmlcompiler.model.StyleType;
+import htmlcompiler.tags.jsoup.TagVisitor.TailVisitor;
 import htmlcompiler.tools.IO;
 import htmlcompiler.tools.Logger;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.nodes.Node;
-import org.lesscss.LessException;
 
 import java.io.File;
 import java.io.IOException;
 
-import static htmlcompiler.compilers.css.CssCompiler.compileCssCode;
-import static htmlcompiler.compilers.css.CssCompiler.compressCssCode;
-import static htmlcompiler.tags.jsoup.TagParsingJsoup.*;
+import static htmlcompiler.compilers.CssCompiler.compressCssCode;
 import static htmlcompiler.model.ImageType.toMimeType;
-import static htmlcompiler.model.StyleType.toStyleType;
+import static htmlcompiler.model.StyleType.css;
+import static htmlcompiler.model.StyleType.detectStyleType;
+import static htmlcompiler.tags.jsoup.TagParsingJsoup.*;
 import static htmlcompiler.tools.IO.toLocation;
 
 public enum Link {;
@@ -32,7 +31,7 @@ public enum Link {;
                 final Element style = inlineStylesheet(node, file, node.ownerDocument());
 
                 final Element previousSibling = previousElementSibling(node);
-                if (isInlineStyle(previousSibling) && !isEmpty(previousSibling)) {
+                if (isInlineStyle(previousSibling) && !isStyleEmpty(previousSibling)) {
                     setData(style, previousSibling.data() + style.data());
                     previousSibling.attr("htmlcompiler", "delete-me");
                 }
@@ -58,11 +57,12 @@ public enum Link {;
     }
 
     private static Element inlineStylesheet(final Element element, final File file, final Document document)
-            throws InvalidInput, UnrecognizedFileType, IOException, LessException {
+            throws Exception {
         final File location = toLocation(file, element.attr("href"), "<link> in %s has an invalid href location '%s'");
 
         final Element style = document.createElement("style");
-        setData(style, compileCssCode(toStyleType(location.getName()), IO.toString(location)));
+        final StyleType type = detectStyleType(element, css);
+        setData(style, type.compile(location));
 
         if (element.hasAttr("compress"))
             setData(style, compressCssCode(style.data()));

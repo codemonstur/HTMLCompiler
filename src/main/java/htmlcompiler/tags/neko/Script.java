@@ -14,7 +14,7 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 
-import static htmlcompiler.compilers.js.JsCompiler.compressJavascriptCode;
+import static htmlcompiler.compilers.JsCompiler.compressJavascriptCode;
 import static htmlcompiler.model.MoveType.storeCode;
 import static htmlcompiler.model.MoveType.toMoveType;
 import static htmlcompiler.model.ScriptType.detectScriptType;
@@ -105,7 +105,7 @@ public enum Script {;
         };
     }
 
-    private static String compileScriptTag(final Element element, final ScriptType scriptType, final File parent) throws IOException, InvalidInput {
+    private static String compileScriptTag(final Element element, final ScriptType scriptType, final File parent) throws Exception {
         if (!isEmpty(element)) return scriptType.compile(element.getTextContent(), parent);
 
         final File location = toLocation(parent, element.getAttribute("src"), "script tag in %s has an invalid src location '%s'");

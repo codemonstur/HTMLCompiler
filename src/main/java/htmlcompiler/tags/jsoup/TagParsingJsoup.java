@@ -93,8 +93,12 @@ public enum TagParsingJsoup {;
         return node != null && "style".equals(node.tagName());
     }
 
-    public static boolean isEmpty(final Element script) {
+    public static boolean isScriptEmpty(final Element script) {
         final String code = script.data();
+        return code == null || code.trim().isEmpty();
+    }
+    public static boolean isStyleEmpty(final Element style) {
+        final String code = style.data();
         return code == null || code.trim().isEmpty();
     }
 

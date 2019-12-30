@@ -38,4 +38,5 @@ public interface TemplateThenCompile {
             }
         }
     }
+
 }

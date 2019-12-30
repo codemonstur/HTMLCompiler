@@ -1,67 +1,64 @@
 package htmlcompiler.model;
 
-import htmlcompiler.compilers.js.ScriptCompiler;
+import htmlcompiler.compilers.CodeCompiler;
 import org.w3c.dom.Element;
 
 import java.io.File;
-import java.io.IOException;
 
-import static htmlcompiler.compilers.js.ExtendedJSCompiler.newExtJSCompiler;
-import static htmlcompiler.compilers.js.JsppCompiler.newJsppCompiler;
-import static htmlcompiler.compilers.js.ScriptCompiler.newNopCompiler;
-import static htmlcompiler.compilers.js.TypeScriptCompiler.newTypescriptCompiler;
+import static htmlcompiler.compilers.CodeCompiler.newNopCompiler;
+import static htmlcompiler.compilers.JsCompiler.*;
 
 public enum ScriptType {
     minified_javascript(newNopCompiler()),
-    extended_javascript(newExtJSCompiler()),
     javascript(newNopCompiler()),
     typescript(newTypescriptCompiler()),
-    jspp(newJsppCompiler());
+    jspp(newJsppCompiler()),
+    dart(newDartCompiler());
 
-    private final ScriptCompiler compiler;
-    ScriptType(final ScriptCompiler compiler) {
+    private final CodeCompiler compiler;
+    ScriptType(final CodeCompiler compiler) {
         this.compiler = compiler;
     }
-    public String compile(final String jsCode, final File parent) throws IOException {
-        return compiler.compileScript(jsCode, parent);
+    public String compile(final String jsCode, final File parent) throws Exception {
+        return compiler.compileCode(jsCode, parent);
     }
-    public String compile(final File location) throws IOException {
-        return compiler.compileScript(location);
+    public String compile(final File location) throws Exception {
+        return compiler.compileCode(location);
     }
 
     public static ScriptType detectScriptType(final Element element, final ScriptType defaultValue) {
-        final String contentType = element.getAttribute("type");
-        if (contentType != null) return contentTypeToScriptType(contentType, defaultValue);
-        final String fileName = element.getAttribute("src");
-        if (fileName != null) return filenameToScriptType(fileName, defaultValue);
+        if (element.hasAttribute("type"))
+            return contentTypeToScriptType(element.getAttribute("type"), defaultValue);
+        if (element.hasAttribute("src"))
+            return filenameToScriptType(element.getAttribute("src"), defaultValue);
         return javascript;
     }
 
     public static ScriptType detectScriptType(final org.jsoup.nodes.Element element, final ScriptType defaultValue) {
-        if (element.hasAttr("type")) {
+        if (element.hasAttr("type"))
             return contentTypeToScriptType(element.attr("type"), defaultValue);
-        }
-        if (element.hasAttr("src")) {
+        if (element.hasAttr("src"))
             return filenameToScriptType(element.attr("src"), defaultValue);
-        }
         return javascript;
     }
 
     private static ScriptType contentTypeToScriptType(final String contentType, final ScriptType defaultValue) {
         if (contentType.equalsIgnoreCase("text/javascript")) return javascript;
-        if (contentType.equalsIgnoreCase("text/extjs")) return extended_javascript;
         if (contentType.equalsIgnoreCase("text/typescript")) return typescript;
         if (contentType.equalsIgnoreCase("text/jspp")) return jspp;
         if (contentType.equalsIgnoreCase("text/js++")) return jspp;
+        if (contentType.equalsIgnoreCase("text/dart")) return dart;
         return defaultValue;
     }
 
     private static ScriptType filenameToScriptType(final String filename, final ScriptType defaultValue) {
         if (filename.endsWith(".min.js")) return minified_javascript;
-        if (filename.endsWith(".ejs")) return extended_javascript;
         if (filename.endsWith(".js")) return javascript;
         if (filename.endsWith(".ts")) return typescript;
+        if (filename.endsWith(".tsc")) return typescript;
         if (filename.endsWith(".jspp")) return jspp;
+        if (filename.endsWith(".js++")) return jspp;
+        if (filename.endsWith(".dart")) return dart;
         return defaultValue;
     }
 

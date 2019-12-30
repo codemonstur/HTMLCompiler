@@ -12,7 +12,7 @@ import org.jsoup.nodes.Element;
 import java.io.File;
 import java.io.IOException;
 
-import static htmlcompiler.compilers.js.JsCompiler.compressJavascriptCode;
+import static htmlcompiler.compilers.JsCompiler.compressJavascriptCode;
 import static htmlcompiler.tags.jsoup.TagParsingJsoup.*;
 import static htmlcompiler.model.MoveType.storeCode;
 import static htmlcompiler.model.MoveType.toMoveType;
@@ -26,10 +26,10 @@ public enum Script {;
         return (TailVisitor) (file, node, depth) -> {
             if (!node.hasAttr("src") && node.hasAttr("inline"))
                 throw new InvalidInput("script inline attempted on tag without src attribute");
-            if (node.hasAttr("src") && !isEmpty(node))
+            if (node.hasAttr("src") && !isScriptEmpty(node))
                 throw new InvalidInput("script tag has both src tag and text content");
 
-            if (!node.hasAttr("src") && isEmpty(node)) {
+            if (!node.hasAttr("src") && isScriptEmpty(node)) {
                 node.attr("htmlcompiler", "delete-me");
                 return;
             }
@@ -43,14 +43,14 @@ public enum Script {;
                 return;
             }
 
-            if (!isEmpty(node)) {
+            if (!isScriptEmpty(node)) {
                 final ScriptType type = detectScriptType(node, null);
                 if (type != null) {
                     setData(node, compressIfRequested(node, type.compile(node.data(), file)));
                     removeAttributes(node, "inline", "compress", "src", "type");
 
                     final Element previousSibling = previousElementSibling(node);
-                    if (isInlineScript(previousSibling) && !isEmpty(previousSibling)) {
+                    if (isInlineScript(previousSibling) && !isScriptEmpty(previousSibling)) {
                         setData(node, previousSibling.data() + node.data());
                         previousSibling.attr("htmlcompiler", "delete-me");
                     }
@@ -59,7 +59,7 @@ public enum Script {;
                 }
             }
 
-            if (isHtml(node) && !isEmpty(node)) {
+            if (isHtml(node) && !isScriptEmpty(node)) {
                 setData(node, html.compileHtmlFragment(file, node.text()).children().html());
                 return;
             }
@@ -71,7 +71,7 @@ public enum Script {;
                 removeAttributes(node, "inline", "compress", "src", "type");
 
                 final Element previousSibling = previousElementSibling(node);
-                if (isInlineScript(previousSibling) && !isEmpty(previousSibling)) {
+                if (isInlineScript(previousSibling) && !isScriptEmpty(previousSibling)) {
                     setData(node, previousSibling.data() + node.data());
                     previousSibling.attr("htmlcompiler", "delete-me");
                 }
@@ -88,8 +88,8 @@ public enum Script {;
         };
     }
 
-    private static String compileScriptTag(final Element element, final ScriptType scriptType, final File parent) throws IOException, InvalidInput {
-        if (!isEmpty(element)) return scriptType.compile(element.data(), parent);
+    private static String compileScriptTag(final Element element, final ScriptType scriptType, final File parent) throws Exception {
+        if (!isScriptEmpty(element)) return scriptType.compile(element.data(), parent);
 
         final File location = toLocation(parent, element.attr("src"), "script tag in %s has an invalid src location '%s'");
         return scriptType.compile(location);

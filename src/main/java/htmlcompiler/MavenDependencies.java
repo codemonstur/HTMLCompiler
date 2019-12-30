@@ -18,7 +18,9 @@ public final class MavenDependencies extends LogSuppressingMojo {
     public void execute() throws MojoFailureException {
         buildMavenTask(this, log -> {
             testBinary(log, "TypeScript compiler", "tsc");
+            testBinary(log, "Dart compiler", "dart2js");
             testBinary(log, "JS++ compiler", "js++");
+            testBinary(log, "Stylus compiler", "stylus");
         });
     }
 

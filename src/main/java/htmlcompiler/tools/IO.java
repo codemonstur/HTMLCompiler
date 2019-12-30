@@ -11,8 +11,11 @@ import java.util.Optional;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
+import static java.io.File.createTempFile;
 import static java.lang.String.format;
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.nio.file.StandardOpenOption.CREATE;
+import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
 
 public enum IO {;
 
@@ -70,5 +73,26 @@ public enum IO {;
             .findAny();
         if (location.isEmpty()) throw new FileNotFoundException("Could not find binary " + name + " in PATH");
         return location.get();
+    }
+
+    public static Path findBinaryInPath(final String name, final Path defaultValue) {
+        final Optional<Path> location = Stream.of(System.getenv("PATH")
+                .split(Pattern.quote(File.pathSeparator)))
+                .map(Paths::get)
+                .map(path -> path.resolve(name))
+                .filter(path -> Files.exists(path))
+                .findAny();
+        return location.isEmpty() ? defaultValue : location.get();
+    }
+
+    public static File newTempFileWithContent(final String prefix, final String suffix, final File tempDir, final String content) throws IOException {
+        final File tempFile = createTempFile(prefix, suffix, tempDir);
+        try {
+            Files.writeString(tempFile.toPath(), content, CREATE, TRUNCATE_EXISTING);
+            return tempFile;
+        } catch (IOException e) {
+            tempFile.delete();
+            throw e;
+        }
     }
 }

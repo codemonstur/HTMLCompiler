@@ -12,8 +12,8 @@ import org.apache.maven.project.MavenProject;
 import java.time.LocalDateTime;
 
 import static htmlcompiler.checks.ReadCheckConfiguration.readChecksConfiguration;
-import static htmlcompiler.compilers.MavenProjectReader.toInputDirectory;
-import static htmlcompiler.compilers.MavenProjectReader.toOutputDirectory;
+import static htmlcompiler.MavenProjectReader.toInputDirectory;
+import static htmlcompiler.MavenProjectReader.toOutputDirectory;
 import static htmlcompiler.compilers.RenameFile.defaultRenamer;
 import static htmlcompiler.compilers.TemplateThenCompile.compileDirectories;
 import static htmlcompiler.compilers.TemplateThenCompile.newTemplateThenCompile;

@@ -2,20 +2,19 @@ package htmlcompiler.tags.neko;
 
 import htmlcompiler.compilers.html.NekoCompiler;
 import htmlcompiler.error.InvalidInput;
-import htmlcompiler.error.UnrecognizedFileType;
+import htmlcompiler.model.StyleType;
 import htmlcompiler.tools.IO;
 import htmlcompiler.tools.Logger;
-import org.lesscss.LessException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import java.io.File;
 import java.io.IOException;
 
-import static htmlcompiler.compilers.css.CssCompiler.compileCssCode;
-import static htmlcompiler.compilers.css.CssCompiler.compressCssCode;
+import static htmlcompiler.compilers.CssCompiler.compressCssCode;
 import static htmlcompiler.model.ImageType.toMimeType;
-import static htmlcompiler.model.StyleType.toStyleType;
+import static htmlcompiler.model.StyleType.css;
+import static htmlcompiler.model.StyleType.detectStyleType;
 import static htmlcompiler.tags.neko.TagParsingNeko.*;
 import static htmlcompiler.tools.IO.toLocation;
 
@@ -61,11 +60,12 @@ public enum Link {;
     }
 
     private static void inlineStylesheet(final Element element, final File file, final Document document)
-            throws InvalidInput, UnrecognizedFileType, IOException, LessException {
+            throws Exception {
         final File location = toLocation(file, element.getAttribute("href"), "<link> in %s has an invalid href location '%s'");
 
         final Element style = document.createElement("style");
-        style.setTextContent(compileCssCode(toStyleType(location.getName()), IO.toString(location)));
+        final StyleType type = detectStyleType(element, css);
+        style.setTextContent(type.compile(location));
 
         if (element.hasAttribute("compress"))
             style.setTextContent(compressCssCode(style.getTextContent()));

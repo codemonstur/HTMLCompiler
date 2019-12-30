@@ -26,6 +26,6 @@ public interface TagVisitor {
     }
 
     void head(File file, Element element, int depth) throws IOException, InvalidInput, NoSuchAlgorithmException, LessException, UnrecognizedFileType;
-    void tail(File file, Element element, int depth) throws IOException, InvalidInput, NoSuchAlgorithmException, LessException, UnrecognizedFileType;
+    void tail(File file, Element element, int depth) throws Exception;
 
 }

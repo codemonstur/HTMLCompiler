@@ -18,8 +18,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static htmlcompiler.compilers.MavenProjectReader.toOutputDirectory;
-import static htmlcompiler.compilers.MavenProjectReader.toStaticDirectory;
+import static htmlcompiler.MavenProjectReader.toOutputDirectory;
+import static htmlcompiler.MavenProjectReader.toStaticDirectory;
 import static htmlcompiler.model.httpmock.Endpoint.toKey;
 import static htmlcompiler.model.httpmock.Request.toHttpHandler;
 
