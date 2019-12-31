@@ -1,19 +1,17 @@
 package htmlcompiler.compilers;
 
+import com.inet.lib.less.Less;
 import com.vaadin.sass.internal.ScssStylesheet;
 import com.vaadin.sass.internal.handler.SCSSDocumentHandler;
 import com.vaadin.sass.internal.handler.SCSSDocumentHandlerImpl;
 import com.vaadin.sass.internal.parser.Parser;
 import com.yahoo.platform.yui.compressor.CssCompressor;
 import htmlcompiler.tools.IO;
-import org.lesscss.LessCompiler;
-import org.lesscss.LessException;
 import org.w3c.css.sac.InputSource;
 
 import java.io.*;
 
 import static htmlcompiler.compilers.CodeCompiler.newExternalToolCompiler;
-import static htmlcompiler.tools.IO.newTempFileWithContent;
 
 public enum CssCompiler {;
 
@@ -30,18 +28,12 @@ public enum CssCompiler {;
     }
 
     public static CodeCompiler newLessCompiler() {
-        final LessCompiler lessCompiler = new LessCompiler();
         return new CodeCompiler() {
-            public String compileCode(String code, File parent) throws LessException, IOException {
-                final File tempFile = newTempFileWithContent("hc_in_", ".less", parent.getParentFile(), code);
-                try {
-                    return lessCompiler.compile(tempFile);
-                } finally {
-                    tempFile.delete();
-                }
+            public String compileCode(String code, File parent) {
+                return Less.compile(null, code, false);
             }
-            public String compileCode(File style) throws IOException, LessException {
-                return lessCompiler.compile(style);
+            public String compileCode(File style) throws IOException {
+                return Less.compile(null, IO.toString(style), false);
             }
         };
     }

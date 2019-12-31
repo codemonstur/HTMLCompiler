@@ -12,21 +12,24 @@ import static junit.framework.Assert.assertEquals;
 
 public class TestStyles {
 
-    public static final String html_output_style =
-        "";
+    private static final String html_output_less_external =
+        "<!DOCTYPE html><html><head><title>Test html</title><style>#header{color:#6c94be}</style></head><body></body></html>";
 
     @ParameterizedTest
     @MethodSource("util.Factory#provideCompilers")
     public void compileExternalLess(final HtmlCompiler compiler) throws IOException, InvalidInput {
         final String output = Parsing.compileFile(compiler, "src/test/resources/styles/less_external.html");
-        assertEquals("Invalid generated HTML", html_output_style, output);
+        assertEquals("Invalid generated HTML", html_output_less_external, output);
     }
+
+    private static final String html_output_less_inline =
+            "<!DOCTYPE html><html><head><title>Test html</title><style>#header{color:#6c94be}</style></head><body></body></html>";
 
     @ParameterizedTest
     @MethodSource("util.Factory#provideCompilers")
     public void compileInlineLess(final HtmlCompiler compiler) throws IOException, InvalidInput {
         final String output = Parsing.compileFile(compiler, "src/test/resources/styles/less_inline.html");
-        assertEquals("Invalid generated HTML", html_output_style, output);
+        assertEquals("Invalid generated HTML", html_output_less_inline, output);
     }
 
     private static final String html_output_sass_external =

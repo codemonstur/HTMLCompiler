@@ -3,7 +3,6 @@ package htmlcompiler.tags.jsoup;
 import htmlcompiler.error.InvalidInput;
 import htmlcompiler.error.UnrecognizedFileType;
 import org.jsoup.nodes.Element;
-import org.lesscss.LessException;
 
 import java.io.File;
 import java.io.IOException;
@@ -25,7 +24,7 @@ public interface TagVisitor {
         default void tail(File file, Element element, int depth) {}
     }
 
-    void head(File file, Element element, int depth) throws IOException, InvalidInput, NoSuchAlgorithmException, LessException, UnrecognizedFileType;
+    void head(File file, Element element, int depth) throws IOException, InvalidInput, NoSuchAlgorithmException, UnrecognizedFileType;
     void tail(File file, Element element, int depth) throws Exception;
 
 }

@@ -221,10 +221,17 @@
             <version>1.4</version>
         </dependency>
 
+<!--
         <dependency>
             <groupId>org.lesscss</groupId>
             <artifactId>lesscss</artifactId>
             <version>1.7.0.1.1</version>
+        </dependency>
+-->
+        <dependency>
+            <groupId>de.inetsoftware</groupId>
+            <artifactId>jlessc</artifactId>
+            <version>1.8</version>
         </dependency>
 
         <dependency>
