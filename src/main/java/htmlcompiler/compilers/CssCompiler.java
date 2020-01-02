@@ -23,7 +23,7 @@ public enum CssCompiler {;
     }
 
     public static CodeCompiler newStylusCompiler() {
-        return newExternalToolCompiler("stylus", ".stylus", true, ".css",
+        return newExternalToolCompiler("stylus", ".styl", true, ".css",
             (outputFile, inputFile) -> inputFile.getAbsolutePath() + " -o " + outputFile.getAbsolutePath());
     }
 

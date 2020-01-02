@@ -58,6 +58,7 @@ public enum StyleType {
         if (filename.endsWith(".scss")) return sass;
         if (filename.endsWith(".sass")) return sass;
         if (filename.endsWith(".stylus")) return stylus;
+        if (filename.endsWith(".styl")) return stylus;
         return defaultValue;
     }
 
