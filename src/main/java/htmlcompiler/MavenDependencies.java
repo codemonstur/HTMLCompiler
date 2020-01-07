@@ -1,7 +1,7 @@
 package htmlcompiler;
 
-import htmlcompiler.tools.LogSuppressingMojo;
 import htmlcompiler.tools.Logger;
+import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Mojo;
 
@@ -12,7 +12,7 @@ import static htmlcompiler.tools.App.buildMavenTask;
 import static htmlcompiler.tools.IO.findBinaryInPath;
 
 @Mojo( name = "dependencies" )
-public final class MavenDependencies extends LogSuppressingMojo {
+public final class MavenDependencies extends AbstractMojo {
 
     @Override
     public void execute() throws MojoFailureException {

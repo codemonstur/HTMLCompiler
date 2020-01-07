@@ -17,15 +17,18 @@ help:
 
 clean:
 	@echo "[$(NAME)] Cleaning"
-	@mvn clean
+	@mvn -Dorg.slf4j.simpleLogger.defaultLogLevel=warn clean
 
 build:
 	@echo "[$(NAME)] Building"
-	@mvn -DskipTests=true clean package
+	@mvn -Dorg.slf4j.simpleLogger.defaultLogLevel=warn -DskipTests=true clean package
 
 check-versions:
 	@mvn versions:display-dependency-updates
 	@mvn versions:display-plugin-updates
+
+list-dependencies:
+	@mvn dependency:tree
 
 release-notes:
 	@echo "[$(NAME)] Writing release notes to src/docs/releases/release-$(VERSION).txt"

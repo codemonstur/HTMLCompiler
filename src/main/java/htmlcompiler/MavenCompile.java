@@ -3,7 +3,7 @@ package htmlcompiler;
 import com.google.gson.Gson;
 import htmlcompiler.library.LibraryArchive;
 import htmlcompiler.model.CompilerType;
-import htmlcompiler.tools.LogSuppressingMojo;
+import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -11,9 +11,9 @@ import org.apache.maven.project.MavenProject;
 
 import java.time.LocalDateTime;
 
-import static htmlcompiler.checks.ReadCheckConfiguration.readChecksConfiguration;
 import static htmlcompiler.MavenProjectReader.toInputDirectory;
 import static htmlcompiler.MavenProjectReader.toOutputDirectory;
+import static htmlcompiler.checks.ReadCheckConfiguration.readChecksConfiguration;
 import static htmlcompiler.compilers.RenameFile.defaultRenamer;
 import static htmlcompiler.compilers.TemplateThenCompile.compileDirectories;
 import static htmlcompiler.compilers.TemplateThenCompile.newTemplateThenCompile;
@@ -25,7 +25,7 @@ import static java.lang.String.format;
 import static org.apache.maven.plugins.annotations.LifecyclePhase.GENERATE_RESOURCES;
 
 @Mojo( defaultPhase = GENERATE_RESOURCES, name = "compile" )
-public final class MavenCompile extends LogSuppressingMojo {
+public final class MavenCompile extends AbstractMojo {
 
     @Parameter(defaultValue = "${project}", readonly = true)
     public MavenProject project;

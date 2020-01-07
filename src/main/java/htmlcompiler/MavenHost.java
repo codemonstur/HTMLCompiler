@@ -7,8 +7,8 @@ import htmlcompiler.model.CompilerType;
 import htmlcompiler.model.Task;
 import htmlcompiler.services.LoopingSingleThread;
 import htmlcompiler.services.Service;
-import htmlcompiler.tools.LogSuppressingMojo;
 import htmlcompiler.tools.Logger;
+import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -24,9 +24,9 @@ import java.util.Set;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
-import static htmlcompiler.checks.ReadCheckConfiguration.readChecksConfiguration;
 import static htmlcompiler.MavenProjectReader.toInputDirectory;
 import static htmlcompiler.MavenProjectReader.toOutputDirectory;
+import static htmlcompiler.checks.ReadCheckConfiguration.readChecksConfiguration;
 import static htmlcompiler.compilers.RenameFile.defaultRenamer;
 import static htmlcompiler.compilers.TemplateThenCompile.newTemplateThenCompile;
 import static htmlcompiler.services.DirectoryWatcher.newDirectoryWatcher;
@@ -40,10 +40,11 @@ import static java.nio.file.StandardWatchEventKinds.ENTRY_CREATE;
 import static java.nio.file.StandardWatchEventKinds.ENTRY_DELETE;
 import static java.util.Collections.emptyList;
 import static java.util.Objects.requireNonNull;
-import static java.util.stream.Collectors.*;
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toSet;
 
 @Mojo( name = "host" )
-public final class MavenHost extends LogSuppressingMojo {
+public final class MavenHost extends AbstractMojo {
 
     @Parameter(defaultValue = "${project}", readonly = true)
     public MavenProject project;
