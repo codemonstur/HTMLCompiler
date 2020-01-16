@@ -13,6 +13,7 @@ public enum StyleType {
     css(newNopCompiler()),
     less(newLessCompiler()),
     sass(newSassCompiler()),
+    scss(newScssCompiler()),
     stylus(newStylusCompiler());
 
     private final CodeCompiler compiler;
@@ -46,7 +47,7 @@ public enum StyleType {
         if (contentType.equalsIgnoreCase("text/css")) return css;
         if (contentType.equalsIgnoreCase("text/less")) return less;
         if (contentType.equalsIgnoreCase("text/sass")) return sass;
-        if (contentType.equalsIgnoreCase("text/scss")) return sass;
+        if (contentType.equalsIgnoreCase("text/scss")) return scss;
         if (contentType.equalsIgnoreCase("text/stylus")) return stylus;
         return defaultValue;
     }
@@ -55,7 +56,7 @@ public enum StyleType {
         if (filename.endsWith(".min.css")) return minified_css;
         if (filename.endsWith(".css")) return css;
         if (filename.endsWith(".less")) return less;
-        if (filename.endsWith(".scss")) return sass;
+        if (filename.endsWith(".scss")) return scss;
         if (filename.endsWith(".sass")) return sass;
         if (filename.endsWith(".stylus")) return stylus;
         if (filename.endsWith(".styl")) return stylus;

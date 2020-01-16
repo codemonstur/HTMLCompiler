@@ -38,7 +38,59 @@ public enum CssCompiler {;
         };
     }
 
+    public static CodeCompiler newScssCompiler() {
+        final CodeCompiler tool = newToolScssCompiler();
+        final CodeCompiler lib = newInternalSassCompiler();
+        return new CodeCompiler() {
+            public String compileCode(String code, File parent) throws Exception {
+                try {
+                    return tool.compileCode(code, parent);
+                } catch (FileNotFoundException e) {
+                    return lib.compileCode(code, parent);
+                }
+            }
+            public String compileCode(File style) throws Exception {
+                try {
+                    return tool.compileCode(style);
+                } catch (FileNotFoundException e) {
+                    return lib.compileCode(style);
+                }
+            }
+        };
+    }
+
     public static CodeCompiler newSassCompiler() {
+        final CodeCompiler tool = newToolSassCompiler();
+        final CodeCompiler lib = newInternalSassCompiler();
+        return new CodeCompiler() {
+            public String compileCode(String code, File parent) throws Exception {
+                try {
+                    return tool.compileCode(code, parent);
+                } catch (FileNotFoundException e) {
+                    return lib.compileCode(code, parent);
+                }
+            }
+            public String compileCode(File style) throws Exception {
+                try {
+                    return tool.compileCode(style);
+                } catch (FileNotFoundException e) {
+                    return lib.compileCode(style);
+                }
+            }
+        };
+    }
+
+    public static CodeCompiler newToolScssCompiler() {
+        return newExternalToolCompiler("sass", ".scss", true, ".css",
+                (outputFile, inputFile) -> "--no-source-map " + inputFile.getAbsolutePath() + " " + outputFile.getAbsolutePath());
+    }
+
+    public static CodeCompiler newToolSassCompiler() {
+        return newExternalToolCompiler("sass", ".sass", true, ".css",
+            (outputFile, inputFile) -> "--no-source-map " + inputFile.getAbsolutePath() + " " + outputFile.getAbsolutePath());
+    }
+
+    public static CodeCompiler newInternalSassCompiler() {
         final Parser sassCompiler = new Parser();
         return new CodeCompiler() {
             public String compileCode(String code, File parent) throws Exception {

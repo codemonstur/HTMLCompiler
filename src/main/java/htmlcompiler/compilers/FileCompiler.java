@@ -15,8 +15,7 @@ import java.io.IOException;
 import java.util.Map;
 
 import static htmlcompiler.compilers.scripts.CodeCompiler.newNopCompiler;
-import static htmlcompiler.compilers.scripts.CssCompiler.newSassCompiler;
-import static htmlcompiler.compilers.scripts.CssCompiler.newStylusCompiler;
+import static htmlcompiler.compilers.scripts.CssCompiler.*;
 import static htmlcompiler.compilers.scripts.JsCompiler.*;
 import static java.util.Map.entry;
 
@@ -65,7 +64,7 @@ public interface FileCompiler {
             , entry(".html", newHtmlCompiler(html, new NopEngine()))
             , entry(".hct", newHtmlCompiler(html, new NopEngine()))
             , entry(".css", newScriptCompiler(CssCompiler::compressCssCode, newNopCompiler(), ".min.css"))
-            , entry(".scss", newScriptCompiler(CssCompiler::compressCssCode, newSassCompiler(), ".min.css"))
+            , entry(".scss", newScriptCompiler(CssCompiler::compressCssCode, newScssCompiler(), ".min.css"))
             , entry(".sass", newScriptCompiler(CssCompiler::compressCssCode, newSassCompiler(), ".min.css"))
             , entry(".stylus", newScriptCompiler(CssCompiler::compressCssCode, newStylusCompiler(), ".min.css"))
             , entry(".js", newScriptCompiler(JsCompiler::compressJavascriptCode, newNopCompiler(), ".min.js"))
