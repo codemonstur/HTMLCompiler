@@ -21,6 +21,7 @@ public final class MavenDependencies extends AbstractMojo {
             testBinary(log, "Dart compiler", "dart2js");
             testBinary(log, "JS++ compiler", "js++");
             testBinary(log, "Stylus compiler", "stylus");
+            testBinary(log, "Sass/Scss compiler", "sass");
         });
     }
 
