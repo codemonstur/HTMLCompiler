@@ -1,6 +1,6 @@
 package htmlcompiler.compilers.html;
 
-import htmlcompiler.library.LibraryArchive;
+import htmlcompiler.pojos.library.LibraryArchive;
 import htmlcompiler.tools.Logger;
 import net.sourceforge.htmlunit.cyberneko.HTMLConfiguration;
 import org.apache.xerces.parsers.DOMParser;

@@ -2,22 +2,22 @@ package htmlcompiler.tags.jsoup;
 
 import htmlcompiler.compilers.html.JsoupCompiler;
 import htmlcompiler.tags.jsoup.TagVisitor.TailVisitor;
-import htmlcompiler.error.InvalidInput;
-import htmlcompiler.model.MoveType;
-import htmlcompiler.model.ScriptBag;
-import htmlcompiler.model.ScriptType;
+import htmlcompiler.pojos.error.InvalidInput;
+import htmlcompiler.pojos.compile.MoveType;
+import htmlcompiler.pojos.compile.ScriptBag;
+import htmlcompiler.pojos.compile.ScriptType;
 import htmlcompiler.tools.Logger;
 import org.jsoup.nodes.Element;
 
 import java.io.File;
 import java.io.IOException;
 
-import static htmlcompiler.compilers.JsCompiler.compressJavascriptCode;
+import static htmlcompiler.compilers.scripts.JsCompiler.compressJavascriptCode;
 import static htmlcompiler.tags.jsoup.TagParsingJsoup.*;
-import static htmlcompiler.model.MoveType.storeCode;
-import static htmlcompiler.model.MoveType.toMoveType;
-import static htmlcompiler.model.ScriptType.detectScriptType;
-import static htmlcompiler.model.ScriptType.javascript;
+import static htmlcompiler.pojos.compile.MoveType.storeCode;
+import static htmlcompiler.pojos.compile.MoveType.toMoveType;
+import static htmlcompiler.pojos.compile.ScriptType.detectScriptType;
+import static htmlcompiler.pojos.compile.ScriptType.javascript;
 import static htmlcompiler.tools.IO.toLocation;
 
 public enum Script {;

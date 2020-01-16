@@ -1,7 +1,7 @@
 package htmlcompiler.tags.neko;
 
-import htmlcompiler.error.InvalidInput;
-import htmlcompiler.library.LibraryArchive;
+import htmlcompiler.pojos.error.InvalidInput;
+import htmlcompiler.pojos.library.LibraryArchive;
 
 import static htmlcompiler.tags.neko.TagParsingNeko.replaceTag;
 import static simplexml.utils.Functions.isNullOrEmpty;

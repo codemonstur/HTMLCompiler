@@ -4,8 +4,8 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
-import htmlcompiler.model.httpmock.Endpoint;
-import htmlcompiler.model.httpmock.Request;
+import htmlcompiler.pojos.httpmock.Endpoint;
+import htmlcompiler.pojos.httpmock.Request;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.project.MavenProject;
 
@@ -20,8 +20,8 @@ import java.util.Map;
 
 import static htmlcompiler.MavenProjectReader.toOutputDirectory;
 import static htmlcompiler.MavenProjectReader.toStaticDirectory;
-import static htmlcompiler.model.httpmock.Endpoint.toKey;
-import static htmlcompiler.model.httpmock.Request.toHttpHandler;
+import static htmlcompiler.pojos.httpmock.Endpoint.toKey;
+import static htmlcompiler.pojos.httpmock.Request.toHttpHandler;
 
 public enum Http {;
 

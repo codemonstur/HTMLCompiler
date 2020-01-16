@@ -1,7 +1,7 @@
 package htmlcompiler.tags.jsoup;
 
-import htmlcompiler.error.InvalidInput;
-import htmlcompiler.model.StyleType;
+import htmlcompiler.pojos.error.InvalidInput;
+import htmlcompiler.pojos.compile.StyleType;
 import htmlcompiler.tags.jsoup.TagVisitor.TailVisitor;
 import htmlcompiler.tools.IO;
 import htmlcompiler.tools.Logger;
@@ -12,10 +12,10 @@ import org.jsoup.nodes.Node;
 import java.io.File;
 import java.io.IOException;
 
-import static htmlcompiler.compilers.CssCompiler.compressCssCode;
-import static htmlcompiler.model.ImageType.toMimeType;
-import static htmlcompiler.model.StyleType.css;
-import static htmlcompiler.model.StyleType.detectStyleType;
+import static htmlcompiler.compilers.scripts.CssCompiler.compressCssCode;
+import static htmlcompiler.pojos.compile.ImageType.toMimeType;
+import static htmlcompiler.pojos.compile.StyleType.css;
+import static htmlcompiler.pojos.compile.StyleType.detectStyleType;
 import static htmlcompiler.tags.jsoup.TagParsingJsoup.*;
 import static htmlcompiler.tools.IO.toLocation;
 

@@ -7,7 +7,7 @@ import org.jsoup.nodes.Element;
 
 import java.io.File;
 
-import static htmlcompiler.model.ImageType.isBinaryImage;
+import static htmlcompiler.pojos.compile.ImageType.isBinaryImage;
 import static htmlcompiler.tags.jsoup.TagParsingJsoup.*;
 import static htmlcompiler.tags.jsoup.TagParsingJsoup.copyAttributes;
 import static htmlcompiler.tags.jsoup.TagParsingJsoup.makeAbsolutePath;

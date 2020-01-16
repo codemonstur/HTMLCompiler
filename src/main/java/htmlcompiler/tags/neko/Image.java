@@ -5,7 +5,7 @@ import org.w3c.dom.Element;
 
 import java.io.File;
 
-import static htmlcompiler.model.ImageType.isBinaryImage;
+import static htmlcompiler.pojos.compile.ImageType.isBinaryImage;
 import static htmlcompiler.tags.neko.TagParsingNeko.*;
 import static htmlcompiler.tools.IO.toLocation;
 

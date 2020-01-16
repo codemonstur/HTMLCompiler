@@ -10,7 +10,7 @@ import java.io.File;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 
-import static htmlcompiler.model.ImageType.toMimeType;
+import static htmlcompiler.pojos.compile.ImageType.toMimeType;
 import static htmlcompiler.tools.Coding.encodeBase64;
 import static htmlcompiler.tools.Coding.sha384;
 import static htmlcompiler.tools.HTTP.*;

@@ -1,6 +1,6 @@
 package htmlcompiler.tools;
 
-import htmlcompiler.error.InvalidInput;
+import htmlcompiler.pojos.error.InvalidInput;
 
 import java.io.*;
 import java.nio.charset.Charset;

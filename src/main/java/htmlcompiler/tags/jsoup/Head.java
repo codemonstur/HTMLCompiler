@@ -1,6 +1,6 @@
 package htmlcompiler.tags.jsoup;
 
-import htmlcompiler.model.ScriptBag;
+import htmlcompiler.pojos.compile.ScriptBag;
 import org.jsoup.nodes.Element;
 
 import java.io.File;

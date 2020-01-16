@@ -1,6 +1,6 @@
 package htmlcompiler.tags.neko;
 
-import htmlcompiler.model.ScriptBag;
+import htmlcompiler.pojos.compile.ScriptBag;
 import org.w3c.dom.Node;
 
 public enum Body {;

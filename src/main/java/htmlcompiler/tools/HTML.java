@@ -4,7 +4,6 @@ import java.util.Set;
 
 public enum HTML {;
 
-
     public static final Set<String> known_tags = Set.of("a", "abbr", "address", "area", "article", "aside",
         "audio", "b", "base", "bdi", "bdo", "blockquote", "body", "br", "button", "canvas", "caption",
         "cite", "code", "col", "colgroup", "data", "datalist", "dd", "del", "details", "dfn", "dialog",

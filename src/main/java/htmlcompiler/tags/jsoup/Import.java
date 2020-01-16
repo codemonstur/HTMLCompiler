@@ -1,7 +1,7 @@
 package htmlcompiler.tags.jsoup;
 
 import htmlcompiler.compilers.html.JsoupCompiler;
-import htmlcompiler.error.InvalidInput;
+import htmlcompiler.pojos.error.InvalidInput;
 import htmlcompiler.tags.jsoup.TagVisitor.TailVisitor;
 import htmlcompiler.tools.IO;
 import org.jsoup.nodes.Node;

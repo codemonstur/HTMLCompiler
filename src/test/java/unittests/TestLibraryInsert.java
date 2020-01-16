@@ -1,7 +1,7 @@
 package unittests;
 
 import htmlcompiler.compilers.html.HtmlCompiler;
-import htmlcompiler.error.InvalidInput;
+import htmlcompiler.pojos.error.InvalidInput;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import util.Parsing;

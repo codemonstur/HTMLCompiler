@@ -2,9 +2,9 @@ package htmlcompiler.compilers.html;
 
 import com.googlecode.htmlcompressor.compressor.HtmlCompressor;
 import htmlcompiler.checks.jsoup.JsoupElementChecks.JsoupElementCheck;
-import htmlcompiler.error.InvalidInput;
-import htmlcompiler.library.LibraryArchive;
-import htmlcompiler.model.ScriptBag;
+import htmlcompiler.pojos.error.InvalidInput;
+import htmlcompiler.pojos.library.LibraryArchive;
+import htmlcompiler.pojos.compile.ScriptBag;
 import htmlcompiler.tags.jsoup.TagVisitor;
 import htmlcompiler.tools.Logger;
 import org.jsoup.Jsoup;

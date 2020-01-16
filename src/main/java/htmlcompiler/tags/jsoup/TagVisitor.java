@@ -1,7 +1,7 @@
 package htmlcompiler.tags.jsoup;
 
-import htmlcompiler.error.InvalidInput;
-import htmlcompiler.error.UnrecognizedFileType;
+import htmlcompiler.pojos.error.InvalidInput;
+import htmlcompiler.pojos.error.UnrecognizedFileType;
 import org.jsoup.nodes.Element;
 
 import java.io.File;

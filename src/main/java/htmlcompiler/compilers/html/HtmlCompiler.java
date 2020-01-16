@@ -1,7 +1,7 @@
 package htmlcompiler.compilers.html;
 
 import com.googlecode.htmlcompressor.compressor.HtmlCompressor;
-import htmlcompiler.error.InvalidInput;
+import htmlcompiler.pojos.error.InvalidInput;
 
 import java.io.File;
 

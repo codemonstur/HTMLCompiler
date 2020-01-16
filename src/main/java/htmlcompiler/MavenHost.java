@@ -2,9 +2,9 @@ package htmlcompiler;
 
 import com.google.gson.Gson;
 import htmlcompiler.compilers.TemplateThenCompile;
-import htmlcompiler.library.LibraryArchive;
-import htmlcompiler.model.CompilerType;
-import htmlcompiler.model.Task;
+import htmlcompiler.pojos.compile.CompilerType;
+import htmlcompiler.pojos.compile.Task;
+import htmlcompiler.pojos.library.LibraryArchive;
 import htmlcompiler.services.LoopingSingleThread;
 import htmlcompiler.services.Service;
 import htmlcompiler.tools.Logger;
@@ -27,11 +27,9 @@ import java.util.concurrent.LinkedBlockingQueue;
 import static htmlcompiler.MavenProjectReader.toInputDirectory;
 import static htmlcompiler.MavenProjectReader.toOutputDirectory;
 import static htmlcompiler.checks.ReadCheckConfiguration.readChecksConfiguration;
-import static htmlcompiler.compilers.RenameFile.defaultRenamer;
 import static htmlcompiler.compilers.TemplateThenCompile.newTemplateThenCompile;
 import static htmlcompiler.services.DirectoryWatcher.newDirectoryWatcher;
 import static htmlcompiler.services.Http.newHttpServer;
-import static htmlcompiler.templates.TemplateEngine.newExtensionToEngineMap;
 import static htmlcompiler.tools.App.buildMavenTask;
 import static htmlcompiler.tools.IO.relativize;
 import static htmlcompiler.tools.Logger.YYYY_MM_DD_HH_MM_SS;
@@ -73,10 +71,9 @@ public final class MavenHost extends AbstractMojo {
 
             final var gson = new Gson();
             final var libs = new LibraryArchive(gson);
-            final var templates = newExtensionToEngineMap(project);
             final var checksSettings = readChecksConfiguration(validation, gson);
             final var html = type.newHtmlCompiler(log, libs, checksSettings);
-            final var ttc = newTemplateThenCompile(templates, defaultRenamer(inputDir, outputDir, replaceExtension), html);
+            final var ttc = newTemplateThenCompile(project, inputDir, outputDir, replaceExtension, html);
             final var queue = new LinkedBlockingQueue<Task>();
 
             final var server = newHttpServer(project, port, requestApiEnabled, requestApiSpecification);

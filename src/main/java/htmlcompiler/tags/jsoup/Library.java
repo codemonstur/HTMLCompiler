@@ -1,10 +1,10 @@
 package htmlcompiler.tags.jsoup;
 
-import htmlcompiler.library.Attribute;
-import htmlcompiler.library.LibraryArchive;
-import htmlcompiler.library.LibraryDescription;
+import htmlcompiler.pojos.library.Attribute;
+import htmlcompiler.pojos.library.LibraryArchive;
+import htmlcompiler.pojos.library.LibraryDescription;
 import htmlcompiler.tags.jsoup.TagVisitor.TailVisitor;
-import htmlcompiler.error.InvalidInput;
+import htmlcompiler.pojos.error.InvalidInput;
 import org.jsoup.nodes.Element;
 
 import static htmlcompiler.tags.jsoup.TagParsingJsoup.replaceWith;

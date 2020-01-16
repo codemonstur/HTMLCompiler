@@ -1,14 +1,14 @@
 package htmlcompiler.tags.neko;
 
-import htmlcompiler.model.StyleType;
+import htmlcompiler.pojos.compile.StyleType;
 import org.w3c.dom.Element;
 
 import java.io.File;
 import java.io.IOException;
 
-import static htmlcompiler.compilers.CssCompiler.compressCssCode;
-import static htmlcompiler.model.StyleType.css;
-import static htmlcompiler.model.StyleType.detectStyleType;
+import static htmlcompiler.compilers.scripts.CssCompiler.compressCssCode;
+import static htmlcompiler.pojos.compile.StyleType.css;
+import static htmlcompiler.pojos.compile.StyleType.detectStyleType;
 import static htmlcompiler.tags.neko.TagParsingNeko.*;
 import static htmlcompiler.tools.IO.toLocation;
 

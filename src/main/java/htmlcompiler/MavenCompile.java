@@ -1,8 +1,8 @@
 package htmlcompiler;
 
 import com.google.gson.Gson;
-import htmlcompiler.library.LibraryArchive;
-import htmlcompiler.model.CompilerType;
+import htmlcompiler.pojos.compile.CompilerType;
+import htmlcompiler.pojos.library.LibraryArchive;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Mojo;
@@ -14,10 +14,8 @@ import java.time.LocalDateTime;
 import static htmlcompiler.MavenProjectReader.toInputDirectory;
 import static htmlcompiler.MavenProjectReader.toOutputDirectory;
 import static htmlcompiler.checks.ReadCheckConfiguration.readChecksConfiguration;
-import static htmlcompiler.compilers.RenameFile.defaultRenamer;
 import static htmlcompiler.compilers.TemplateThenCompile.compileDirectories;
 import static htmlcompiler.compilers.TemplateThenCompile.newTemplateThenCompile;
-import static htmlcompiler.templates.TemplateEngine.newExtensionToEngineMap;
 import static htmlcompiler.tools.App.buildMavenTask;
 import static htmlcompiler.tools.IO.relativize;
 import static htmlcompiler.tools.Logger.YYYY_MM_DD_HH_MM_SS;
@@ -51,9 +49,8 @@ public final class MavenCompile extends AbstractMojo {
             final var gson = new Gson();
             final var libs = new LibraryArchive(gson);
             final var checksSettings = readChecksConfiguration(validation, gson);
-            final var templates = newExtensionToEngineMap(project);
             final var html = type.newHtmlCompiler(log, libs, checksSettings);
-            final var ttc = newTemplateThenCompile(templates, defaultRenamer(inputDir, outputDir, replaceExtension), html);
+            final var ttc = newTemplateThenCompile(project, inputDir, outputDir, replaceExtension, html);
 
             log.info(format
                 ( "[%s] Compiling supported template formats in %s to %s"

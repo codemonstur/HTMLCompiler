@@ -3,8 +3,8 @@ package util;
 import com.google.gson.Gson;
 import com.googlecode.htmlcompressor.compressor.HtmlCompressor;
 import htmlcompiler.compilers.html.HtmlCompiler;
-import htmlcompiler.library.LibraryArchive;
-import htmlcompiler.model.CompilerType;
+import htmlcompiler.pojos.library.LibraryArchive;
+import htmlcompiler.pojos.compile.CompilerType;
 import htmlcompiler.tools.Logger;
 
 import java.util.HashMap;

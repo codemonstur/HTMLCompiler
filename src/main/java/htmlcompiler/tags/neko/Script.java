@@ -1,10 +1,10 @@
 package htmlcompiler.tags.neko;
 
 import htmlcompiler.compilers.html.NekoCompiler;
-import htmlcompiler.error.InvalidInput;
-import htmlcompiler.model.MoveType;
-import htmlcompiler.model.ScriptBag;
-import htmlcompiler.model.ScriptType;
+import htmlcompiler.pojos.error.InvalidInput;
+import htmlcompiler.pojos.compile.MoveType;
+import htmlcompiler.pojos.compile.ScriptBag;
+import htmlcompiler.pojos.compile.ScriptType;
 import htmlcompiler.tools.Logger;
 import org.w3c.dom.Element;
 import simplexml.SimpleXml;
@@ -14,11 +14,11 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 
-import static htmlcompiler.compilers.JsCompiler.compressJavascriptCode;
-import static htmlcompiler.model.MoveType.storeCode;
-import static htmlcompiler.model.MoveType.toMoveType;
-import static htmlcompiler.model.ScriptType.detectScriptType;
-import static htmlcompiler.model.ScriptType.javascript;
+import static htmlcompiler.compilers.scripts.JsCompiler.compressJavascriptCode;
+import static htmlcompiler.pojos.compile.MoveType.storeCode;
+import static htmlcompiler.pojos.compile.MoveType.toMoveType;
+import static htmlcompiler.pojos.compile.ScriptType.detectScriptType;
+import static htmlcompiler.pojos.compile.ScriptType.javascript;
 import static htmlcompiler.tags.neko.TagParsingNeko.*;
 import static htmlcompiler.tools.IO.toLocation;
 import static java.nio.charset.StandardCharsets.UTF_8;

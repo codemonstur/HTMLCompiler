@@ -1,15 +1,15 @@
 package htmlcompiler.tags.jsoup;
 
-import htmlcompiler.model.StyleType;
+import htmlcompiler.pojos.compile.StyleType;
 import htmlcompiler.tags.jsoup.TagVisitor.TailVisitor;
 import org.jsoup.nodes.Element;
 
 import java.io.File;
 import java.io.IOException;
 
-import static htmlcompiler.compilers.CssCompiler.compressCssCode;
-import static htmlcompiler.model.StyleType.css;
-import static htmlcompiler.model.StyleType.detectStyleType;
+import static htmlcompiler.compilers.scripts.CssCompiler.compressCssCode;
+import static htmlcompiler.pojos.compile.StyleType.css;
+import static htmlcompiler.pojos.compile.StyleType.detectStyleType;
 import static htmlcompiler.tags.jsoup.TagParsingJsoup.*;
 import static htmlcompiler.tools.IO.toLocation;
 

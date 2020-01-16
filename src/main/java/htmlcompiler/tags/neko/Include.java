@@ -1,7 +1,7 @@
 package htmlcompiler.tags.neko;
 
 import htmlcompiler.compilers.html.NekoCompiler;
-import htmlcompiler.error.InvalidInput;
+import htmlcompiler.pojos.error.InvalidInput;
 import org.w3c.dom.Element;
 
 import java.io.File;
