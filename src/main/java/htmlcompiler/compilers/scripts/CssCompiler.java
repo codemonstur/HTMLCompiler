@@ -82,7 +82,7 @@ public enum CssCompiler {;
 
     public static CodeCompiler newToolScssCompiler() {
         return newExternalToolCompiler("sass", ".scss", true, ".css",
-                (outputFile, inputFile) -> "--no-source-map " + inputFile.getAbsolutePath() + " " + outputFile.getAbsolutePath());
+            (outputFile, inputFile) -> "--no-source-map " + inputFile.getAbsolutePath() + " " + outputFile.getAbsolutePath());
     }
 
     public static CodeCompiler newToolSassCompiler() {

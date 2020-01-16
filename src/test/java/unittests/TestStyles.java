@@ -51,6 +51,12 @@ public class TestStyles {
         final String output = Parsing.compileFile(compiler, "src/test/resources/styles/sass_inline.html");
         assertEquals("Invalid generated HTML", html_output_sass_inline, output);
     }
+    @ParameterizedTest
+    @MethodSource("util.Factory#provideCompilers")
+    public void compileInlineScss(final HtmlCompiler compiler) throws IOException, InvalidInput {
+        final String output = Parsing.compileFile(compiler, "src/test/resources/styles/scss_inline.html");
+        assertEquals("Invalid generated HTML", html_output_sass_inline, output);
+    }
 
     private static final String html_output_stylus_external =
         "<!DOCTYPE html><html><head><title>Test html</title><style>body{font:14px/1.4 Helvetica,Arial,sans-serif}" +
