@@ -1,0 +1,7 @@
+3.1.0
+
+Added sass to dependencies task
+Added sass external tool, split scss and sass code
+Added compilation of scripts and styles
+Updated to latest version of Jade4J
+Removed log4j, removed info logging from build
