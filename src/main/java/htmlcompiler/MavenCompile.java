@@ -17,7 +17,6 @@ import static htmlcompiler.checks.ReadCheckConfiguration.readChecksConfiguration
 import static htmlcompiler.compilers.TemplateThenCompile.compileDirectories;
 import static htmlcompiler.compilers.TemplateThenCompile.newTemplateThenCompile;
 import static htmlcompiler.tools.App.buildMavenTask;
-import static htmlcompiler.tools.IO.relativize;
 import static htmlcompiler.tools.Logger.YYYY_MM_DD_HH_MM_SS;
 import static java.lang.String.format;
 import static org.apache.maven.plugins.annotations.LifecyclePhase.GENERATE_RESOURCES;
@@ -55,8 +54,8 @@ public final class MavenCompile extends AbstractMojo {
             log.info(format
                 ( "[%s] Compiling supported template formats in %s to %s"
                 , LocalDateTime.now().format(YYYY_MM_DD_HH_MM_SS)
-                , relativize(project.getBasedir(), inputDir)
-                , relativize(project.getBasedir(), outputDir)
+                , project.getBasedir().toPath().relativize(inputDir)
+                , project.getBasedir().toPath().relativize(outputDir)
                 ));
 
             compileDirectories(inputDir, ttc, recursive);

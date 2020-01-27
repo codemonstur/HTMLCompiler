@@ -4,9 +4,9 @@ import htmlcompiler.pojos.error.InvalidTemplate;
 import org.apache.maven.project.MavenProject;
 import org.thymeleaf.context.IContext;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -37,8 +37,8 @@ public class Thymeleaf implements HtmlTemplateEngine {
     }
 
     @Override
-    public String compile(File file) throws IOException, InvalidTemplate {
-        engine.process(Files.readString(file.toPath()), context);
+    public String compile(Path file) throws IOException, InvalidTemplate {
+        engine.process(Files.readString(file), context);
         return null;
     }
 

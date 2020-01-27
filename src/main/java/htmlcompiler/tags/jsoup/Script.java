@@ -1,23 +1,23 @@
 package htmlcompiler.tags.jsoup;
 
 import htmlcompiler.compilers.html.JsoupCompiler;
-import htmlcompiler.tags.jsoup.TagVisitor.TailVisitor;
-import htmlcompiler.pojos.error.InvalidInput;
 import htmlcompiler.pojos.compile.MoveType;
 import htmlcompiler.pojos.compile.ScriptBag;
 import htmlcompiler.pojos.compile.ScriptType;
+import htmlcompiler.pojos.error.InvalidInput;
+import htmlcompiler.tags.jsoup.TagVisitor.TailVisitor;
 import htmlcompiler.tools.Logger;
 import org.jsoup.nodes.Element;
 
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 
 import static htmlcompiler.compilers.scripts.JsCompiler.compressJavascriptCode;
-import static htmlcompiler.tags.jsoup.TagParsingJsoup.*;
 import static htmlcompiler.pojos.compile.MoveType.storeCode;
 import static htmlcompiler.pojos.compile.MoveType.toMoveType;
 import static htmlcompiler.pojos.compile.ScriptType.detectScriptType;
 import static htmlcompiler.pojos.compile.ScriptType.javascript;
+import static htmlcompiler.tags.jsoup.TagParsingJsoup.*;
 import static htmlcompiler.tools.IO.toLocation;
 
 public enum Script {;
@@ -66,7 +66,7 @@ public enum Script {;
 
             if (node.hasAttr("inline")) {
                 final ScriptType type = detectScriptType(node, javascript);
-                final File location = toLocation(file, node.attr("src"), "script tag in %s has an invalid src location '%s'");
+                final Path location = toLocation(file, node.attr("src"), "script tag in %s has an invalid src location '%s'");
                 setData(node, compressIfRequested(node, type.compile(location)));
                 removeAttributes(node, "inline", "compress", "src", "type");
 
@@ -88,10 +88,10 @@ public enum Script {;
         };
     }
 
-    private static String compileScriptTag(final Element element, final ScriptType scriptType, final File parent) throws Exception {
+    private static String compileScriptTag(final Element element, final ScriptType scriptType, final Path parent) throws Exception {
         if (!isScriptEmpty(element)) return scriptType.compile(element.data(), parent);
 
-        final File location = toLocation(parent, element.attr("src"), "script tag in %s has an invalid src location '%s'");
+        final Path location = toLocation(parent, element.attr("src"), "script tag in %s has an invalid src location '%s'");
         return scriptType.compile(location);
     }
 

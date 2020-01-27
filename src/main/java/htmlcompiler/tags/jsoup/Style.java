@@ -4,8 +4,8 @@ import htmlcompiler.pojos.compile.StyleType;
 import htmlcompiler.tags.jsoup.TagVisitor.TailVisitor;
 import org.jsoup.nodes.Element;
 
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 
 import static htmlcompiler.compilers.scripts.CssCompiler.compressCssCode;
 import static htmlcompiler.pojos.compile.StyleType.css;
@@ -18,7 +18,7 @@ public enum Style {;
     public static TagVisitor newStyleVisitor() {
         return (TailVisitor) (file, element, depth) -> {
             if (element.hasAttr("inline")) {
-                final File location = toLocation(file, element.attr("src"), "style tag in %s has an invalid src location '%s'");
+                final Path location = toLocation(file, element.attr("src"), "style tag in %s has an invalid src location '%s'");
 
                 final StyleType type = detectStyleType(element, css);
                 setData(element, compressIfRequested(element, type.compile(location)));

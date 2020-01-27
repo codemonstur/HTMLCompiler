@@ -3,7 +3,7 @@ package htmlcompiler.pojos.compile;
 import htmlcompiler.compilers.scripts.CodeCompiler;
 import org.w3c.dom.Element;
 
-import java.io.File;
+import java.nio.file.Path;
 
 import static htmlcompiler.compilers.scripts.CodeCompiler.newNopCompiler;
 import static htmlcompiler.compilers.scripts.JsCompiler.*;
@@ -19,10 +19,10 @@ public enum ScriptType {
     ScriptType(final CodeCompiler compiler) {
         this.compiler = compiler;
     }
-    public String compile(final String jsCode, final File parent) throws Exception {
+    public String compile(final String jsCode, final Path parent) throws Exception {
         return compiler.compileCode(jsCode, parent);
     }
-    public String compile(final File location) throws Exception {
+    public String compile(final Path location) throws Exception {
         return compiler.compileCode(location);
     }
 

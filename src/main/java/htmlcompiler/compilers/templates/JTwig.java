@@ -5,8 +5,8 @@ import org.apache.maven.project.MavenProject;
 import org.jtwig.JtwigModel;
 import org.jtwig.JtwigTemplate;
 
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -19,8 +19,8 @@ public final class JTwig implements HtmlTemplateEngine {
     }
 
     @Override
-    public String compile(File file) throws IOException, InvalidTemplate {
-        return JtwigTemplate.fileTemplate(file).render(model);
+    public String compile(Path file) throws IOException, InvalidTemplate {
+        return JtwigTemplate.fileTemplate(file.toFile()).render(model);
     }
 
     private static Map<String, Object> applyMavenProjectContext(final Map<String, Object> context, final MavenProject project) {

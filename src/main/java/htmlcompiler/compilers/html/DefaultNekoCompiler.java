@@ -1,9 +1,9 @@
 package htmlcompiler.compilers.html;
 
 import com.googlecode.htmlcompressor.compressor.HtmlCompressor;
+import htmlcompiler.pojos.compile.ScriptBag;
 import htmlcompiler.pojos.error.InvalidInput;
 import htmlcompiler.pojos.library.LibraryArchive;
-import htmlcompiler.pojos.compile.ScriptBag;
 import htmlcompiler.tags.neko.TagProcessor;
 import htmlcompiler.tools.Logger;
 import org.apache.xerces.parsers.DOMParser;
@@ -20,10 +20,10 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -72,7 +72,7 @@ public abstract class DefaultNekoCompiler implements NekoCompiler {
         return processors;
     }
 
-    public String doctypeCompressCompile(final File file, final String content) throws InvalidInput {
+    public String doctypeCompressCompile(final Path file, final String content) throws InvalidInput {
         return "<!DOCTYPE html>"+compressHtmlCode(compileHtmlCode(file, content));
     }
 
@@ -80,7 +80,7 @@ public abstract class DefaultNekoCompiler implements NekoCompiler {
         return compressor.compress(content);
     }
 
-    public String compileHtmlCode(final File file, final String content) throws InvalidInput {
+    public String compileHtmlCode(final Path file, final String content) throws InvalidInput {
         if (content == null || content.trim().isEmpty()) return "";
         try {
             return toHtml(processHtml(file, htmlToDocument(content)));
@@ -89,14 +89,14 @@ public abstract class DefaultNekoCompiler implements NekoCompiler {
         }
     }
 
-    public Document processHtml(final File file, final Document document) throws Exception {
+    public Document processHtml(final Path file, final Document document) throws Exception {
         if (document != null && document.getDocumentElement() != null)
             processElement(file, document, document.getDocumentElement());
 
         return document;
     }
 
-    private void processElement(final File file, final Document document, final Element node) throws Exception {
+    private void processElement(final Path file, final Document document, final Element node) throws Exception {
         final NodeList nodeList = node.getChildNodes();
         for (int i = 0; i < nodeList.getLength(); i++) {
             final Node currentNode = nodeList.item(i);

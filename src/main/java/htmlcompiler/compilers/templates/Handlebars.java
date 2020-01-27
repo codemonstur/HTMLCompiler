@@ -4,8 +4,8 @@ import com.github.jknack.handlebars.Template;
 import htmlcompiler.pojos.error.InvalidTemplate;
 import org.apache.maven.project.MavenProject;
 
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -21,8 +21,8 @@ public final class Handlebars implements HtmlTemplateEngine {
     }
 
     @Override
-    public String compile(File file) throws IOException, InvalidTemplate {
-        final Template template = handlebars.compile(file.getAbsolutePath());
+    public String compile(Path file) throws IOException, InvalidTemplate {
+        final Template template = handlebars.compile(file.toAbsolutePath().toString());
         return template.apply(context);
     }
 

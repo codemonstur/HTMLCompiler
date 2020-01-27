@@ -5,6 +5,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
 import java.io.File;
+import java.nio.file.Path;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
 
@@ -14,15 +15,15 @@ public enum JsoupDocumentChecks {;
         void head(Logger log, File file, Document document);
     }
 
-    public static void missingPrintingStylesheet(final Logger log, final File file, final Document document) {
+    public static void missingPrintingStylesheet(final Logger log, final Path file, final Document document) {
         for (final var link : document.select("link")) {
             if ("stylesheet".equals(link.attr("rel")) && "print".equals(link.attr("media")))
                 return;
         }
-        log.warn("File " + file.getPath() + " does not have a stylesheet for print media");
+        log.warn("File " + file + " does not have a stylesheet for print media");
     }
 
-    public static void hasSeoMetaTags(final Logger log, final File file, final Document document) {
+    public static void hasSeoMetaTags(final Logger log, final Path file, final Document document) {
 
         boolean hasDescription = false;
         boolean hasRobots = false;
@@ -64,31 +65,31 @@ public enum JsoupDocumentChecks {;
         }
 
         if (!hasDescription)
-            log.warn("File " + file.getPath() + " doesn't have a description meta tag");
+            log.warn("File " + file + " doesn't have a description meta tag");
         if (!hasRobots)
-            log.warn("File " + file.getPath() + " doesn't have a robots meta tag. Consider; index, follow, noindex, nofollow, noimageindex, noarchive, nosnippet, notranslate");
+            log.warn("File " + file + " doesn't have a robots meta tag. Consider; index, follow, noindex, nofollow, noimageindex, noarchive, nosnippet, notranslate");
         if (!hasOpenGraphDescription)
-            log.warn("File " + file.getPath() + " doesn't have an og:description meta tag");
+            log.warn("File " + file + " doesn't have an og:description meta tag");
         if (!hasOpenGraphImage)
-            log.warn("File " + file.getPath() + " doesn't have an og:image meta tag");
+            log.warn("File " + file + " doesn't have an og:image meta tag");
         if (!hasOpenGraphTitle)
-            log.warn("File " + file.getPath() + " doesn't have an og:title meta tag");
+            log.warn("File " + file + " doesn't have an og:title meta tag");
         if (!hasOpenGraphType)
-            log.warn("File " + file.getPath() + " doesn't have an og:type meta tag");
+            log.warn("File " + file + " doesn't have an og:type meta tag");
         if (!hasOpenGraphUrl)
-            log.warn("File " + file.getPath() + " doesn't have an og:url meta tag");
+            log.warn("File " + file + " doesn't have an og:url meta tag");
 
     }
 
-    public static void hasViewportMetaTag(final Logger log, final File file, final Document document) {
+    public static void hasViewportMetaTag(final Logger log, final Path file, final Document document) {
         final Element element = document.selectFirst("meta[name=viewport]");
         if (element == null || isNullOrEmpty(element.attr("content")))
-            log.warn("File " + file.getPath() + " doesn't have a viewport meta tag");
+            log.warn("File " + file + " doesn't have a viewport meta tag");
     }
 
-    public static void hasTitleTag(final Logger log, final File file, final Document document) {
+    public static void hasTitleTag(final Logger log, final Path file, final Document document) {
         if (document.selectFirst("title") == null)
-            log.warn("File " + file.getPath() + " doesn't have a title tag");
+            log.warn("File " + file + " doesn't have a title tag");
     }
 
 }

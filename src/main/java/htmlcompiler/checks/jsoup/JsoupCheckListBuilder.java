@@ -23,7 +23,7 @@ public final class JsoupCheckListBuilder {
         this.list = new ArrayList<>();
         this.conf = conf;
     }
-    public JsoupCheckListBuilder addConfiguration(Map<String, Boolean> conf) {
+    public JsoupCheckListBuilder addConfiguration(final Map<String, Boolean> conf) {
         this.conf.putAll(conf);
         return this;
     }
