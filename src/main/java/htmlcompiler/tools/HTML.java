@@ -21,7 +21,7 @@ public enum HTML {;
         "action", "align", "allow", "alt", "async", "autocapitalize", "autocomplete", "autofocus",
         "autoplay", "background", "bgcolor", "buffered", "challenge", "charset", "checked", "cite",
         "class", "code", "codebase", "color", "cols", "colspan", "content", "contenteditable", "contextmenu",
-        "controls", "coords", "crossorigin", "csp", "data", "datetime", "decoding", "default", "defer",
+        "controls", "coords", "crossorigin", "csp", "data", "datetime", "decoding", "default", "defer", "d",
         "dir", "dirname", "disabled", "download", "draggable", "dropzone", "enctype", "enterkeyhint",
         "for", "form", "formaction", "formenctype", "formmethod", "formnovalidate", "formtarget", "headers",
         "height", "hidden", "high", "href", "hreflang", "http-equiv", "icon", "id", "importance",

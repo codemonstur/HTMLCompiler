@@ -8,6 +8,7 @@ import java.util.Map;
 
 public enum CompilerType {
 
+    nop(NopCompiler::new),
     jsoup(JsoupCompiler::new),
     codelibs(CodelibsCompiler::new),
     htmlunit(HtmlUnitCompiler::new),
