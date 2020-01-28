@@ -5,7 +5,7 @@ import java.util.Set;
 public enum HTML {;
 
     public static final Set<String> known_tags = Set.of("a", "abbr", "address", "area", "article", "aside",
-        "audio", "b", "base", "bdi", "bdo", "blockquote", "body", "br", "button", "canvas", "caption",
+        "audio", "b", "base", "bdi", "bdo", "blockquote", "body", "br", "button", "canvas", "caption", "svg",
         "cite", "code", "col", "colgroup", "data", "datalist", "dd", "del", "details", "dfn", "dialog",
         "div", "dl", "dt", "em", "embed", "fieldset", "figure", "footer", "form", "h1", "h2", "h3", "h4",
         "h5", "h6", "head", "header", "hgroup", "hr", "html", "i", "iframe", "img", "input", "ins", "kbd",
@@ -13,7 +13,8 @@ public enum HTML {;
         "nav", "noscript", "object", "ol", "optgroup", "option", "output", "p", "param", "pre", "progress",
         "q", "rb", "rp", "rt", "rtc", "ruby", "s", "samp", "script", "section", "select", "small", "source",
         "span", "strong", "style", "sub", "summary", "sup", "table", "tbody", "td", "template", "textarea",
-        "tfoot", "th", "thead", "time", "title", "tr", "track", "u", "ul", "var", "video", "wbr", "#root");
+        "tfoot", "th", "thead", "time", "title", "tr", "track", "u", "ul", "var", "video", "wbr", "#root",
+        "path");
 
     // https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes
     public static final Set<String> known_attributes = Set.of("accept", "accept-charset", "accesskey",
@@ -34,6 +35,7 @@ public enum HTML {;
         "width", "wrap", "onafterprint", "onbeforeprint", "onbeforeunload", "onerror", "onhashchange",
         "onload", "onmessage", "onoffline", "ononline", "onpagehide", "onpageshow", "onpopstate",
         "onresize", "onstorage", "onunload", "role", "aria-valuenow", "aria-valuemin", "aria-valuemax",
-        "aria-haspopup", "aria-expanded", "aria-hidden", "aria-controls", "aria-label");
+        "aria-haspopup", "aria-expanded", "aria-hidden", "aria-controls", "aria-label", "xmlns",
+        "viewbox", "fill", "fill-rule");
 
 }
