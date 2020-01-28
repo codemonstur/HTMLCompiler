@@ -60,7 +60,11 @@ public enum Script {;
             }
 
             if (isHtml(node) && !isScriptEmpty(node)) {
-                setData(node, html.compileHtmlFragment(file, node.text()).children().html());
+                final String compiled = html.compileHtmlFragment(file, node.data()).children().html();
+                final String result = node.hasAttr("compress")
+                        ? html.compressHtmlCode(compiled) : compiled;
+                removeAttributes(node, "inline", "compress");
+                setData(node, result);
                 return;
             }
 

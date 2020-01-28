@@ -11,7 +11,6 @@ import simplexml.SimpleXml;
 import simplexml.utils.Interfaces.CheckedIterator;
 
 import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 
@@ -73,7 +72,11 @@ public enum Script {;
                 while (it.hasNext()) {
                     builder.append(html.compileHtmlCode(file, it.next()));
                 }
-                element.setTextContent(builder.toString());
+                final String result = element.hasAttribute("compress")
+                    ? html.compressHtmlCode(builder.toString()) : builder.toString();
+
+                element.setTextContent(result);
+                removeAttributes(element, "inline", "compress");
                 return false;
             }
 
