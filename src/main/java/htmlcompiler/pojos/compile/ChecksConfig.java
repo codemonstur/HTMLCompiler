@@ -8,6 +8,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -19,6 +20,12 @@ public final class ChecksConfig {
     public final Set<String> ignoreTags;
     public final Set<String> ignoreAttributes;
     public final Map<String, Boolean> checks;
+
+    private ChecksConfig() {
+        this.ignoreTags = new HashSet<>();
+        this.ignoreAttributes = new HashSet<>();
+        this.checks = new HashMap<>();
+    }
 
     public ChecksConfig(final Set<String> ignoreTags, final Set<String> ignoreAttributes, final Map<String, Boolean> checks) {
         this.ignoreTags = ignoreTags;

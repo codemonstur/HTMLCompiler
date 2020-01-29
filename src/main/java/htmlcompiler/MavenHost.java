@@ -34,6 +34,7 @@ import static htmlcompiler.services.Http.newHttpServer;
 import static htmlcompiler.tools.App.buildMavenTask;
 import static htmlcompiler.tools.Logger.YYYY_MM_DD_HH_MM_SS;
 import static java.lang.String.format;
+import static java.nio.file.Files.isRegularFile;
 import static java.nio.file.StandardWatchEventKinds.ENTRY_CREATE;
 import static java.nio.file.StandardWatchEventKinds.ENTRY_DELETE;
 import static java.util.Collections.emptyList;
@@ -103,8 +104,10 @@ public final class MavenHost extends AbstractMojo {
             , final TemplateThenCompile ttc, final Set<Path> rootPages) {
         return new LoopingSingleThread(() -> {
             final Task take = queue.take();
-            if (take.type == ENTRY_DELETE && take.path.endsWith("/.")) return;
-            if (take.type == ENTRY_CREATE && take.path.toFile().isDirectory()) return;
+            if (take.path == null) return;
+            if (!isRegularFile(take.path)) return;
+            if (take.type == ENTRY_DELETE) return;
+            if (take.type == ENTRY_CREATE) return;
 
             try {
                 final boolean isKnownTemplate = rootPages.contains(take.path.normalize().toAbsolutePath());

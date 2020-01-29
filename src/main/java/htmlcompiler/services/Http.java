@@ -21,8 +21,7 @@ import static htmlcompiler.MavenProjectReader.toOutputDirectory;
 import static htmlcompiler.MavenProjectReader.toStaticDirectory;
 import static htmlcompiler.pojos.httpmock.Endpoint.toKey;
 import static htmlcompiler.pojos.httpmock.Request.toHttpHandler;
-import static java.nio.file.Files.isReadable;
-import static java.nio.file.Files.isRegularFile;
+import static java.nio.file.Files.*;
 
 public enum Http {;
 
@@ -63,7 +62,7 @@ public enum Http {;
                     final Path file = toFile(dir, exchange.getRequestURI().getPath(), null);
                     if (file == null) continue;
 
-                    exchange.getResponseHeaders().add("Content-Type", Files.probeContentType(file));
+                    exchange.getResponseHeaders().add("Content-Type", addCharset(probeContentType(file)));
                     final long length = Files.size(file);
                     if (length > 0) {
                         exchange.sendResponseHeaders(200, length);
@@ -79,6 +78,12 @@ public enum Http {;
             exchange.sendResponseHeaders(404, -1);
             exchange.close();
         };
+    }
+
+    private static String addCharset(final String contentType) {
+        if ("text/html".equals(contentType)) return "text/html; charset=UTF-8";
+        if ("text/plain".equals(contentType)) return "text/plain; charset=UTF-8";
+        return contentType;
     }
 
     private static Path toFile(final Path dir, final String requestPath, final Path defaultValue) {
