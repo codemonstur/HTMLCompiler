@@ -2,6 +2,7 @@ package htmlcompiler.compilers.html;
 
 import com.googlecode.htmlcompressor.compressor.HtmlCompressor;
 import htmlcompiler.checks.jsoup.JsoupElementChecks.JsoupElementCheck;
+import htmlcompiler.pojos.compile.ChecksConfig;
 import htmlcompiler.pojos.compile.ScriptBag;
 import htmlcompiler.pojos.error.InvalidInput;
 import htmlcompiler.pojos.library.LibraryArchive;
@@ -39,15 +40,16 @@ public final class JsoupCompiler implements HtmlCompiler {
     private final HtmlCompressor compressor;
     private final Map<String, TagVisitor> processors;
     private final List<JsoupElementCheck> checkers;
+    private final ChecksConfig checksConfig;
 
-    public JsoupCompiler(final Logger log, final LibraryArchive archive, final Map<String, Boolean> checksConfiguration) {
+    public JsoupCompiler(final Logger log, final LibraryArchive archive, final ChecksConfig checksConfiguration) {
         this.log = log;
         this.compressor = newDefaultHtmlCompressor();
         this.processors = newDefaultTagProcessors(log, this, archive);
-        this.checkers = newJsoupCheckList()
-            .addConfiguration(checksConfiguration)
+        this.checkers = newJsoupCheckList(checksConfiguration)
             .addAllEnabled()
             .build();
+        this.checksConfig = checksConfiguration;
     }
 
     private static Map<String, TagVisitor> newDefaultTagProcessors(final Logger log, final JsoupCompiler html, final LibraryArchive archive) {
@@ -111,7 +113,7 @@ public final class JsoupCompiler implements HtmlCompiler {
             public void head(Node node, int depth) {
                 if (node instanceof Element) {
                     final Element elem = (Element) node;
-                    for (final var checker : checkers) checker.checkElement(log, file, elem);
+                    for (final var checker : checkers) checker.checkElement(log, checksConfig, file, elem);
                 }
             }
             public void tail(Node node, int depth) {}

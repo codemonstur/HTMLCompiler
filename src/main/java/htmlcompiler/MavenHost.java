@@ -27,8 +27,8 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import static htmlcompiler.MavenProjectReader.toInputDirectory;
 import static htmlcompiler.MavenProjectReader.toOutputDirectory;
-import static htmlcompiler.checks.ReadCheckConfiguration.readChecksConfiguration;
 import static htmlcompiler.compilers.TemplateThenCompile.newTemplateThenCompile;
+import static htmlcompiler.pojos.compile.ChecksConfig.readChecksConfiguration;
 import static htmlcompiler.services.DirectoryWatcher.newDirectoryWatcher;
 import static htmlcompiler.services.Http.newHttpServer;
 import static htmlcompiler.tools.App.buildMavenTask;

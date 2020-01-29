@@ -3,7 +3,6 @@ package htmlcompiler;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.project.MavenProject;
 
-import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -19,7 +18,7 @@ public enum MavenProjectReader {;
         return inputDir;
     }
 
-    public static Path toOutputDirectory(final MavenProject project) throws MojoFailureException, IOException {
+    public static Path toOutputDirectory(final MavenProject project) throws MojoFailureException {
         final Path outputDir = Paths.get(project.getBuild().getOutputDirectory()).resolve("webbin");
         outputDir.toFile().mkdirs();
         if (!exists(outputDir)) throw new MojoFailureException("Output directory must exist: " + outputDir);

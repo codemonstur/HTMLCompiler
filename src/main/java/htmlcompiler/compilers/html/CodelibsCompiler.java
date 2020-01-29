@@ -1,5 +1,6 @@
 package htmlcompiler.compilers.html;
 
+import htmlcompiler.pojos.compile.ChecksConfig;
 import htmlcompiler.pojos.library.LibraryArchive;
 import htmlcompiler.tools.Logger;
 import org.apache.xerces.parsers.DOMParser;
@@ -7,11 +8,9 @@ import org.codelibs.nekohtml.HTMLConfiguration;
 import org.xml.sax.SAXNotRecognizedException;
 import org.xml.sax.SAXNotSupportedException;
 
-import java.util.Map;
-
 public final class CodelibsCompiler extends DefaultNekoCompiler {
 
-    public CodelibsCompiler(final Logger log, final LibraryArchive archive, final Map<String, Boolean> checksConfiguration) {
+    public CodelibsCompiler(final Logger log, final LibraryArchive archive, final ChecksConfig checksConfiguration) {
         super(log, archive, newCodelibsParser());
     }
 
