@@ -1,0 +1,56 @@
+version: 3.2.0
+packaging: jar
+dependencies:
+  - repository: org.jsoup:jsoup:1.12.1
+  - repository: org.codelibs:nekohtml:2.1.0
+  - repository: net.sourceforge.htmlunit:neko-htmlunit:2.37.0
+  - repository: net.sourceforge.nekohtml:nekohtml:1.9.22
+  # Necessary to avoid a META tag from being added to the HTML output
+  # https://stackoverflow.com/questions/1409091/how-do-i-prevent-the-java-xml-transformer-using-html-method-from-adding-meta
+  - repository: xalan:xalan:2.7.2
+  - repository: com.google.code.gson:gson:2.8.6
+  - repository: commons-io:commons-io:2.6
+  - repository: com.yahoo.platform.yui:yuicompressor:2.4.8
+  - repository: com.googlecode.htmlcompressor:htmlcompressor:1.5.2
+  - repository: com.squareup.okhttp3:okhttp:4.2.2
+  - repository: commons-cli:commons-cli:1.4
+  - repository: de.inetsoftware:jlessc:1.8
+  - repository: com.vaadin:vaadin-sass-compiler:0.9.13
+  - repository: io.pebbletemplates:pebble:3.1.2
+  - repository: de.neuland-bfi:jade4j:1.3.0
+  - repository: com.vladsch.flexmark:flexmark-all:0.50.40
+  - repository: com.github.jknack:handlebars:4.1.2
+  - repository: org.jtwig:jtwig-core:5.87.0.RELEASE
+  - repository: com.hubspot.jinjava:jinjava:2.5.2
+  - repository: org.trimou:trimou-core:2.5.0.Final
+  - repository: org.thymeleaf:thymeleaf:3.0.11.RELEASE
+  # Other options for template engines:
+  # https://github.com/playframework/twirl
+  # http://www.jproggy.org/snippetory/
+  # https://mixer2.org/
+  # https://github.com/tiagobento/watertemplate-engine
+  # https://github.com/subchen/jetbrick-template-2x
+  # http://rythmengine.org/
+  # https://www.jamon.org/index.html
+  # https://www.stringtemplate.org/
+  # Where is the documentation for using this??
+  # - repository: com.github.enpassant:ickenham_2.12:1.4.1
+  # This one is being difficult with documentation, don't know where to make it compile a single template
+  # - repository: com.x5dev:chunk-templates:3.5.0
+  - repository: com.github.codemonstur:simplexml:2.1.0
+  - repository: com.google.javascript:closure-compiler:v20190929
+    scope: test
+  - repository: org.apache.maven:maven-plugin-api:3.6.2
+  - repository: org.apache.maven.plugin-tools:maven-plugin-annotations:3.6.0
+    scope: provided
+  - repository: org.apache.maven:maven-project:2.2.1
+  - repository: com.helger:ph-css:6.2.0
+    scope: test
+  - repository: net.sourceforge.cssparser:cssparser:0.9.27
+    scope: test
+  - repository: org.junit.jupiter:junit-jupiter-api:5.5.2
+    scope: test
+  - repository: org.junit.jupiter:junit-jupiter-engine:5.5.2
+    scope: test
+  - repository: org.junit.jupiter:junit-jupiter-params:5.5.2
+    scope: test
