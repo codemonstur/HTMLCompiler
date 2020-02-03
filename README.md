@@ -2,11 +2,6 @@
 [![Build Status](https://travis-ci.org/codemonstur/htmlcompiler.svg?branch=master)](https://travis-ci.org/codemonstur/htmlcompiler)
 [![GitHub Release](https://img.shields.io/github/release/codemonstur/htmlcompiler.svg)](https://github.com/codemonstur/htmlcompiler/releases) 
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.codemonstur/htmlcompiler/badge.svg)](http://mvnrepository.com/artifact/com.github.codemonstur/htmlcompiler)
-[![Maintainability](https://api.codeclimate.com/v1/badges/b8be07bf66498a4c9771/maintainability)](https://codeclimate.com/github/codemonstur/HTMLCompiler/maintainability)
-[![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/dwyl/esta/issues)
-[![Coverage Status](https://coveralls.io/repos/github/codemonstur/HTMLCompiler/badge.svg)](https://coveralls.io/github/codemonstur/HTMLCompiler)
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/384ad7ef1edf4c5f9ed46a5a0efff6bb)](https://www.codacy.com/manual/codemonstur/HTMLCompiler)
-[![Sputnik](https://sputnik.ci/conf/badge)](https://sputnik.ci/app#/builds/codemonstur/htmlcompiler)
 [![MIT Licence](https://badges.frapsoft.com/os/mit/mit.svg?v=103)](https://opensource.org/licenses/mit-license.php)
 
 ## HtmlCompiler
