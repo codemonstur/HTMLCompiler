@@ -13,8 +13,8 @@ import static junit.framework.Assert.assertEquals;
 public class TestCompression {
 
     private static final String html_output_compress_html =
-        "<!DOCTYPE html><html><head><script type=\"text/html\"><a href=\"/tour/{{>id}}\">{{&gt;" +
-        "title}}</a></script></head><body></body></html>";
+        "<!DOCTYPE html><html><head><script type=\"text/html\"><li><a href=\"/tour/{{>id}}\">{{&gt;" +
+        "title}}</a></li><b>Hello</b></script></head><body></body></html>";
 
     @ParameterizedTest
     @MethodSource("util.Factory#provideCompilers")

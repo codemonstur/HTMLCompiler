@@ -60,7 +60,7 @@ public enum Script {;
             }
 
             if (isHtml(node) && !isScriptEmpty(node)) {
-                final String compiled = html.compileHtmlFragment(file, node.data()).children().html();
+                final String compiled = html.compileHtmlFragment(file, node.data()).html();
                 final String result = node.hasAttr("compress")
                         ? html.compressHtmlCode(compiled) : compiled;
                 removeAttributes(node, "inline", "compress");
