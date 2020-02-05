@@ -1,5 +1,5 @@
 version: 3.2.0
-packaging: jar
+packaging: maven-plugin
 dependencies:
   - repository: org.jsoup:jsoup:1.12.1
   - repository: org.codelibs:nekohtml:2.1.0
@@ -12,7 +12,6 @@ dependencies:
   - repository: commons-io:commons-io:2.6
   - repository: com.yahoo.platform.yui:yuicompressor:2.4.8
   - repository: com.googlecode.htmlcompressor:htmlcompressor:1.5.2
-  - repository: com.squareup.okhttp3:okhttp:4.2.2
   - repository: commons-cli:commons-cli:1.4
   - repository: de.inetsoftware:jlessc:1.8
   - repository: com.vaadin:vaadin-sass-compiler:0.9.13
