@@ -1,7 +1,6 @@
 package htmlcompiler.tags.neko;
 
 import htmlcompiler.compilers.html.NekoCompiler;
-import htmlcompiler.tools.IO;
 import htmlcompiler.tools.Logger;
 import org.apache.xerces.dom.DeferredTextImpl;
 import org.w3c.dom.Document;
@@ -10,16 +9,17 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
 import javax.xml.transform.TransformerException;
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.security.NoSuchAlgorithmException;
 
 import static htmlcompiler.pojos.compile.ImageType.toMimeType;
 import static htmlcompiler.tools.Coding.encodeBase64;
 import static htmlcompiler.tools.Coding.sha384;
 import static htmlcompiler.tools.HTTP.*;
-import static htmlcompiler.tools.IO.toByteArray;
 import static java.lang.String.format;
+import static java.nio.file.Files.readAllBytes;
 
 public enum TagParsingNeko {;
     public static final String DOCTYPE = "<!DOCTYPE html>";
@@ -53,7 +53,7 @@ public enum TagParsingNeko {;
         element.getParentNode().removeChild(element);
     }
 
-    public static Element newElementOf(final Document document, final File location, final NekoCompiler compiler) throws Exception {
+    public static Element newElementOf(final Document document, final Path location, final NekoCompiler compiler) throws Exception {
         return toElementOf(document, loadHtml(compiler, location));
     }
 
@@ -61,26 +61,26 @@ public enum TagParsingNeko {;
         return (Element)document.importNode(element, true);
     }
 
-    public static Element loadHtml(final NekoCompiler html, final File location) throws Exception {
-        final String content = IO.toString(location);
+    public static Element loadHtml(final NekoCompiler html, final Path location) throws Exception {
+        final String content = Files.readString(location);
         if (content.isEmpty()) return null;
         return html.processHtml(location, html.htmlToDocument(content)).getDocumentElement();
     }
 
     public static boolean isLinkFavicon(final Element element) {
-        return element.hasAttribute("rel") && (
-                element.getAttribute("rel").equalsIgnoreCase("icon") ||
-                        element.getAttribute("rel").equalsIgnoreCase("shortcut icon"));
+        return element.hasAttribute("rel")
+            && ( element.getAttribute("rel").equalsIgnoreCase("icon")
+                || element.getAttribute("rel").equalsIgnoreCase("shortcut icon") );
     }
     public static boolean isLinkStyleSheet(final Element element) {
         return element.hasAttribute("rel") && element.getAttribute("rel").equalsIgnoreCase("stylesheet");
     }
 
-    public static String toDataUrl(final File location) throws IOException {
-        return toDataUrl(toMimeType(location.getName()), location);
+    public static String toDataUrl(final Path location) throws IOException {
+        return toDataUrl(toMimeType(location), location);
     }
-    public static String toDataUrl(final String type, final File location) throws IOException {
-        return toDataUrl(type, toByteArray(location));
+    public static String toDataUrl(final String type, final Path location) throws IOException {
+        return toDataUrl(type, readAllBytes(location));
     }
     public static String toDataUrl(final String type, final byte[] data) {
         return "data:"+type+";base64,"+encodeBase64(data);
@@ -98,14 +98,14 @@ public enum TagParsingNeko {;
         }
     }
 
-    public static void addIntegrityAttributes(final Element element, final String url, final File file
+    public static void addIntegrityAttributes(final Element element, final String url, final Path file
             , final NekoCompiler html, final Logger log) throws IOException, NoSuchAlgorithmException, TransformerException {
         try {
             if (isUrl(url) && (element.hasAttribute("force-integrity") || urlHasCorsAllowed(url))) {
                 element.setAttribute("integrity", toIntegrityValue(urlToByteArray(url)));
                 element.removeAttribute("force-integrity");
                 if (!element.hasAttribute("crossorigin")) element.setAttribute("crossorigin", "anonymous");
-                log.warn(format("File %s has tag without integrity, rewrote to: %s", file.toPath().normalize(), html.toHtml(element)));
+                log.warn(format("File %s has tag without integrity, rewrote to: %s", file.normalize(), html.toHtml(element)));
             }
         } catch (IOException e) {
             log.warn("Failed to get data for tag src/href attribute " + url + ", error is " + e.getMessage());
@@ -113,7 +113,7 @@ public enum TagParsingNeko {;
         }
     }
 
-    public static Node getPreviousTagSibling(Element element, final Node defaultValue) {
+    public static Node getPreviousTagSibling(final Element element, final Node defaultValue) {
         if (element == null) return defaultValue;
 
         Node previous = element.getPreviousSibling();
@@ -145,10 +145,9 @@ public enum TagParsingNeko {;
     }
 
     public static boolean isHtml(final Element script) {
-        return script.hasAttribute("type") &&
-                (  script.getAttribute("type").equalsIgnoreCase("text/x-jquery-tmpl")
-                        || script.getAttribute("type").equalsIgnoreCase("text/html")
-                );
+        return script.hasAttribute("type")
+            &&( script.getAttribute("type").equalsIgnoreCase("text/x-jquery-tmpl")
+                || script.getAttribute("type").equalsIgnoreCase("text/html"));
     }
     public static boolean isCss(final Element link) {
         return !link.hasAttribute("type") || link.getAttribute("type").equalsIgnoreCase("text/css");

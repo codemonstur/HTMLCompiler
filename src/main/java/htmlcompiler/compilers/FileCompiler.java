@@ -10,8 +10,8 @@ import htmlcompiler.pojos.error.InvalidInput;
 import htmlcompiler.pojos.error.InvalidTemplate;
 import org.apache.maven.project.MavenProject;
 
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.Map;
 
 import static htmlcompiler.compilers.scripts.CodeCompiler.newNopCompiler;
@@ -21,12 +21,12 @@ import static java.util.Map.entry;
 
 public interface FileCompiler {
 
-    String compile(File file) throws IOException, InvalidTemplate, InvalidInput;
+    String compile(Path file) throws IOException, InvalidTemplate, InvalidInput;
     String outputExtension();
 
     private static FileCompiler newHtmlCompiler(final HtmlCompiler html, final HtmlTemplateEngine engine) {
         return new FileCompiler() {
-            public String compile(File file) throws IOException, InvalidTemplate, InvalidInput {
+            public String compile(Path file) throws IOException, InvalidTemplate, InvalidInput {
                 return html.doctypeCompressCompile(file, engine.compile(file));
             }
             public String outputExtension() {
@@ -36,7 +36,7 @@ public interface FileCompiler {
     }
     private static FileCompiler newScriptCompiler(final Compressor compressor, final CodeCompiler compiler, final String extension) {
         return new FileCompiler() {
-            public String compile(File file) throws InvalidTemplate {
+            public String compile(Path file) throws InvalidTemplate {
                 try {
                     return compressor.compress(compiler.compileCode(file));
                 } catch (Exception e) {

@@ -5,9 +5,10 @@ import com.vladsch.flexmark.parser.Parser;
 import com.vladsch.flexmark.util.data.MutableDataSet;
 import htmlcompiler.pojos.error.InvalidTemplate;
 
-import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.Path;
+
+import static java.nio.file.Files.newBufferedReader;
 
 public final class Markdown implements HtmlTemplateEngine {
 
@@ -21,8 +22,8 @@ public final class Markdown implements HtmlTemplateEngine {
     }
 
     @Override
-    public String compile(File file) throws IOException, InvalidTemplate {
-        try (final var reader = new FileReader(file)) {
+    public String compile(Path file) throws IOException, InvalidTemplate {
+        try (final var reader = newBufferedReader(file)) {
             return renderer.render(parser.parseReader(reader));
         }
     }

@@ -1,18 +1,18 @@
 package htmlcompiler.tags.neko;
 
 import htmlcompiler.compilers.html.NekoCompiler;
-import htmlcompiler.pojos.error.InvalidInput;
 import htmlcompiler.pojos.compile.MoveType;
 import htmlcompiler.pojos.compile.ScriptBag;
 import htmlcompiler.pojos.compile.ScriptType;
+import htmlcompiler.pojos.error.InvalidInput;
 import htmlcompiler.tools.Logger;
 import org.w3c.dom.Element;
 import simplexml.SimpleXml;
 import simplexml.utils.Interfaces.CheckedIterator;
 
 import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 
 import static htmlcompiler.compilers.scripts.JsCompiler.compressJavascriptCode;
 import static htmlcompiler.pojos.compile.MoveType.storeCode;
@@ -72,13 +72,17 @@ public enum Script {;
                 while (it.hasNext()) {
                     builder.append(html.compileHtmlCode(file, it.next()));
                 }
-                element.setTextContent(builder.toString());
+                final String result = element.hasAttribute("compress")
+                    ? html.compressHtmlCode(builder.toString()) : builder.toString();
+
+                element.setTextContent(result);
+                removeAttributes(element, "inline", "compress");
                 return false;
             }
 
             if (element.hasAttribute("inline")) {
                 final ScriptType type = detectScriptType(element, javascript);
-                final File location = toLocation(file, element.getAttribute("src"), "script tag in %s has an invalid src location '%s'");
+                final Path location = toLocation(file, element.getAttribute("src"), "script tag in %s has an invalid src location '%s'");
                 element.setTextContent(compressIfRequested(element, type.compile(location)));
                 removeAttributes(element, "inline", "compress", "src", "type");
 
@@ -105,10 +109,10 @@ public enum Script {;
         };
     }
 
-    private static String compileScriptTag(final Element element, final ScriptType scriptType, final File parent) throws Exception {
+    private static String compileScriptTag(final Element element, final ScriptType scriptType, final Path parent) throws Exception {
         if (!isEmpty(element)) return scriptType.compile(element.getTextContent(), parent);
 
-        final File location = toLocation(parent, element.getAttribute("src"), "script tag in %s has an invalid src location '%s'");
+        final Path location = toLocation(parent, element.getAttribute("src"), "script tag in %s has an invalid src location '%s'");
         return scriptType.compile(location);
     }
 

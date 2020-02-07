@@ -1,5 +1,7 @@
 package htmlcompiler.pojos.compile;
 
+import java.nio.file.Path;
+
 import static htmlcompiler.tools.Filenames.toExtension;
 
 public enum ImageType {
@@ -39,7 +41,13 @@ public enum ImageType {
             return false;
         }
     }
+    public static boolean isBinaryImage(final Path file) {
+        return isBinaryImage(file.getFileName().toString());
+    }
     public static String toMimeType(final String filename) {
+        return ImageType.valueOf(toExtension(filename)).mimetype;
+    }
+    public static String toMimeType(final Path filename) {
         return ImageType.valueOf(toExtension(filename)).mimetype;
     }
 

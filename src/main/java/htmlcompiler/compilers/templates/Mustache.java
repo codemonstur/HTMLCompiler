@@ -5,9 +5,9 @@ import org.apache.maven.project.MavenProject;
 import org.trimou.engine.MustacheEngine;
 import org.trimou.engine.MustacheEngineBuilder;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -21,8 +21,8 @@ public class Mustache implements HtmlTemplateEngine {
         this.model = applyMavenProjectContext(applyEnvironmentContext(new HashMap<>()), project);
     }
     @Override
-    public String compile(File file) throws IOException, InvalidTemplate {
-        return engine.compileMustache(Files.readString(file.toPath())).render(model);
+    public String compile(Path file) throws IOException, InvalidTemplate {
+        return engine.compileMustache(Files.readString(file)).render(model);
     }
 
     private static Map<String, Object> applyMavenProjectContext(final Map<String, Object> context, final MavenProject project) {

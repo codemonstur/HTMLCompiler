@@ -1,16 +1,15 @@
 package htmlcompiler.tags.jsoup;
 
-import htmlcompiler.pojos.error.InvalidInput;
 import htmlcompiler.pojos.compile.StyleType;
+import htmlcompiler.pojos.error.InvalidInput;
 import htmlcompiler.tags.jsoup.TagVisitor.TailVisitor;
-import htmlcompiler.tools.IO;
 import htmlcompiler.tools.Logger;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.nodes.Node;
 
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 
 import static htmlcompiler.compilers.scripts.CssCompiler.compressCssCode;
 import static htmlcompiler.pojos.compile.ImageType.toMimeType;
@@ -18,6 +17,7 @@ import static htmlcompiler.pojos.compile.StyleType.css;
 import static htmlcompiler.pojos.compile.StyleType.detectStyleType;
 import static htmlcompiler.tags.jsoup.TagParsingJsoup.*;
 import static htmlcompiler.tools.IO.toLocation;
+import static java.nio.file.Files.readAllBytes;
 
 public enum Link {;
 
@@ -49,16 +49,16 @@ public enum Link {;
         };
     }
 
-    private static void inlineFavicon(final Node element, final File file) throws InvalidInput, IOException {
-        final File location = toLocation(file, element.attr("href"), "<link> in %s has an invalid href location '%s'");
-        final String type = (element.hasAttr("type")) ? element.attr("type") : toMimeType(location.getName());
+    private static void inlineFavicon(final Node element, final Path file) throws InvalidInput, IOException {
+        final Path location = toLocation(file, element.attr("href"), "<link> in %s has an invalid href location '%s'");
+        final String type = (element.hasAttr("type")) ? element.attr("type") : toMimeType(location);
         element.removeAttr("inline");
-        element.attr("href", toDataUrl(type, IO.toByteArray(file)));
+        element.attr("href", toDataUrl(type, readAllBytes(file)));
     }
 
-    private static Element inlineStylesheet(final Element element, final File file, final Document document)
+    private static Element inlineStylesheet(final Element element, final Path file, final Document document)
             throws Exception {
-        final File location = toLocation(file, element.attr("href"), "<link> in %s has an invalid href location '%s'");
+        final Path location = toLocation(file, element.attr("href"), "<link> in %s has an invalid href location '%s'");
 
         final Element style = document.createElement("style");
         final StyleType type = detectStyleType(element, css);

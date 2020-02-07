@@ -3,9 +3,9 @@ package htmlcompiler.compilers.templates;
 import htmlcompiler.pojos.error.InvalidTemplate;
 import org.apache.maven.project.MavenProject;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -21,8 +21,8 @@ public final class JinJava implements HtmlTemplateEngine {
     }
 
     @Override
-    public String compile(File file) throws IOException, InvalidTemplate {
-        return jinjava.render(Files.readString(file.toPath()), context);
+    public String compile(Path file) throws IOException, InvalidTemplate {
+        return jinjava.render(Files.readString(file), context);
     }
 
     private static Map<String, Object> applyMavenProjectContext(final Map<String, Object> context, final MavenProject project) {

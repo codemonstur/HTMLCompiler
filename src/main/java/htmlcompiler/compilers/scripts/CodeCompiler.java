@@ -1,34 +1,31 @@
 package htmlcompiler.compilers.scripts;
 
-import htmlcompiler.tools.IO;
-
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 
 import static htmlcompiler.tools.IO.findBinaryInPath;
 import static htmlcompiler.tools.IO.newTempFileWithContent;
-import static java.io.File.createTempFile;
 
 public interface CodeCompiler {
 
-    String compileCode(String code, File parent) throws Exception;
-    String compileCode(File style) throws Exception;
+    String compileCode(String code, Path parent) throws Exception;
+    String compileCode(Path style) throws Exception;
 
     public static CodeCompiler newNopCompiler() {
         return new CodeCompiler() {
-            public String compileCode(String code, File parent) {
+            public String compileCode(String code, Path parent) {
                 return code;
             }
-            public String compileCode(File script) throws IOException {
-                return IO.toString(script);
+            public String compileCode(Path script) throws IOException {
+                return Files.readString(script);
             }
         };
     }
 
     public interface CompileArgumentsSupplier {
-        String newCompileArguments(File outputFile, File inputFile);
+        String newCompileArguments(Path outputFile, Path inputFile);
     }
 
     public static CodeCompiler newExternalToolCompiler(final String toolName, final String scriptExtension
@@ -40,28 +37,28 @@ public interface CodeCompiler {
         final Path toolLocation = findBinaryInPath(toolName, null);
 
         return new CodeCompiler() {
-            public String compileCode(String code, File owner) throws IOException {
-                final File tempFile = newTempFileWithContent("hc_in_", scriptExtension, owner.getParentFile(), code);
+            public String compileCode(String code, Path owner) throws IOException {
+                final Path tempFile = newTempFileWithContent("hc_in_", scriptExtension, owner.getParent(), code);
                 try {
                     return compileCode(tempFile);
                 } finally {
-                    tempFile.delete();
+                    Files.delete(tempFile);
                 }
             }
 
-            public String compileCode(File script) throws IOException {
+            public String compileCode(Path script) throws IOException {
                 if (toolLocation == null) throw new FileNotFoundException("Could not find binary " + toolName + " in PATH");
 
-                final File tempFile = createTempFile(toolName + "_", tempFileExtension);
-                if (deleteFirst) tempFile.delete();
+                final Path tempFile = Files.createTempFile(toolName + "_", tempFileExtension);
+                if (deleteFirst) Files.delete(tempFile);
                 try {
                     final String cmd = toolLocation.toAbsolutePath() + " " + supplier.newCompileArguments(tempFile, script);
                     Runtime.getRuntime().exec(cmd).waitFor();
-                    return IO.toString(tempFile);
+                    return Files.readString(tempFile);
                 } catch (InterruptedException e) {
                     throw new IOException("Couldn't wait for " + toolName, e);
                 } finally {
-                    if (!deleteFirst) tempFile.delete();
+                    if (!deleteFirst) Files.delete(tempFile);
                 }
             }
         };

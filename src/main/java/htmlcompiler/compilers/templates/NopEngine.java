@@ -1,14 +1,14 @@
 package htmlcompiler.compilers.templates;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 
 public final class NopEngine implements HtmlTemplateEngine {
 
     @Override
-    public String compile(File file) throws IOException {
-        return Files.readString(file.toPath());
+    public String compile(Path file) throws IOException {
+        return Files.readString(file);
     }
 
 }

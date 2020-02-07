@@ -1,15 +1,15 @@
 package htmlcompiler.tags.neko;
 
 import htmlcompiler.compilers.html.NekoCompiler;
-import htmlcompiler.pojos.error.InvalidInput;
 import htmlcompiler.pojos.compile.StyleType;
-import htmlcompiler.tools.IO;
+import htmlcompiler.pojos.error.InvalidInput;
 import htmlcompiler.tools.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 import static htmlcompiler.compilers.scripts.CssCompiler.compressCssCode;
 import static htmlcompiler.pojos.compile.ImageType.toMimeType;
@@ -52,16 +52,16 @@ public enum Link {;
         };
     }
 
-    private static void inlineFavicon(final Element element, final File file) throws InvalidInput, IOException {
-        final File location = toLocation(file, element.getAttribute("href"), "<link> in %s has an invalid href location '%s'");
-        final String type = (element.hasAttribute("type")) ? element.getAttribute("type") : toMimeType(location.getName());
+    private static void inlineFavicon(final Element element, final Path file) throws InvalidInput, IOException {
+        final Path location = toLocation(file, element.getAttribute("href"), "<link> in %s has an invalid href location '%s'");
+        final String type = (element.hasAttribute("type")) ? element.getAttribute("type") : toMimeType(location);
         element.removeAttribute("inline");
-        element.setAttribute("href", toDataUrl(type, IO.toByteArray(file)));
+        element.setAttribute("href", toDataUrl(type, Files.readAllBytes(file)));
     }
 
-    private static void inlineStylesheet(final Element element, final File file, final Document document)
+    private static void inlineStylesheet(final Element element, final Path file, final Document document)
             throws Exception {
-        final File location = toLocation(file, element.getAttribute("href"), "<link> in %s has an invalid href location '%s'");
+        final Path location = toLocation(file, element.getAttribute("href"), "<link> in %s has an invalid href location '%s'");
 
         final Element style = document.createElement("style");
         final StyleType type = detectStyleType(element, css);

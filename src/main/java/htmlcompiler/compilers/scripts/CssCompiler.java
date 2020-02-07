@@ -6,10 +6,11 @@ import com.vaadin.sass.internal.handler.SCSSDocumentHandler;
 import com.vaadin.sass.internal.handler.SCSSDocumentHandlerImpl;
 import com.vaadin.sass.internal.parser.Parser;
 import com.yahoo.platform.yui.compressor.CssCompressor;
-import htmlcompiler.tools.IO;
 import org.w3c.css.sac.InputSource;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 import static htmlcompiler.compilers.scripts.CodeCompiler.newExternalToolCompiler;
 
@@ -24,16 +25,16 @@ public enum CssCompiler {;
 
     public static CodeCompiler newStylusCompiler() {
         return newExternalToolCompiler("stylus", ".styl", true, ".css",
-            (outputFile, inputFile) -> inputFile.getAbsolutePath() + " -o " + outputFile.getAbsolutePath());
+            (outputFile, inputFile) -> inputFile.toAbsolutePath().toString() + " -o " + outputFile.toAbsolutePath().toString());
     }
 
     public static CodeCompiler newLessCompiler() {
         return new CodeCompiler() {
-            public String compileCode(String code, File parent) {
+            public String compileCode(String code, Path parent) {
                 return Less.compile(null, code, false);
             }
-            public String compileCode(File style) throws IOException {
-                return Less.compile(null, IO.toString(style), false);
+            public String compileCode(Path style) throws IOException {
+                return Less.compile(null, Files.readString(style), false);
             }
         };
     }
@@ -42,14 +43,14 @@ public enum CssCompiler {;
         final CodeCompiler tool = newToolScssCompiler();
         final CodeCompiler lib = newInternalSassCompiler();
         return new CodeCompiler() {
-            public String compileCode(String code, File parent) throws Exception {
+            public String compileCode(String code, Path parent) throws Exception {
                 try {
                     return tool.compileCode(code, parent);
                 } catch (FileNotFoundException e) {
                     return lib.compileCode(code, parent);
                 }
             }
-            public String compileCode(File style) throws Exception {
+            public String compileCode(Path style) throws Exception {
                 try {
                     return tool.compileCode(style);
                 } catch (FileNotFoundException e) {
@@ -63,14 +64,14 @@ public enum CssCompiler {;
         final CodeCompiler tool = newToolSassCompiler();
         final CodeCompiler lib = newInternalSassCompiler();
         return new CodeCompiler() {
-            public String compileCode(String code, File parent) throws Exception {
+            public String compileCode(String code, Path parent) throws Exception {
                 try {
                     return tool.compileCode(code, parent);
                 } catch (FileNotFoundException e) {
                     return lib.compileCode(code, parent);
                 }
             }
-            public String compileCode(File style) throws Exception {
+            public String compileCode(Path style) throws Exception {
                 try {
                     return tool.compileCode(style);
                 } catch (FileNotFoundException e) {
@@ -82,22 +83,22 @@ public enum CssCompiler {;
 
     public static CodeCompiler newToolScssCompiler() {
         return newExternalToolCompiler("sass", ".scss", true, ".css",
-            (outputFile, inputFile) -> "--no-source-map " + inputFile.getAbsolutePath() + " " + outputFile.getAbsolutePath());
+            (outputFile, inputFile) -> "--no-source-map " + inputFile.toAbsolutePath().toString() + " " + outputFile.toAbsolutePath().toString());
     }
 
     public static CodeCompiler newToolSassCompiler() {
         return newExternalToolCompiler("sass", ".sass", true, ".css",
-            (outputFile, inputFile) -> "--no-source-map " + inputFile.getAbsolutePath() + " " + outputFile.getAbsolutePath());
+            (outputFile, inputFile) -> "--no-source-map " + inputFile.toAbsolutePath().toString() + " " + outputFile.toAbsolutePath().toString());
     }
 
     public static CodeCompiler newInternalSassCompiler() {
         final Parser sassCompiler = new Parser();
         return new CodeCompiler() {
-            public String compileCode(String code, File parent) throws Exception {
+            public String compileCode(String code, Path parent) throws Exception {
                 return toCssCode(toCompiledStylesheet(sassCompiler, code));
             }
-            public String compileCode(File style) throws Exception {
-                return toCssCode(toCompiledStylesheet(sassCompiler, IO.toString(style)));
+            public String compileCode(Path style) throws Exception {
+                return toCssCode(toCompiledStylesheet(sassCompiler, Files.readString(style)));
             }
             private ScssStylesheet toCompiledStylesheet(final Parser sassCompiler, final String code) {
                 final SCSSDocumentHandler handler = new SCSSDocumentHandlerImpl();

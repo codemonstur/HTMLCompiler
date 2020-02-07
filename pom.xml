@@ -3,7 +3,7 @@
 
     <groupId>com.github.codemonstur</groupId>
     <artifactId>htmlcompiler</artifactId>
-    <version>3.1.0</version>
+    <version>3.2.0</version>
     <packaging>maven-plugin</packaging>
 
     <name>${project.groupId}:${project.artifactId}</name>
@@ -228,9 +228,9 @@
         </dependency>
 
         <dependency>
-            <groupId>com.mitchellbosecke</groupId>
+            <groupId>io.pebbletemplates</groupId>
             <artifactId>pebble</artifactId>
-            <version>2.4.0</version>
+            <version>3.1.2</version>
         </dependency>
         <dependency>
             <groupId>de.neuland-bfi</groupId>
@@ -365,7 +365,6 @@ https://www.stringtemplate.org/
             <version>5.5.2</version>
             <scope>test</scope>
         </dependency>
-
 
     </dependencies>
 

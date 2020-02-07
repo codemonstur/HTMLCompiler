@@ -9,7 +9,6 @@ import htmlcompiler.pojos.httpmock.Request;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.project.MavenProject;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.file.Files;
@@ -22,6 +21,7 @@ import static htmlcompiler.MavenProjectReader.toOutputDirectory;
 import static htmlcompiler.MavenProjectReader.toStaticDirectory;
 import static htmlcompiler.pojos.httpmock.Endpoint.toKey;
 import static htmlcompiler.pojos.httpmock.Request.toHttpHandler;
+import static java.nio.file.Files.*;
 
 public enum Http {;
 
@@ -55,18 +55,18 @@ public enum Http {;
         return exchange -> api.getOrDefault(toKey(exchange), next).handle(exchange);
     }
 
-    private static HttpHandler pathHandler(final File... directories) {
+    private static HttpHandler pathHandler(final Path... directories) {
         return exchange -> {
             if (!"/".equals(exchange.getRequestURI().getPath())) {
-                for (final File dir : directories) {
-                    final File file = toFile(dir, exchange.getRequestURI().getPath(), null);
+                for (final Path dir : directories) {
+                    final Path file = toFile(dir, exchange.getRequestURI().getPath(), null);
                     if (file == null) continue;
 
-                    exchange.getResponseHeaders().add("Content-Type", Files.probeContentType(file.toPath()));
-                    long length = file.length();
+                    exchange.getResponseHeaders().add("Content-Type", addCharset(probeContentType(file)));
+                    final long length = Files.size(file);
                     if (length > 0) {
                         exchange.sendResponseHeaders(200, length);
-                        Files.copy(file.toPath(), exchange.getResponseBody());
+                        Files.copy(file, exchange.getResponseBody());
                     } else {
                         exchange.sendResponseHeaders(200, -1);
                     }
@@ -80,12 +80,18 @@ public enum Http {;
         };
     }
 
-    private static File toFile(final File dir, final String requestPath, final File _default) {
-        final File requested = new File(dir, requestPath.substring(1));
-        return (!isChildOf(requested, dir) || !requested.exists() || !requested.canRead()) ? _default : requested;
+    private static String addCharset(final String contentType) {
+        if ("text/html".equals(contentType)) return "text/html; charset=UTF-8";
+        if ("text/plain".equals(contentType)) return "text/plain; charset=UTF-8";
+        return contentType;
     }
 
-    private static boolean isChildOf(final File child, final File parent) {
-        return child.toPath().startsWith(parent.toPath());
+    private static Path toFile(final Path dir, final String requestPath, final Path defaultValue) {
+        final Path requested = dir.resolve(requestPath.substring(1));
+        return (!isChildOf(requested, dir) || !isRegularFile(requested) || !isReadable(requested)) ? defaultValue : requested;
+    }
+
+    private static boolean isChildOf(final Path child, final Path parent) {
+        return child.startsWith(parent);
     }
 }

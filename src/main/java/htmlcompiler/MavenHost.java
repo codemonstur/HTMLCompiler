@@ -14,7 +14,8 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 
-import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
@@ -26,18 +27,17 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import static htmlcompiler.MavenProjectReader.toInputDirectory;
 import static htmlcompiler.MavenProjectReader.toOutputDirectory;
-import static htmlcompiler.checks.ReadCheckConfiguration.readChecksConfiguration;
 import static htmlcompiler.compilers.TemplateThenCompile.newTemplateThenCompile;
+import static htmlcompiler.pojos.compile.ChecksConfig.readChecksConfiguration;
 import static htmlcompiler.services.DirectoryWatcher.newDirectoryWatcher;
 import static htmlcompiler.services.Http.newHttpServer;
 import static htmlcompiler.tools.App.buildMavenTask;
-import static htmlcompiler.tools.IO.relativize;
 import static htmlcompiler.tools.Logger.YYYY_MM_DD_HH_MM_SS;
 import static java.lang.String.format;
+import static java.nio.file.Files.isRegularFile;
 import static java.nio.file.StandardWatchEventKinds.ENTRY_CREATE;
 import static java.nio.file.StandardWatchEventKinds.ENTRY_DELETE;
 import static java.util.Collections.emptyList;
-import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 
@@ -79,7 +79,7 @@ public final class MavenHost extends AbstractMojo {
             final var server = newHttpServer(project, port, requestApiEnabled, requestApiSpecification);
             final var compiler = newTaskCompiler(log, inputDir, queue, ttc, toChildrenSet(inputDir));
             final var watcher = newDirectoryWatcher()
-                    .directory(inputDir.toPath())
+                    .directory(inputDir)
                     .directories(toPathList(watchedDirectories))
                     .listener((event, path) -> queue.add(new Task(event, path)))
                     .build();
@@ -92,25 +92,28 @@ public final class MavenHost extends AbstractMojo {
             log.info(format
                 ( "[%s] Compiling supported template formats in %s to %s"
                 , LocalDateTime.now().format(YYYY_MM_DD_HH_MM_SS)
-                , relativize(project.getBasedir(), inputDir)
-                , relativize(project.getBasedir(), outputDir)
+                , project.getBasedir().toPath().relativize(inputDir)
+                , project.getBasedir().toPath().relativize(outputDir)
                 ));
             watcher.waitUntilDone();
         });
     }
 
-    private static Service newTaskCompiler(final Logger log, final File rootDir, final BlockingQueue<Task> queue
+
+    private static Service newTaskCompiler(final Logger log, final Path rootDir, final BlockingQueue<Task> queue
             , final TemplateThenCompile ttc, final Set<Path> rootPages) {
         return new LoopingSingleThread(() -> {
             final Task take = queue.take();
-            if (take.type == ENTRY_DELETE && take.path.endsWith("/.")) return;
-            if (take.type == ENTRY_CREATE && take.path.toFile().isDirectory()) return;
+            if (take.path == null) return;
+            if (!isRegularFile(take.path)) return;
+            if (take.type == ENTRY_DELETE) return;
+            if (take.type == ENTRY_CREATE) return;
 
             try {
                 final boolean isKnownTemplate = rootPages.contains(take.path.normalize().toAbsolutePath());
                 if (isKnownTemplate) {
                     log.warn("Compiling file " + take.path);
-                    ttc.compileTemplate(take.path.toFile());
+                    ttc.compileTemplate(take.path);
                     log.warn("Compiled file " + take.path);
                 } else {
                     if (isChildOf(take.path, rootDir))
@@ -120,7 +123,7 @@ public final class MavenHost extends AbstractMojo {
                     log.warn("Compiling all files in root");
                     for (final var path : rootPages) {
                         log.warn("Compiling file " + take.path);
-                        ttc.compileTemplate(path.toFile());
+                        ttc.compileTemplate(path);
                         log.warn("Compiled file " + take.path);
                     }
                     log.warn("Compiled all files in root");
@@ -132,8 +135,8 @@ public final class MavenHost extends AbstractMojo {
         });
     }
 
-    private static boolean isChildOf(final Path path, final File directory) {
-        return directory.toPath().toAbsolutePath().startsWith(path.toAbsolutePath());
+    private static boolean isChildOf(final Path path, final Path directory) {
+        return directory.toAbsolutePath().startsWith(path.toAbsolutePath());
     }
 
     private static List<Path> toPathList(final String semicolonSeparatedList) {
@@ -144,9 +147,8 @@ public final class MavenHost extends AbstractMojo {
             .collect(toList());
     }
 
-    private static Set<Path> toChildrenSet(final File inputDir) {
-        return Arrays.stream(requireNonNull(inputDir.listFiles()))
-            .map(File::toPath)
+    private static Set<Path> toChildrenSet(final Path inputDir) throws IOException {
+        return Files.list(inputDir)
             .map(Path::normalize)
             .map(Path::toAbsolutePath)
             .collect(toSet());

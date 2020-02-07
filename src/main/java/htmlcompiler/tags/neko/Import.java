@@ -4,7 +4,7 @@ import htmlcompiler.compilers.html.NekoCompiler;
 import htmlcompiler.pojos.error.InvalidInput;
 import org.w3c.dom.Element;
 
-import java.io.File;
+import java.nio.file.Path;
 
 import static htmlcompiler.tags.neko.TagParsingNeko.*;
 import static htmlcompiler.tools.IO.toLocation;
@@ -20,9 +20,9 @@ public enum Import {;
         };
     }
 
-    private static File toSourceLocation(final Element element, final String attribute, final File file) throws InvalidInput {
+    private static Path toSourceLocation(final Element element, final String attribute, final Path file) throws InvalidInput {
         if (!element.hasAttribute(attribute)) throw new InvalidInput(String.format("<import> is missing '%s' attribute", attribute));
-        return toLocation(file.getParentFile(), element.getAttribute(attribute), "<import> in %s has an invalid src location '%s'");
+        return toLocation(file, element.getAttribute(attribute), "<import> in %s has an invalid src location '%s'");
     }
 
 }

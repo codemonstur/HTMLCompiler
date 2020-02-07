@@ -2,9 +2,10 @@ package htmlcompiler.compilers.html;
 
 import com.googlecode.htmlcompressor.compressor.HtmlCompressor;
 import htmlcompiler.checks.jsoup.JsoupElementChecks.JsoupElementCheck;
+import htmlcompiler.pojos.compile.ChecksConfig;
+import htmlcompiler.pojos.compile.ScriptBag;
 import htmlcompiler.pojos.error.InvalidInput;
 import htmlcompiler.pojos.library.LibraryArchive;
-import htmlcompiler.pojos.compile.ScriptBag;
 import htmlcompiler.tags.jsoup.TagVisitor;
 import htmlcompiler.tools.Logger;
 import org.jsoup.Jsoup;
@@ -13,7 +14,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.nodes.Node;
 import org.jsoup.select.NodeVisitor;
 
-import java.io.File;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -39,15 +40,16 @@ public final class JsoupCompiler implements HtmlCompiler {
     private final HtmlCompressor compressor;
     private final Map<String, TagVisitor> processors;
     private final List<JsoupElementCheck> checkers;
+    private final ChecksConfig checksConfig;
 
-    public JsoupCompiler(final Logger log, final LibraryArchive archive, final Map<String, Boolean> checksConfiguration) {
+    public JsoupCompiler(final Logger log, final LibraryArchive archive, final ChecksConfig checksConfiguration) {
         this.log = log;
         this.compressor = newDefaultHtmlCompressor();
         this.processors = newDefaultTagProcessors(log, this, archive);
-        this.checkers = newJsoupCheckList()
-            .addConfiguration(checksConfiguration)
+        this.checkers = newJsoupCheckList(checksConfiguration)
             .addAllEnabled()
             .build();
+        this.checksConfig = checksConfiguration;
     }
 
     private static Map<String, TagVisitor> newDefaultTagProcessors(final Logger log, final JsoupCompiler html, final LibraryArchive archive) {
@@ -66,7 +68,7 @@ public final class JsoupCompiler implements HtmlCompiler {
         return processors;
     }
 
-    public String doctypeCompressCompile(final File file, final String content) throws InvalidInput {
+    public String doctypeCompressCompile(final Path file, final String content) throws InvalidInput {
         return "<!DOCTYPE html>"+compressHtmlCode(compileHtmlCode(file, content));
     }
 
@@ -74,15 +76,15 @@ public final class JsoupCompiler implements HtmlCompiler {
         return compressor.compress(content);
     }
 
-    public String compileHtmlCode(final File file, final String content) throws InvalidInput {
+    public String compileHtmlCode(final Path file, final String content) throws InvalidInput {
         return applyVisitors(file, removeDoctype(Jsoup.parse(content))).html();
     }
 
-    public Element compileHtmlFragment(final File file, final String content) throws InvalidInput {
+    public Element compileHtmlFragment(final Path file, final String content) throws InvalidInput {
         return applyVisitors(file, Jsoup.parseBodyFragment(content).body());
     }
 
-    private Element applyVisitors(final File file, final Element element) throws InvalidInput {
+    private Element applyVisitors(final Path file, final Element element) throws InvalidInput {
         final List<Exception> errors = new ArrayList<>();
         element.traverse(new NodeVisitor() {
             public void head(Node node, int depth) {
@@ -111,7 +113,7 @@ public final class JsoupCompiler implements HtmlCompiler {
             public void head(Node node, int depth) {
                 if (node instanceof Element) {
                     final Element elem = (Element) node;
-                    for (final var checker : checkers) checker.checkElement(log, file, elem);
+                    for (final var checker : checkers) checker.checkElement(log, checksConfig, file, elem);
                 }
             }
             public void tail(Node node, int depth) {}
