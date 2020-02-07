@@ -1,0 +1,11 @@
+3.2.0
+
+Fixed bug in HTML inlining in script tag in Jsoup compiler
+Added UTF-8 charset to html and text files served by HTTP server
+Added configuration for html checks
+Added some tags to the known list
+Added some attributes to the known list
+Added the No-Operation HTML compiler
+Fixed bug with inline html inclusion
+Added compression to inline html
+Refactor to Path from File
