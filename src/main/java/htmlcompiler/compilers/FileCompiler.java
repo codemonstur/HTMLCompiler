@@ -1,19 +1,20 @@
 package htmlcompiler.compilers;
 
+import htmlcompiler.compilers.TemplateEngines.*;
 import htmlcompiler.compilers.html.HtmlCompiler;
 import htmlcompiler.compilers.scripts.CodeCompiler;
 import htmlcompiler.compilers.scripts.Compressor;
 import htmlcompiler.compilers.scripts.CssCompiler;
 import htmlcompiler.compilers.scripts.JsCompiler;
-import htmlcompiler.compilers.templates.*;
 import htmlcompiler.pojos.error.InvalidInput;
 import htmlcompiler.pojos.error.InvalidTemplate;
-import org.apache.maven.project.MavenProject;
 
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Map;
 
+import static htmlcompiler.compilers.TemplateEngines.*;
 import static htmlcompiler.compilers.scripts.CodeCompiler.newNopCompiler;
 import static htmlcompiler.compilers.scripts.CssCompiler.*;
 import static htmlcompiler.compilers.scripts.JsCompiler.*;
@@ -49,20 +50,20 @@ public interface FileCompiler {
         };
     }
 
-    public static Map<String, FileCompiler> newFileCompilerMap(final HtmlCompiler html, final MavenProject project) {
+    public static Map<String, FileCompiler> newFileCompilerMap(final HtmlCompiler html, final Map<String, String> context) {
         return Map.ofEntries
-            ( entry(".pebble", newHtmlCompiler(html, new Pebble(project)))
-            , entry(".jade", newHtmlCompiler(html, new Jade4j(project)))
-            , entry(".pug", newHtmlCompiler(html, new Jade4j(project)))
-            , entry(".md", newHtmlCompiler(html, new Markdown()))
-            , entry(".hb", newHtmlCompiler(html, new Handlebars(project)))
-            , entry(".jinjava", newHtmlCompiler(html, new JinJava(project)))
-            , entry(".twig", newHtmlCompiler(html, new JTwig(project)))
-            , entry(".mustache", newHtmlCompiler(html, new Mustache(project)))
-            , entry(".thymeleaf", newHtmlCompiler(html, new Thymeleaf(project)))
-            , entry(".htm", newHtmlCompiler(html, new NopEngine()))
-            , entry(".html", newHtmlCompiler(html, new NopEngine()))
-            , entry(".hct", newHtmlCompiler(html, new NopEngine()))
+            ( entry(".pebble", newHtmlCompiler(html, newPebbleEngine(context)))
+            , entry(".jade", newHtmlCompiler(html, newJade4jEngine(context)))
+            , entry(".pug", newHtmlCompiler(html, newJade4jEngine(context)))
+            , entry(".md", newHtmlCompiler(html, newMarkdownEngine()))
+            , entry(".hb", newHtmlCompiler(html, newHandlebarsEngine(context)))
+            , entry(".jinjava", newHtmlCompiler(html, newJinJavaEngine(context)))
+            , entry(".twig", newHtmlCompiler(html, newJTwigEngine(context)))
+            , entry(".mustache", newHtmlCompiler(html, newMustacheEngine(context)))
+            , entry(".thymeleaf", newHtmlCompiler(html, newThymeleafEngine(context)))
+            , entry(".htm", newHtmlCompiler(html, Files::readString))
+            , entry(".html", newHtmlCompiler(html, Files::readString))
+            , entry(".hct", newHtmlCompiler(html, Files::readString))
             , entry(".css", newScriptCompiler(CssCompiler::compressCssCode, newNopCompiler(), ".min.css"))
             , entry(".scss", newScriptCompiler(CssCompiler::compressCssCode, newScssCompiler(), ".min.css"))
             , entry(".sass", newScriptCompiler(CssCompiler::compressCssCode, newSassCompiler(), ".min.css"))

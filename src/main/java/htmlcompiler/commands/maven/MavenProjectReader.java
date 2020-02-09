@@ -1,10 +1,13 @@
-package htmlcompiler;
+package htmlcompiler.commands.maven;
 
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.project.MavenProject;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import static java.nio.file.Files.exists;
 import static java.nio.file.Files.isDirectory;
@@ -34,6 +37,23 @@ public enum MavenProjectReader {;
         if (!isDirectory(outputDir))
             throw new MojoFailureException("Output directory must be a directory");
         return outputDir;
+    }
+
+    public static Map<String, String> newTemplateContext(final MavenProject project) {
+        return applyMavenProjectContext(applyEnvironmentContext(new HashMap<>()), project);
+    }
+
+    public static Map<String, String> applyMavenProjectContext(final Map<String, String> context, final MavenProject project) {
+        for (final Entry<Object, Object> entry : project.getProperties().entrySet()) {
+            context.put(entry.getKey().toString(), entry.getValue().toString());
+        }
+        return context;
+    }
+    public static Map<String, String> applyEnvironmentContext(final Map<String, String> context) {
+        for (final Entry<String, String> entry : System.getenv().entrySet()) {
+            context.put(entry.getKey(), entry.getValue());
+        }
+        return context;
     }
 
 }

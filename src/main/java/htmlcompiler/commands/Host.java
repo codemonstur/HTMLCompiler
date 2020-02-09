@@ -1,4 +1,4 @@
-package htmlcompiler;
+package htmlcompiler.commands;
 
 import com.google.gson.Gson;
 import htmlcompiler.compilers.TemplateThenCompile;
@@ -8,11 +8,6 @@ import htmlcompiler.pojos.library.LibraryArchive;
 import htmlcompiler.services.LoopingSingleThread;
 import htmlcompiler.services.Service;
 import htmlcompiler.tools.Logger;
-import org.apache.maven.plugin.AbstractMojo;
-import org.apache.maven.plugin.MojoFailureException;
-import org.apache.maven.plugins.annotations.Mojo;
-import org.apache.maven.plugins.annotations.Parameter;
-import org.apache.maven.project.MavenProject;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -21,17 +16,15 @@ import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
-import static htmlcompiler.MavenProjectReader.toInputDirectory;
-import static htmlcompiler.MavenProjectReader.toOutputDirectory;
 import static htmlcompiler.compilers.TemplateThenCompile.newTemplateThenCompile;
 import static htmlcompiler.pojos.compile.ChecksConfig.readChecksConfiguration;
 import static htmlcompiler.services.DirectoryWatcher.newDirectoryWatcher;
 import static htmlcompiler.services.Http.newHttpServer;
-import static htmlcompiler.tools.App.buildMavenTask;
 import static htmlcompiler.tools.Logger.YYYY_MM_DD_HH_MM_SS;
 import static java.lang.String.format;
 import static java.nio.file.Files.isRegularFile;
@@ -41,64 +34,52 @@ import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 
-@Mojo( name = "host" )
-public final class MavenHost extends AbstractMojo {
+public enum Host {;
 
-    @Parameter(defaultValue = "${project}", readonly = true)
-    public MavenProject project;
-
-    @Parameter(defaultValue = "8080")
-    public int port;
-
-    @Parameter(defaultValue = "true")
-    public boolean replaceExtension;
-    @Parameter(defaultValue = "src/main/webinc")
-    public String watchedDirectories;
-    @Parameter(defaultValue = "true")
-    public boolean requestApiEnabled;
-    @Parameter(defaultValue = "src/main/websrc/requests.json")
-    public String requestApiSpecification;
-    @Parameter(defaultValue = "src/main/websrc/validation.json")
-    public String validation;
-    @Parameter(defaultValue = "jsoup")
-    public CompilerType type;
-
-    @Override
-    public void execute() throws MojoFailureException {
-        buildMavenTask(this, log -> {
-            final var inputDir = toInputDirectory(project);
-            final var outputDir = toOutputDirectory(project);
-
-            final var gson = new Gson();
-            final var libs = new LibraryArchive(gson);
-            final var checksSettings = readChecksConfiguration(validation, gson);
-            final var html = type.newHtmlCompiler(log, libs, checksSettings);
-            final var ttc = newTemplateThenCompile(project, inputDir, outputDir, replaceExtension, html);
-            final var queue = new LinkedBlockingQueue<Task>();
-
-            final var server = newHttpServer(project, port, requestApiEnabled, requestApiSpecification);
-            final var compiler = newTaskCompiler(log, inputDir, queue, ttc, toChildrenSet(inputDir));
-            final var watcher = newDirectoryWatcher()
-                    .directory(inputDir)
-                    .directories(toPathList(watchedDirectories))
-                    .listener((event, path) -> queue.add(new Task(event, path)))
-                    .build();
-
-            server.start();
-            compiler.start();
-            watcher.start();
-
-            log.info("Listening on localhost:" + port);
-            log.info(format
-                ( "[%s] Compiling supported template formats in %s to %s"
-                , LocalDateTime.now().format(YYYY_MM_DD_HH_MM_SS)
-                , project.getBasedir().toPath().relativize(inputDir)
-                , project.getBasedir().toPath().relativize(outputDir)
-                ));
-            watcher.waitUntilDone();
-        });
+    public static class HostCommandConfig {
+        public CompilerType type;
+        public String validation;
+        public Path inputDir;
+        public Path outputDir;
+        public boolean replaceExtension;
+        public Map<String, String> variables;
+        public int port;
+        public boolean requestApiEnabled;
+        public String requestApiSpecification;
+        public Path[] hostedPaths;
+        public String watchedDirectories;
+        public Path baseDir;
     }
 
+    public static void executeHost(final Logger log, final HostCommandConfig config) throws IOException, InterruptedException {
+        final var gson = new Gson();
+        final var libs = new LibraryArchive(gson);
+        final var checksSettings = readChecksConfiguration(config.validation, gson);
+        final var html = config.type.newHtmlCompiler(log, libs, checksSettings);
+        final var ttc = newTemplateThenCompile(config.inputDir, config.outputDir, config.replaceExtension, config.variables, html);
+        final var queue = new LinkedBlockingQueue<Task>();
+
+        final var server = newHttpServer(config.port, config.requestApiEnabled, config.requestApiSpecification, config.hostedPaths);
+        final var compiler = newTaskCompiler(log, config.inputDir, queue, ttc, toChildrenSet(config.inputDir));
+        final var watcher = newDirectoryWatcher()
+                .directory(config.inputDir)
+                .directories(toPathList(config.watchedDirectories))
+                .listener((event, path) -> queue.add(new Task(event, path)))
+                .build();
+
+        server.start();
+        compiler.start();
+        watcher.start();
+
+        log.info("Listening on localhost:" + config.port);
+        log.info(format
+            ( "[%s] Compiling supported template formats in %s to %s"
+            , LocalDateTime.now().format(YYYY_MM_DD_HH_MM_SS)
+            , config.baseDir.relativize(config.inputDir)
+            , config.baseDir.relativize(config.outputDir)
+            ));
+        watcher.waitUntilDone();
+    }
 
     private static Service newTaskCompiler(final Logger log, final Path rootDir, final BlockingQueue<Task> queue
             , final TemplateThenCompile ttc, final Set<Path> rootPages) {

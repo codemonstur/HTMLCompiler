@@ -6,8 +6,6 @@ import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 import htmlcompiler.pojos.httpmock.Endpoint;
 import htmlcompiler.pojos.httpmock.Request;
-import org.apache.maven.plugin.MojoFailureException;
-import org.apache.maven.project.MavenProject;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -17,17 +15,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static htmlcompiler.MavenProjectReader.toOutputDirectory;
-import static htmlcompiler.MavenProjectReader.toStaticDirectory;
 import static htmlcompiler.pojos.httpmock.Endpoint.toKey;
 import static htmlcompiler.pojos.httpmock.Request.toHttpHandler;
 import static java.nio.file.Files.*;
 
 public enum Http {;
 
-    public static HttpServer newHttpServer(final MavenProject project, final int port, final boolean requestApiEnabled
-            , final String requestApiSpecification) throws IOException, MojoFailureException {
-        HttpHandler handler = pathHandler(toStaticDirectory(project), toOutputDirectory(project));
+    public static HttpServer newHttpServer(final int port, final boolean requestApiEnabled
+            , final String requestApiSpecification, final Path... pathsToHost) throws IOException {
+        HttpHandler handler = pathHandler(pathsToHost);
         if (requestApiEnabled) {
             handler = fakeApiHandler(toApiMap(fileToSpec(requestApiSpecification)), handler);
         }

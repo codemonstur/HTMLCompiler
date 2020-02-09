@@ -2,13 +2,13 @@ package htmlcompiler.compilers;
 
 import htmlcompiler.compilers.html.HtmlCompiler;
 import htmlcompiler.tools.OnlyFileVisitor;
-import org.apache.maven.project.MavenProject;
 
 import java.io.IOException;
 import java.nio.file.FileVisitOption;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.EnumSet;
+import java.util.Map;
 
 import static htmlcompiler.compilers.FileCompiler.newFileCompilerMap;
 import static htmlcompiler.tools.Filenames.toExtension;
@@ -22,9 +22,9 @@ public interface TemplateThenCompile {
 
     void compileTemplate(final Path inFile) throws Exception;
 
-    public static TemplateThenCompile newTemplateThenCompile(final MavenProject project, final Path inputDir
-            , final Path outputDir, final boolean replaceExtension, final HtmlCompiler html) {
-        final var compilers = newFileCompilerMap(html, project);
+    public static TemplateThenCompile newTemplateThenCompile(final Path inputDir, final Path outputDir
+            , final boolean replaceExtension, final Map<String, String> variables, final HtmlCompiler html) {
+        final var compilers = newFileCompilerMap(html, variables);
 
         return inFile -> {
             if (inFile == null || !isRegularFile(inFile)) return;
