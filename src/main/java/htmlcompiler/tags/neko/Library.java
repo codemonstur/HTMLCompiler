@@ -4,7 +4,7 @@ import htmlcompiler.pojos.error.InvalidInput;
 import htmlcompiler.pojos.library.LibraryArchive;
 
 import static htmlcompiler.tags.neko.TagParsingNeko.replaceTag;
-import static simplexml.utils.Functions.isNullOrEmpty;
+import static xmlparser.utils.Functions.isNullOrEmpty;
 
 public enum Library {;
 

@@ -8,12 +8,12 @@ import java.nio.file.Path;
 import java.util.Map;
 import java.util.Set;
 
-import static com.google.common.base.Strings.isNullOrEmpty;
 import static htmlcompiler.tools.HTML.known_attributes;
 import static htmlcompiler.tools.HTML.known_tags;
 import static htmlcompiler.tools.Strings.hasUppercase;
 import static java.util.Map.entry;
 import static java.util.Map.ofEntries;
+import static xmlparser.utils.Functions.isNullOrEmpty;
 
 public enum JsoupElementChecks {;
 

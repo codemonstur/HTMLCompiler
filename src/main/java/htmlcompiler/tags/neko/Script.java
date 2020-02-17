@@ -7,8 +7,8 @@ import htmlcompiler.pojos.compile.ScriptType;
 import htmlcompiler.pojos.error.InvalidInput;
 import htmlcompiler.tools.Logger;
 import org.w3c.dom.Element;
-import simplexml.SimpleXml;
-import simplexml.utils.Interfaces.CheckedIterator;
+import xmlparser.XmlParser;
+import xmlparser.utils.Interfaces.CheckedIterator;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -25,7 +25,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 
 public enum Script {;
 
-    public static TagProcessor newScriptProcessor(final Logger log, final NekoCompiler html, final SimpleXml xml, final ScriptBag scripts) {
+    public static TagProcessor newScriptProcessor(final Logger log, final NekoCompiler html, final XmlParser xml, final ScriptBag scripts) {
         return (file, document, element) -> {
 
             if (!element.hasAttribute("src") && element.hasAttribute("inline"))

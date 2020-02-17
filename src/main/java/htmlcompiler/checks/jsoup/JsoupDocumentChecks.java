@@ -7,7 +7,7 @@ import org.jsoup.nodes.Element;
 import java.io.File;
 import java.nio.file.Path;
 
-import static com.google.common.base.Strings.isNullOrEmpty;
+import static xmlparser.utils.Functions.isNullOrEmpty;
 
 public enum JsoupDocumentChecks {;
 

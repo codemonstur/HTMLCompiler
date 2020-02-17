@@ -13,7 +13,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
-import simplexml.SimpleXml;
+import xmlparser.XmlParser;
 
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
@@ -62,7 +62,7 @@ public abstract class DefaultNekoCompiler implements NekoCompiler {
         processors.put("style", newStyleProcessor());
         processors.put("link", newLinkProcessor(html, log));
         processors.put("img", newImageProcessor(html));
-        processors.put("script", newScriptProcessor(log, html, new SimpleXml(), scripts));
+        processors.put("script", newScriptProcessor(log, html, new XmlParser(), scripts));
         processors.put("body", newBodyProcessor(scripts));
         processors.put("head", newHeadProcessor(scripts));
         processors.put("import", newImportProcessor(html));

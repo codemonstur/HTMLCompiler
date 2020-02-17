@@ -1,0 +1,168 @@
+// I removed some a bunch of the configured template engines, these really
+// don't add anything. I left pebble as the only classic template engine
+// and Jade4J because it is clearly better than the rest.
+
+/*
+    , entry(".md", newHtmlCompiler(html, newMarkdownEngine()))
+    , entry(".hb", newHtmlCompiler(html, newHandlebarsEngine(context)))
+    , entry(".jinjava", newHtmlCompiler(html, newJinJavaEngine(context)))
+    , entry(".twig", newHtmlCompiler(html, newJTwigEngine(context)))
+    , entry(".mustache", newHtmlCompiler(html, newMustacheEngine(context)))
+    , entry(".thymeleaf", newHtmlCompiler(html, newThymeleafEngine(context)))
+*/
+
+  - repository: com.vladsch.flexmark:flexmark-all:0.50.40
+  - repository: com.github.jknack:handlebars:4.1.2
+  - repository: org.jtwig:jtwig-core:5.87.0.RELEASE
+  - repository: com.hubspot.jinjava:jinjava:2.5.2
+  - repository: org.trimou:trimou-core:2.5.0.Final
+  - repository: org.thymeleaf:thymeleaf:3.0.11.RELEASE
+  # Other options for template engines:
+  # https://github.com/playframework/twirl
+  # http://www.jproggy.org/snippetory/
+  # https://mixer2.org/
+  # https://github.com/tiagobento/watertemplate-engine
+  # https://github.com/subchen/jetbrick-template-2x
+  # http://rythmengine.org/
+  # https://www.jamon.org/index.html
+  # https://www.stringtemplate.org/
+  # Where is the documentation for using this??
+  # - repository: com.github.enpassant:ickenham_2.12:1.4.1
+  # This one is being difficult with documentation, don't know where to make it compile a single template
+  # - repository: com.x5dev:chunk-templates:3.5.0
+
+<!--
+Other options for template engines:
+https://github.com/playframework/twirl
+http://www.jproggy.org/snippetory/
+https://mixer2.org/
+https://github.com/tiagobento/watertemplate-engine
+https://github.com/subchen/jetbrick-template-2x
+http://rythmengine.org/
+https://www.jamon.org/index.html
+https://www.stringtemplate.org/
+-->
+
+<!--
+        Where is the documentation for using this??
+        <dependency>
+            <groupId>com.github.enpassant</groupId>
+            <artifactId>ickenham_2.12</artifactId>
+            <version>1.4.1</version>
+        </dependency>
+-->
+
+<!--
+        This one is being difficult with documentation, don't know where to make it compile a single template
+        <dependency>
+            <groupId>com.x5dev</groupId>
+            <artifactId>chunk-templates</artifactId>
+            <version>3.5.0</version>
+        </dependency>
+-->
+
+/*
+    <dependency>
+        <groupId>com.github.jknack</groupId>
+        <artifactId>handlebars</artifactId>
+        <version>4.1.2</version>
+    </dependency>
+
+    public static HtmlTemplateEngine newHandlebarsEngine(final Map<String, String> context) {
+        final var handlebars = new com.github.jknack.handlebars.Handlebars();
+        return file -> {
+            final Template template = handlebars.compile(file.toAbsolutePath().toString());
+            return template.apply(context);
+        };
+    }
+*/
+
+/*
+    <dependency>
+        <groupId>com.hubspot.jinjava</groupId>
+        <artifactId>jinjava</artifactId>
+        <version>2.5.2</version>
+    </dependency>
+
+    public static HtmlTemplateEngine newJinJavaEngine(final Map<String, String> context) {
+        final var jinjava = new com.hubspot.jinjava.Jinjava();
+        return file -> jinjava.render(Files.readString(file), context);
+    }
+*/
+
+/*
+    <dependency>
+        <groupId>org.jtwig</groupId>
+        <artifactId>jtwig-core</artifactId>
+        <version>5.87.0.RELEASE</version>
+    </dependency>
+
+    public static HtmlTemplateEngine newJTwigEngine(final Map<String, String> context) {
+        return file -> {
+            final JtwigModel model = JtwigModel.newModel(Collections.unmodifiableMap(context));
+            return JtwigTemplate.fileTemplate(file.toFile()).render(model);
+        };
+    }
+*/
+
+/*
+    <dependency>
+        <groupId>com.vladsch.flexmark</groupId>
+        <artifactId>flexmark-all</artifactId>
+        <version>0.50.40</version>
+    </dependency>
+
+    public static HtmlTemplateEngine newMarkdownEngine() {
+        final MutableDataSet options = new MutableDataSet();
+        final Parser parser = Parser.builder(options).build();;
+        final HtmlRenderer renderer = HtmlRenderer.builder(options).build();
+        return file -> {
+            try (final var reader = newBufferedReader(file)) {
+                return renderer.render(parser.parseReader(reader));
+            }
+        };
+    }
+*/
+
+/*
+    <dependency>
+        <groupId>org.trimou</groupId>
+        <artifactId>trimou-core</artifactId>
+        <version>2.5.0.Final</version>
+    </dependency>
+
+    public static HtmlTemplateEngine newMustacheEngine(final Map<String, String> context) {
+        final MustacheEngine engine = MustacheEngineBuilder.newBuilder().build();
+        return file -> engine.compileMustache(Files.readString(file)).render(context);
+    }
+*/
+
+/*
+    <dependency>
+        <groupId>org.thymeleaf</groupId>
+        <artifactId>thymeleaf</artifactId>
+        <version>3.0.11.RELEASE</version>
+    </dependency>
+
+    public static HtmlTemplateEngine newThymeleafEngine(final Map<String, String> context) {
+        final var engine = new TemplateEngine();
+        return file -> engine.process(Files.readString(file), toThymeleafContext(context));
+    }
+
+    public static IContext toThymeleafContext(final Map<String, String> map) {
+        return new IContext() {
+            public Locale getLocale() {
+                return Locale.getDefault();
+            }
+            public boolean containsVariable(String s) {
+                return map.containsKey(s);
+            }
+            public Set<String> getVariableNames() {
+                return map.keySet();
+            }
+            public Object getVariable(String s) {
+                return map.get(s);
+            }
+        };
+    }
+*/

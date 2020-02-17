@@ -1,14 +1,14 @@
 package htmlcompiler.tags.jsoup;
 
+import htmlcompiler.pojos.error.InvalidInput;
 import htmlcompiler.pojos.library.Attribute;
 import htmlcompiler.pojos.library.LibraryArchive;
 import htmlcompiler.pojos.library.LibraryDescription;
 import htmlcompiler.tags.jsoup.TagVisitor.TailVisitor;
-import htmlcompiler.pojos.error.InvalidInput;
 import org.jsoup.nodes.Element;
 
 import static htmlcompiler.tags.jsoup.TagParsingJsoup.replaceWith;
-import static simplexml.utils.Functions.isNullOrEmpty;
+import static xmlparser.utils.Functions.isNullOrEmpty;
 
 public enum Library {;
 
