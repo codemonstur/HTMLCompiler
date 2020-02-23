@@ -36,6 +36,7 @@ public enum HTML {;
         "onload", "onmessage", "onoffline", "ononline", "onpagehide", "onpageshow", "onpopstate",
         "onresize", "onstorage", "onunload", "role", "aria-valuenow", "aria-valuemin", "aria-valuemax",
         "aria-haspopup", "aria-expanded", "aria-hidden", "aria-controls", "aria-label", "xmlns",
-        "viewbox", "fill", "fill-rule", "aria-labelledby", "ondrop", "ondragover");
+        "viewbox", "fill", "fill-rule", "aria-labelledby", "ondrop", "ondragover", "aria-multiselectable",
+        "property");
 
 }

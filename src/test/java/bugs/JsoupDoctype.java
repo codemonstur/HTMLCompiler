@@ -3,7 +3,7 @@ package bugs;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
-import static junit.framework.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class JsoupDoctype {
 
