@@ -22,18 +22,16 @@ dependencies:
   - repository: com.google.javascript:closure-compiler:v20190929
     scope: test
   - repository: org.apache.maven:maven-plugin-api:3.6.2
+    scope: provided
   - repository: org.apache.maven.plugin-tools:maven-plugin-annotations:3.6.0
     scope: provided
   - repository: org.apache.maven:maven-project:2.2.1
+    scope: provided
   - repository: com.helger:ph-css:6.2.0
     scope: test
   - repository: net.sourceforge.cssparser:cssparser:0.9.27
     scope: test
-  - repository: org.junit.jupiter:junit-jupiter-api:5.5.2
-    scope: test
-  - repository: org.junit.jupiter:junit-jupiter-engine:5.5.2
-    scope: test
-  - repository: org.junit.jupiter:junit-jupiter-params:5.5.2
+  - repository: org.junit.jupiter:junit-jupiter:5.6.0
     scope: test
 
 build

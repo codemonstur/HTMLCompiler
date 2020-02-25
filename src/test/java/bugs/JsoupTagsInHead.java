@@ -6,7 +6,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.parser.Parser;
 import org.junit.jupiter.api.Test;
 
-import static junit.framework.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static util.Factory.newDefaultHtmlCompressor;
 
 public class JsoupTagsInHead {

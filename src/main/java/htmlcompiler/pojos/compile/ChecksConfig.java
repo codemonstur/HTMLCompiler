@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 
 import java.io.IOException;
 import java.io.Reader;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
@@ -13,6 +12,7 @@ import java.util.Map;
 import java.util.Set;
 
 import static java.nio.file.Files.isRegularFile;
+import static java.nio.file.Files.newBufferedReader;
 import static java.util.Collections.emptySet;
 
 public final class ChecksConfig {
@@ -38,7 +38,7 @@ public final class ChecksConfig {
         final Path confFile = Paths.get(confLocation);
         if (!isRegularFile(confFile)) return new ChecksConfig(emptySet(), emptySet(), new HashMap<>());
 
-        try (final Reader in = Files.newBufferedReader(confFile)) {
+        try (final Reader in = newBufferedReader(confFile)) {
             return gson.fromJson(in, ChecksConfig.class);
         }
     }
