@@ -103,9 +103,9 @@ public enum Host {;
                     queue.clear();
                     log.warn("Compiling all files in root");
                     for (final var path : rootPages) {
-                        log.warn("Compiling file " + take.path);
+                        log.warn("Compiling file " + path);
                         ttc.compileTemplate(path);
-                        log.warn("Compiled file " + take.path);
+                        log.warn("Compiled file " + path);
                     }
                     log.warn("Compiled all files in root");
                 }
