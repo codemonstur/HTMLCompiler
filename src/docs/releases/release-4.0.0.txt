@@ -1,0 +1,5 @@
+4.0.0
+
+Fixed logging bug in host command
+Added some known attributes
+Removed majority of template engines
