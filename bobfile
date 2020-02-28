@@ -1,5 +1,5 @@
 vendor: com.github.codemonstur
-version: 4.0.1
+version: 4.0.0
 packaging: maven-plugin
 dependencies:
   - repository: org.jsoup:jsoup:1.12.1
