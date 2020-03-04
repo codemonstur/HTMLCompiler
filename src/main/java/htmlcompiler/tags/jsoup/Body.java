@@ -14,7 +14,7 @@ public enum Body {;
                 if (!startCode.isEmpty()) {
                     final Element scriptStart = node.ownerDocument().createElement("script");
                     scriptStart.text(startCode);
-                    node.childNodes().add(0, scriptStart);
+                    node.prependChild(scriptStart);
                 }
             }
             public void tail(Path file, Element node, int depth) {
@@ -22,7 +22,7 @@ public enum Body {;
                 if (!code.isEmpty()) {
                     final Element script = node.ownerDocument().createElement("script");
                     script.text(code);
-                    node.childNodes().add(script);
+                    node.appendChild(script);
                 }
             }
         };
