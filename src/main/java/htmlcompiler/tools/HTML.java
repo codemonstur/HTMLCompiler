@@ -14,7 +14,8 @@ public enum HTML {;
         "q", "rb", "rp", "rt", "rtc", "ruby", "s", "samp", "script", "section", "select", "small", "source",
         "span", "strong", "style", "sub", "summary", "sup", "table", "tbody", "td", "template", "textarea",
         "tfoot", "th", "thead", "time", "title", "tr", "track", "u", "ul", "var", "video", "wbr", "#root",
-        "path");
+        "path", "lineargradient", "stop", "g", "defs", "rect", "circle", "fecolormatrix", "fegaussianblur",
+        "feoffset", "filter", "radialgradient");
 
     // https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes
     public static final Set<String> known_attributes = Set.of("accept", "accept-charset", "accesskey",
@@ -37,6 +38,7 @@ public enum HTML {;
         "onresize", "onstorage", "onunload", "role", "aria-valuenow", "aria-valuemin", "aria-valuemax",
         "aria-haspopup", "aria-expanded", "aria-hidden", "aria-controls", "aria-label", "xmlns",
         "viewbox", "fill", "fill-rule", "aria-labelledby", "ondrop", "ondragover", "aria-multiselectable",
-        "property");
+        "property", "stop-color", "stop-opacity", "offset", "x1", "y1", "x2", "y2", "rx", "x",
+        "transform", "values", "in", "stdDeviation", "result", "y", "filterunits");
 
 }
