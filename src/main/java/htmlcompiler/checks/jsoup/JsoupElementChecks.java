@@ -47,7 +47,8 @@ public enum JsoupElementChecks {;
     }
 
     public static void missingPlaceholderForInputs(final Logger log, final ChecksConfig config, final Path file, final Element element) {
-        if ("input".equals(element.tagName()) && isNullOrEmpty(element.attr("placeholder")))
+        if ("input".equals(element.tagName())
+         && !element.hasAttr("disabled") && isNullOrEmpty(element.attr("placeholder")))
             log.warn("File " + file + " contains an input tag without a placeholder attribute");
     }
 
@@ -209,7 +210,7 @@ public enum JsoupElementChecks {;
     public static void inputWithoutMaxLength(final Logger log, final ChecksConfig config, final Path file, final Element element) {
         if ( "input".equalsIgnoreCase(element.tagName())
           && "text".equalsIgnoreCase(element.attr("type"))
-          && !element.hasAttr("maxlength")) {
+          && !element.hasAttr("disabled") && !element.hasAttr("maxlength")) {
             log.warn("File " + file + " has a text input without a maxlength attribute");
         }
     }
