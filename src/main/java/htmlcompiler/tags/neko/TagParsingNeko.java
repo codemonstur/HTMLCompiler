@@ -28,6 +28,7 @@ public enum TagParsingNeko {;
         NamedNodeMap attributes = from.getAttributes(); Node attribute;
         for (int i = 0; i < attributes.getLength(); i++) {
             attribute = attributes.item(i);
+            to.removeAttribute(attribute.getNodeName());
             to.setAttribute(attribute.getNodeName(), attribute.getNodeValue());
         }
     }

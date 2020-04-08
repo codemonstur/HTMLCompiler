@@ -1,5 +1,6 @@
 package htmlcompiler.pojos.httpmock;
 
+import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpHandler;
 
 import java.util.List;
@@ -32,11 +33,16 @@ public final class Request {
 
     public static HttpHandler toHttpHandler(final Request request) {
         return exchange -> {
+            final Headers responseHeaders = exchange.getResponseHeaders();
             for (final Header header : request.headers) {
-                exchange.getResponseHeaders().add(header.name, header.value);
+                if ("Content-Length".equalsIgnoreCase(header.name)) continue;
+                responseHeaders.add(header.name, header.value);
             }
-            exchange.sendResponseHeaders(request.statusCode, request.body.length());
-            exchange.getResponseBody().write(request.body.getBytes(UTF_8));
+            final byte[] bodyBytes = request.body.getBytes(UTF_8);
+            final int bodyLength = bodyBytes.length == 0 ? -1 : bodyBytes.length;
+
+            exchange.sendResponseHeaders(request.statusCode, bodyLength);
+            exchange.getResponseBody().write(bodyBytes);
             exchange.close();
         };
     }

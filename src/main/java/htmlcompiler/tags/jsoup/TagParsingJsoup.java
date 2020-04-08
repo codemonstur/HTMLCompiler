@@ -21,6 +21,7 @@ public enum TagParsingJsoup {;
 
     public static void copyAttributes(final Element from, final Element to) {
         for (final Attribute attribute : from.attributes()) {
+            to.removeAttr(attribute.getKey());
             to.attr(attribute.getKey(), attribute.getValue());
         }
     }
