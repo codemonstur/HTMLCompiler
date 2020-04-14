@@ -19,6 +19,7 @@ public enum Image {;
                 if (location.toString().endsWith(".svg")) {
                     final Element newImage = newElementOf(document, location, html);
                     element.removeAttribute("inline");
+                    element.removeAttribute("src");
                     copyAttributes(element, newImage);
                     replaceTag(element, newImage);
                     return true;

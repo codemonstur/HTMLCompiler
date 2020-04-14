@@ -21,6 +21,7 @@ public enum Image {;
                 if (location.toString().endsWith(".svg")) {
                     final Element newImage = compiler.compileHtmlFragment(location, Files.readString(location)).child(0);
                     node.removeAttr("inline");
+                    node.removeAttr("src");
 
                     copyAttributes(node, newImage);
                     replaceWith(node, newImage);
