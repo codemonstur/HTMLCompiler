@@ -1,0 +1,6 @@
+4.2.0
+
+Removed unneccesary src attribute from inlined svgs
+Fixed bug with data length in mockserver http handler
+Placeholder and maxlength check only fire if not disabled attribute
+Disabled preview features in bobfile
