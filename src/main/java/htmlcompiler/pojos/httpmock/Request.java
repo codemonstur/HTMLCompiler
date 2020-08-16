@@ -21,16 +21,6 @@ public final class Request {
         this.body = body;
     }
 
-    private static class Header {
-        private final String name;
-        private final String value;
-
-        private Header(final String name, final String value) {
-            this.name = name;
-            this.value = value;
-        }
-    }
-
     public static HttpHandler toHttpHandler(final Request request) {
         return exchange -> {
             final Headers responseHeaders = exchange.getResponseHeaders();

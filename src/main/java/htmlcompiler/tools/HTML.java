@@ -40,6 +40,6 @@ public enum HTML {;
         "viewbox", "fill", "fill-rule", "aria-labelledby", "ondrop", "ondragover", "aria-multiselectable",
         "property", "stop-color", "stop-opacity", "offset", "x1", "y1", "x2", "y2", "rx", "x",
         "transform", "values", "in", "stdDeviation", "result", "y", "filterunits", "onclick",
-        "pointer-events", "stroke", "stroke-miterlimit", "stroke-width", "visibility");
+        "pointer-events", "stroke", "stroke-miterlimit", "stroke-width", "visibility", "fill-opacity");
 
 }

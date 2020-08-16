@@ -65,6 +65,7 @@ public final class JsoupCheckListBuilder {
         addIfEnabled("has_event_handler_attribute", JsoupElementChecks::hasEventHandlerAttribute);
         addIfEnabled("is_valid_tag", JsoupElementChecks::isValidTag);
         addIfEnabled("is_valid_attribute", JsoupElementChecks::isValidAttribute);
+        addIfEnabled("button_has_href", JsoupElementChecks::buttonHasHref);
         return this;
     }
 }

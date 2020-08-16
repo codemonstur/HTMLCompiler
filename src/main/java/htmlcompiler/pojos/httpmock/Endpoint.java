@@ -9,7 +9,7 @@ public final class Endpoint {
     private final String method;
     private final String path;
 
-    private Endpoint(final String method, final String path) {
+    public Endpoint(final String method, final String path) {
         this.method = method;
         this.path = path;
     }

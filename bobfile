@@ -36,5 +36,5 @@ dependencies:
     scope: test
 
 build
-    echo "[${PROJECT_NAME}] Building"
+    echo [${PROJECT_NAME}] Building
     run-target -i clean build
