@@ -1,26 +1,34 @@
 package incubation;
 
-import com.google.javascript.jscomp.*;
-import com.google.javascript.jscomp.CompilerOptions.ExtractPrototypeMemberDeclarationsMode;
-import com.google.javascript.jscomp.CompilerOptions.PropertyCollapseLevel;
-import com.google.javascript.jscomp.CompilerOptions.Reach;
-import com.helger.css.decl.*;
-import com.helger.css.reader.CSSReader;
-import com.helger.css.writer.CSSWriter;
-import com.helger.css.writer.CSSWriterSettings;
-import htmlcompiler.pojos.error.InvalidInput;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
-
-import static com.helger.css.ECSSVersion.CSS30;
-import static java.nio.charset.StandardCharsets.UTF_8;
-
 public final class CssUnused {
     private CssUnused() {}
+
+/*
+    This code was meant to detect and remove unused CSS from a given page.
+    I doubt such a thing is even possible. What about html and classes created through JS?
+    I don't think I'll ever pick this back up, and the library that I use for this fails
+    with bob so that's another thing.
+
+    <dependency>
+        <groupId>com.helger</groupId>
+        <artifactId>ph-css</artifactId>
+        <version>6.2.0</version>
+        <scope>test</scope>
+    </dependency>
+
+    bob can't find the version number for the dependency of this library:
+    [ERROR] Failed to execute target 'build':
+    [ERROR] Caused by: internalcommandfailed: Command run-target failed
+    [ERROR] Caused by: dependencyresolutionfailed: Failed to create dependency tree for project 'htmlcompiler'
+    [ERROR] Caused by: dependencyresolutionfailed: Failed to create dependency tree for dependency 'repository: com.helger:ph-css:6.2.0'
+    [ERROR] Caused by: dependencyresolutionfailed: Failed to build POM dependency tree for com.helger:ph-css:6.2.0
+    [ERROR] Caused by: invalidinput: dependency is missing version; com.helger:ph-commons
+
+    Maven reports this version as 9.3.4:
+    [INFO] +- com.helger:ph-css:jar:6.2.0:test
+    [INFO] |  \- com.helger:ph-commons:jar:9.3.4:test
+
+    Maybe I'll debug this one day.
 
     private static final Set<String> tags = new HashSet<>(Arrays.asList("body", "html", "b"));
     private static final Set<String> classes = new HashSet<>(Arrays.asList("classone", "classtwo"));
@@ -118,6 +126,7 @@ public final class CssUnused {
         }
         return true;
     }
+*/
 
 /*
     private static void readWithCSSOMParser(final File file) throws IOException {

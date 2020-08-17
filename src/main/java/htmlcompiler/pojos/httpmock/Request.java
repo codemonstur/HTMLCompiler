@@ -2,9 +2,13 @@ package htmlcompiler.pojos.httpmock;
 
 import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpHandler;
+import htmlcompiler.services.HttpHandlers;
 
+import java.nio.file.Path;
 import java.util.List;
 
+import static htmlcompiler.services.HttpHandlers.sendFile;
+import static htmlcompiler.services.HttpHandlers.toFile;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 public final class Request {
@@ -21,18 +25,18 @@ public final class Request {
         this.body = body;
     }
 
-    private static class Header {
-        private final String name;
-        private final String value;
+    public static HttpHandler toHttpHandler(final Request request, final Path... directories) {
+        if (request.statusCode == 604) { // 604 is 2 times a 302, we want to send the file at Location
+            final var location = toLocationHeader(request);
+            if (location == null) return HttpHandlers::send404;
 
-        private Header(final String name, final String value) {
-            this.name = name;
-            this.value = value;
-        }
-    }
-
-    public static HttpHandler toHttpHandler(final Request request) {
-        return exchange -> {
+            for (final Path dir : directories) {
+                final var file = toFile(dir, location.value, null);
+                if (file == null) continue;
+                return exchange -> sendFile(exchange, file);
+            }
+            return HttpHandlers::send404;
+        } else return exchange -> {
             final Headers responseHeaders = exchange.getResponseHeaders();
             for (final Header header : request.headers) {
                 if ("Content-Length".equalsIgnoreCase(header.name)) continue;
@@ -45,5 +49,12 @@ public final class Request {
             exchange.getResponseBody().write(bodyBytes);
             exchange.close();
         };
+    }
+
+    private static Header toLocationHeader(final Request request) {
+        for (final var header : request.headers)
+            if ("Location".equalsIgnoreCase(header.name))
+                return header;
+        return null;
     }
 }

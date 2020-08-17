@@ -2,6 +2,7 @@ package htmlcompiler.services;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 import htmlcompiler.pojos.httpmock.Endpoint;
@@ -17,7 +18,8 @@ import java.util.Map;
 
 import static htmlcompiler.pojos.httpmock.Endpoint.toKey;
 import static htmlcompiler.pojos.httpmock.Request.toHttpHandler;
-import static java.nio.file.Files.*;
+import static htmlcompiler.services.HttpHandlers.pathHandler;
+import static xmlparser.utils.Functions.isNullOrEmpty;
 
 public enum Http {;
 
@@ -25,7 +27,7 @@ public enum Http {;
             , final String requestApiSpecification, final Path... pathsToHost) throws IOException {
         HttpHandler handler = pathHandler(pathsToHost);
         if (requestApiEnabled) {
-            handler = fakeApiHandler(toApiMap(fileToSpec(requestApiSpecification)), handler);
+            handler = fakeApiHandler(toApiMap(fileToSpec(requestApiSpecification), pathsToHost), handler);
         }
 
         return HttpServer
@@ -34,60 +36,34 @@ public enum Http {;
             .getServer();
     }
 
-    private static List<Request> fileToSpec(final String filename) throws IOException {
+    private static Map<String, List<Request>> fileToSpec(final String filename) throws IOException {
         final String data = Files.readString(Path.of(filename));
-        return new Gson().fromJson(data, new TypeToken<List<Request>>(){}.getType());
+        return new Gson().fromJson(data, new TypeToken<Map<String, List<Request>>>(){}.getType());
     }
 
-    private static Map<Endpoint, HttpHandler> toApiMap(final List<Request> requests) {
-        final Map<Endpoint, HttpHandler> map = new HashMap<>();
-        for (final Request spec : requests) {
-            map.put(spec.endpoint, toHttpHandler(spec));
-        }
-        return map;
-    }
-
-    private static HttpHandler fakeApiHandler(final Map<Endpoint, HttpHandler> api, final HttpHandler next) {
-        return exchange -> api.getOrDefault(toKey(exchange), next).handle(exchange);
-    }
-
-    private static HttpHandler pathHandler(final Path... directories) {
-        return exchange -> {
-            if (!"/".equals(exchange.getRequestURI().getPath())) {
-                for (final Path dir : directories) {
-                    final Path file = toFile(dir, exchange.getRequestURI().getPath(), null);
-                    if (file == null) continue;
-
-                    exchange.getResponseHeaders().add("Content-Type", addCharset(probeContentType(file)));
-                    final long length = Files.size(file);
-                    if (length > 0) {
-                        exchange.sendResponseHeaders(200, length);
-                        Files.copy(file, exchange.getResponseBody());
-                    } else {
-                        exchange.sendResponseHeaders(200, -1);
-                    }
-                    exchange.close();
-                    return;
-                }
+    private static Map<String, Map<Endpoint, HttpHandler>> toApiMap(final Map<String, List<Request>> requests
+            , final Path... pathsToHost) {
+        final var api = new HashMap<String, Map<Endpoint, HttpHandler>>();
+        for (final var entry : requests.entrySet()) {
+            final var handlers = new HashMap<Endpoint, HttpHandler>();
+            for (final Request spec : entry.getValue()) {
+                handlers.put(spec.endpoint, toHttpHandler(spec, pathsToHost));
             }
-
-            exchange.sendResponseHeaders(404, -1);
-            exchange.close();
-        };
+            api.put(entry.getKey(), handlers);
+        }
+        return api;
     }
 
-    private static String addCharset(final String contentType) {
-        if ("text/html".equals(contentType)) return "text/html; charset=UTF-8";
-        if ("text/plain".equals(contentType)) return "text/plain; charset=UTF-8";
-        return contentType;
+    private static HttpHandler fakeApiHandler(final Map<String, Map<Endpoint, HttpHandler>> api, final HttpHandler next) {
+        return exchange -> api.get(toVirtualHost(exchange)).getOrDefault(toKey(exchange), next).handle(exchange);
     }
 
-    private static Path toFile(final Path dir, final String requestPath, final Path defaultValue) {
-        final Path requested = dir.resolve(requestPath.substring(1));
-        return (!isChildOf(requested, dir) || !isRegularFile(requested) || !isReadable(requested)) ? defaultValue : requested;
+    private static String toVirtualHost(final HttpExchange exchange) {
+        final String host = exchange.getRequestHeaders().getFirst("Host");
+        if (isNullOrEmpty(host)) return "";
+        int colonIndex = host.indexOf(':');
+        if (colonIndex == -1) return host;
+        return host.substring(0, colonIndex);
     }
 
-    private static boolean isChildOf(final Path child, final Path parent) {
-        return child.startsWith(parent);
-    }
 }

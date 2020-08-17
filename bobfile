@@ -28,13 +28,13 @@ dependencies:
     scope: provided
   - repository: org.apache.maven:maven-project:2.2.1
     scope: provided
-  - repository: com.helger:ph-css:6.2.0
-    scope: test
+#  - repository: com.helger:ph-css:6.2.0
+#    scope: test
   - repository: net.sourceforge.cssparser:cssparser:0.9.27
     scope: test
   - repository: org.junit.jupiter:junit-jupiter:5.6.0
     scope: test
 
 build
-    echo "[${PROJECT_NAME}] Building"
+    echo [${PROJECT_NAME}] Building
     run-target -i clean build
