@@ -1,0 +1,6 @@
+4.3.0
+
+Added known HTML tags and attributes
+Added virtualhost abilities to the mock api
+Added MockApi class to htmlcompiler
+Added button-href check
