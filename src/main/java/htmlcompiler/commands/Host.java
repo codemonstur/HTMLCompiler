@@ -1,6 +1,5 @@
 package htmlcompiler.commands;
 
-import com.google.gson.Gson;
 import htmlcompiler.compilers.TemplateThenCompile;
 import htmlcompiler.pojos.compile.CompilerType;
 import htmlcompiler.pojos.compile.Task;
@@ -52,9 +51,8 @@ public enum Host {;
     }
 
     public static void executeHost(final Logger log, final HostCommandConfig config) throws IOException, InterruptedException {
-        final var gson = new Gson();
-        final var libs = new LibraryArchive(gson);
-        final var checksSettings = readChecksConfiguration(config.validation, gson);
+        final var libs = new LibraryArchive();
+        final var checksSettings = readChecksConfiguration(config.validation);
         final var html = config.type.newHtmlCompiler(log, libs, checksSettings);
         final var ttc = newTemplateThenCompile(config.inputDir, config.outputDir, config.replaceExtension, config.variables, html);
         final var queue = new LinkedBlockingQueue<Task>();

@@ -40,7 +40,7 @@ public enum Link {;
                 return;
             }
             if (!node.hasAttr("integrity") && !node.hasAttr("no-integrity")) {
-                addIntegrityAttributes(node, node.attr("href"), file, log);
+                addIntegrityAttributes(node, node.attr("href"), log);
             }
             if (node.hasAttr("to-absolute")) {
                 makeAbsolutePath(node, "href");

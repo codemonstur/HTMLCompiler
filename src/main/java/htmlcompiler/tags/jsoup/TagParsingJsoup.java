@@ -12,10 +12,9 @@ import java.nio.file.Path;
 import java.security.NoSuchAlgorithmException;
 
 import static htmlcompiler.pojos.compile.ImageType.toMimeType;
+import static htmlcompiler.services.Repository.uriToIntegrityValue;
 import static htmlcompiler.tools.Coding.encodeBase64;
-import static htmlcompiler.tools.Coding.sha384;
-import static htmlcompiler.tools.HTTP.*;
-import static java.lang.String.format;
+import static htmlcompiler.tools.HTTP.isUrl;
 
 public enum TagParsingJsoup {;
 
@@ -54,9 +53,6 @@ public enum TagParsingJsoup {;
         return "data:"+type+";base64,"+encodeBase64(data);
     }
 
-    public static String toIntegrityValue(final byte[] data) throws NoSuchAlgorithmException {
-        return "sha384-"+encodeBase64(sha384(data));
-    }
 
     public static void makeAbsolutePath(final Element element, final String attribute) {
         final String path = element.attr(attribute);
@@ -67,16 +63,16 @@ public enum TagParsingJsoup {;
     }
 
     public static void addIntegrityAttributes(final Element element, final String url
-            , final Path file, final Logger log) throws IOException, NoSuchAlgorithmException {
+            , final Logger log) throws IOException, NoSuchAlgorithmException {
         try {
-            if (isUrl(url) && (element.hasAttr("force-integrity") || urlHasCorsAllowed(url))) {
-                element.attr("integrity", toIntegrityValue(urlToByteArray(url)));
-                element.removeAttr("force-integrity");
-                if (!element.hasAttr("crossorigin")) element.attr("crossorigin", "anonymous");
-                log.warn(format("File %s has tag without integrity, rewrote to: %s", file.normalize(), element.outerHtml()));
+            if (isUrl(url)) {
+                element.attr("integrity", uriToIntegrityValue(url));
+                if (!element.hasAttr("crossorigin"))
+                    element.attr("crossorigin", "anonymous");
             }
         } catch (IOException e) {
-            log.warn("Failed to get data for tag src/href attribute " + url + ", error is " + e.getMessage());
+            log.warn("Failed to get data for tag src/href attribute " + url);
+            log.warn(e.getMessage());
             throw e;
         }
     }

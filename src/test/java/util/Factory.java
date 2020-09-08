@@ -1,6 +1,5 @@
 package util;
 
-import com.google.gson.Gson;
 import com.googlecode.htmlcompressor.compressor.HtmlCompressor;
 import htmlcompiler.compilers.html.HtmlCompiler;
 import htmlcompiler.pojos.compile.ChecksConfig;
@@ -19,9 +18,8 @@ import static java.util.EnumSet.of;
 public enum Factory {;
 
     public static Stream<HtmlCompiler> provideCompilers() {
-        final Gson gson = new Gson();
         final Logger log = newLogger(System.out::println, System.out::println);
-        final LibraryArchive archive = new LibraryArchive(gson);
+        final LibraryArchive archive = new LibraryArchive();
         final ChecksConfig checks = new ChecksConfig(emptySet(), emptySet(), new HashMap<>());
         return complementOf(of(nop)).stream().map(type -> type.newHtmlCompiler(log, archive, checks));
     }

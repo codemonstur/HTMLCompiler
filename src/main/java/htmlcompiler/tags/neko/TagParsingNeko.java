@@ -8,17 +8,15 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
-import javax.xml.transform.TransformerException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.NoSuchAlgorithmException;
 
 import static htmlcompiler.pojos.compile.ImageType.toMimeType;
+import static htmlcompiler.services.Repository.uriToIntegrityValue;
 import static htmlcompiler.tools.Coding.encodeBase64;
-import static htmlcompiler.tools.Coding.sha384;
-import static htmlcompiler.tools.HTTP.*;
-import static java.lang.String.format;
+import static htmlcompiler.tools.HTTP.isUrl;
 import static java.nio.file.Files.readAllBytes;
 
 public enum TagParsingNeko {;
@@ -87,10 +85,6 @@ public enum TagParsingNeko {;
         return "data:"+type+";base64,"+encodeBase64(data);
     }
 
-    public static String toIntegrityValue(final byte[] data) throws NoSuchAlgorithmException {
-        return "sha384-"+encodeBase64(sha384(data));
-    }
-
     public static void makeAbsolutePath(final Element element, final String attribute) {
         final String path = element.getAttribute(attribute);
         if (path != null && !isUrl(path)) {
@@ -99,14 +93,13 @@ public enum TagParsingNeko {;
         }
     }
 
-    public static void addIntegrityAttributes(final Element element, final String url, final Path file
-            , final NekoCompiler html, final Logger log) throws IOException, NoSuchAlgorithmException, TransformerException {
+    public static void addIntegrityAttributes(final Element element, final String url, final Logger log)
+            throws IOException, NoSuchAlgorithmException {
         try {
-            if (isUrl(url) && (element.hasAttribute("force-integrity") || urlHasCorsAllowed(url))) {
-                element.setAttribute("integrity", toIntegrityValue(urlToByteArray(url)));
-                element.removeAttribute("force-integrity");
-                if (!element.hasAttribute("crossorigin")) element.setAttribute("crossorigin", "anonymous");
-                log.warn(format("File %s has tag without integrity, rewrote to: %s", file.normalize(), html.toHtml(element)));
+            if (isUrl(url)) {
+                element.setAttribute("integrity", uriToIntegrityValue(url));
+                if (!element.hasAttribute("crossorigin"))
+                    element.setAttribute("crossorigin", "anonymous");
             }
         } catch (IOException e) {
             log.warn("Failed to get data for tag src/href attribute " + url + ", error is " + e.getMessage());

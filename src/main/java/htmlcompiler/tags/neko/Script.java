@@ -99,7 +99,7 @@ public enum Script {;
                 return false;
             }
             if (element.hasAttribute("src") && !element.hasAttribute("integrity") && !element.hasAttribute("no-integrity")) {
-                addIntegrityAttributes(element, element.getAttribute("src"), file, html, log);
+                addIntegrityAttributes(element, element.getAttribute("src"), log);
             }
             if (element.hasAttribute("to-absolute")) {
                 makeAbsolutePath(element, "src");

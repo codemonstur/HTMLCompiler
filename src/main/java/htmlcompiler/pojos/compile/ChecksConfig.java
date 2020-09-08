@@ -1,7 +1,5 @@
 package htmlcompiler.pojos.compile;
 
-import com.google.gson.Gson;
-
 import java.io.IOException;
 import java.io.Reader;
 import java.nio.file.Path;
@@ -11,6 +9,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import static htmlcompiler.tools.Json.GSON;
 import static java.nio.file.Files.isRegularFile;
 import static java.nio.file.Files.newBufferedReader;
 import static java.util.Collections.emptySet;
@@ -33,13 +32,13 @@ public final class ChecksConfig {
         this.checks = checks;
     }
 
-    public static ChecksConfig readChecksConfiguration(final String confLocation, final Gson gson) throws IOException {
+    public static ChecksConfig readChecksConfiguration(final String confLocation) throws IOException {
         if (confLocation.isBlank()) return new ChecksConfig(emptySet(), emptySet(), new HashMap<>());
         final Path confFile = Paths.get(confLocation);
         if (!isRegularFile(confFile)) return new ChecksConfig(emptySet(), emptySet(), new HashMap<>());
 
         try (final Reader in = newBufferedReader(confFile)) {
-            return gson.fromJson(in, ChecksConfig.class);
+            return GSON.fromJson(in, ChecksConfig.class);
         }
     }
 

@@ -1,6 +1,5 @@
 package htmlcompiler.pojos.library;
 
-import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -13,13 +12,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static htmlcompiler.tools.Json.GSON;
+
 public final class LibraryArchive {
 
     private final Map<LibraryKey, LibraryDescription> archive;
-    public LibraryArchive(final Gson gson) {
+
+    public LibraryArchive() {
         this.archive = new HashMap<>();
         try (final Reader reader = new InputStreamReader(LibraryArchive.class.getResourceAsStream("/library-archive.json"))) {
-            final List<LibraryRecord> list = gson.fromJson(reader, new TypeToken<ArrayList<LibraryRecord>>(){}.getType());
+            final List<LibraryRecord> list = GSON.fromJson(reader, new TypeToken<ArrayList<LibraryRecord>>(){}.getType());
             for (final LibraryRecord record : list) {
                 archive.put(LibraryKey.toLibraryKey(record), LibraryDescription.toLibraryDescription(record));
             }
