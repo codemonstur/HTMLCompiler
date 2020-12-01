@@ -15,6 +15,7 @@ import static htmlcompiler.compilers.scripts.CssCompiler.compressCssCode;
 import static htmlcompiler.pojos.compile.ImageType.toMimeType;
 import static htmlcompiler.pojos.compile.StyleType.css;
 import static htmlcompiler.pojos.compile.StyleType.detectStyleType;
+import static htmlcompiler.services.RepositoryVersions.checkVersionLibrary;
 import static htmlcompiler.tags.jsoup.TagParsingJsoup.*;
 import static htmlcompiler.tools.IO.toLocation;
 import static java.nio.file.Files.readAllBytes;
@@ -27,6 +28,9 @@ public enum Link {;
                 inlineFavicon(node, file);
                 return;
             }
+            if (isLinkStyleSheet(node) && node.hasAttr("href"))
+                checkVersionLibrary(log, file.toString(), node.attr("href"));
+
             if (isLinkStyleSheet(node) && node.hasAttr("inline")) {
                 final Element style = inlineStylesheet(node, file, node.ownerDocument());
 

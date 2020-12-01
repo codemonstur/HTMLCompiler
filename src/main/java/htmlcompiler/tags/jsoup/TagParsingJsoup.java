@@ -12,7 +12,7 @@ import java.nio.file.Path;
 import java.security.NoSuchAlgorithmException;
 
 import static htmlcompiler.pojos.compile.ImageType.toMimeType;
-import static htmlcompiler.services.Repository.uriToIntegrityValue;
+import static htmlcompiler.services.RepositoryHashes.uriToIntegrityValue;
 import static htmlcompiler.tools.Coding.encodeBase64;
 import static htmlcompiler.tools.HTTP.isUrl;
 

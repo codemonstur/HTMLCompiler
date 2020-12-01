@@ -8,7 +8,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse.BodyHandlers;
 
 public enum HTTP {;
-    private static final HttpClient HTTP = HttpClient.newHttpClient();
+    public static final HttpClient HTTP = HttpClient.newHttpClient();
 
     public static boolean isUrl(final String url) {
         return url != null && (url.startsWith("https://") || url.startsWith("http://"));

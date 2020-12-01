@@ -266,6 +266,12 @@
             <version>2.2.1</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.helger</groupId>
+            <artifactId>ph-css</artifactId>
+            <version>6.2.3</version>
+        </dependency>
+
         <!-- For testing -->
         <dependency>
             <groupId>net.sourceforge.cssparser</groupId>

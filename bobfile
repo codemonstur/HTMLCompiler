@@ -28,7 +28,7 @@ dependencies:
     scope: provided
   - repository: org.apache.maven:maven-project:2.2.1
     scope: provided
-#  - repository: com.helger:ph-css:6.2.0
+#  - repository: com.helger:ph-css:6.2.3
 #    scope: test
   - repository: net.sourceforge.cssparser:cssparser:0.9.27
     scope: test

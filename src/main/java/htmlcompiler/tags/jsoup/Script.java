@@ -17,6 +17,7 @@ import static htmlcompiler.pojos.compile.MoveType.storeCode;
 import static htmlcompiler.pojos.compile.MoveType.toMoveType;
 import static htmlcompiler.pojos.compile.ScriptType.detectScriptType;
 import static htmlcompiler.pojos.compile.ScriptType.javascript;
+import static htmlcompiler.services.RepositoryVersions.checkVersionLibrary;
 import static htmlcompiler.tags.jsoup.TagParsingJsoup.*;
 import static htmlcompiler.tools.IO.toLocation;
 
@@ -42,6 +43,9 @@ public enum Script {;
                 node.attr("htmlcompiler", "delete-me");
                 return;
             }
+
+            if (node.hasAttr("src") && isScriptEmpty(node))
+                checkVersionLibrary(log, file.toString(), node.attr("src"));
 
             if (!isScriptEmpty(node)) {
                 final ScriptType type = detectScriptType(node, null);

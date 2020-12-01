@@ -15,10 +15,7 @@ import org.jsoup.nodes.Node;
 import org.jsoup.select.NodeVisitor;
 
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static htmlcompiler.checks.jsoup.JsoupCheckListBuilder.newJsoupCheckList;
 import static htmlcompiler.compilers.html.HtmlCompiler.newDefaultHtmlCompressor;
