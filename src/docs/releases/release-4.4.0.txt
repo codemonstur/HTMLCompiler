@@ -1,0 +1,8 @@
+4.4.0
+
+Moved tool config default location to src/main/webcnf
+Added some incubation code for detecting unused CSS classes
+Removed force-integrity
+Added caching of integrity values
+Removed warning missing integrity-attribute
+Fixed bug with 604 file loading
