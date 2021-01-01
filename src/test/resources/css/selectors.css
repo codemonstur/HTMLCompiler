@@ -1,0 +1,23 @@
+
+h1 {
+  font-size: 1.5em;
+}
+
+div p,
+#id:first-line {
+  background-color: red;
+  border-radius: 3px;
+}
+
+div p {
+  margin: 0;
+  padding: 1em;
+}
+
+div p + p {
+  padding-top: 0;
+}
+
+.someclass {
+  display: block;
+}

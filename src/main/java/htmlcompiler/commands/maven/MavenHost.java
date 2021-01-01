@@ -27,9 +27,9 @@ public final class MavenHost extends AbstractMojo {
     public String watchedDirectories;
     @Parameter(defaultValue = "true")
     public boolean requestApiEnabled;
-    @Parameter(defaultValue = "src/main/websrc/requests.json")
+    @Parameter(defaultValue = "src/main/webcnf/requests.json")
     public String requestApiSpecification;
-    @Parameter(defaultValue = "src/main/websrc/validation.json")
+    @Parameter(defaultValue = "src/main/webcnf/validation.json")
     public String validation;
     @Parameter(defaultValue = "jsoup")
     public CompilerType type;

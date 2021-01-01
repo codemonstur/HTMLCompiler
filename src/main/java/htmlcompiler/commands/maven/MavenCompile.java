@@ -26,7 +26,7 @@ public final class MavenCompile extends AbstractMojo {
     public boolean replaceExtension;
     @Parameter(defaultValue = "jsoup")
     public CompilerType type;
-    @Parameter(defaultValue = "src/main/websrc/validation.json")
+    @Parameter(defaultValue = "src/main/webcnf/validation.json")
     public String validation;
 
     public void execute() throws MojoFailureException {

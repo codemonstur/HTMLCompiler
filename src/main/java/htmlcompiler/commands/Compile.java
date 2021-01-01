@@ -1,6 +1,5 @@
 package htmlcompiler.commands;
 
-import com.google.gson.Gson;
 import htmlcompiler.pojos.compile.CompilerType;
 import htmlcompiler.pojos.library.LibraryArchive;
 import htmlcompiler.tools.Logger;
