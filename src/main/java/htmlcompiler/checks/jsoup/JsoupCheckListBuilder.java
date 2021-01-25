@@ -14,7 +14,7 @@ import static java.util.Collections.emptySet;
 public final class JsoupCheckListBuilder {
 
     public static JsoupCheckListBuilder newJsoupCheckList() {
-        return new JsoupCheckListBuilder(new ChecksConfig(emptySet(), emptySet(), new HashMap<>()));
+        return new JsoupCheckListBuilder(new ChecksConfig(emptySet(), emptySet(), emptySet(), new HashMap<>()));
     }
     public static JsoupCheckListBuilder newJsoupCheckList(final ChecksConfig conf) {
         return new JsoupCheckListBuilder(conf);
@@ -49,6 +49,8 @@ public final class JsoupCheckListBuilder {
         addIfEnabled("has_uppercase_tags_or_attributes", JsoupElementChecks::hasUppercaseTagsOrAttributes);
         addIfEnabled("missing_alt_for_images", JsoupElementChecks::missingAltForImages);
         addIfEnabled("missing_placeholder_for_inputs", JsoupElementChecks::missingPlaceholderForInputs);
+        addIfEnabled("missing_input_type", JsoupElementChecks::missingInputType);
+        addIfEnabled("unknown_input_type", JsoupElementChecks::unknownInputType);
         addIfEnabled("dont_use_bold", JsoupElementChecks::dontUseBold);
         addIfEnabled("dont_use_italic", JsoupElementChecks::dontUseItalic);
         addIfEnabled("dont_use_strong", JsoupElementChecks::dontUseStrong);

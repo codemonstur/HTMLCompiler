@@ -1,6 +1,10 @@
 package htmlcompiler.tools;
 
+import java.util.Map;
 import java.util.Set;
+
+import static java.util.Map.entry;
+import static java.util.Map.ofEntries;
 
 public enum HTML {;
 
@@ -42,5 +46,79 @@ public enum HTML {;
         "transform", "values", "in", "stdDeviation", "result", "y", "filterunits", "onclick",
         "pointer-events", "stroke", "stroke-miterlimit", "stroke-width", "visibility", "allowfullscreen",
         "frameborder", "fill-opacity");
+
+    // https://uzzal.wordpress.com/2009/10/08/fobidden-deprecated-html-tags-and-attributes/
+    // https://www.tutorialspoint.com/html5/html5_deprecated_tags.htm
+    public static final Set<String> deprecated_tags = Set.of("acronym", "applet", "basefont", "big", "center"
+            , "dir", "embed", "font", "frame", "frameset", "isindex", "noframes", "menu", "noembed", "s", "strike", "tt", "u");
+
+    // http://www.w3.org/TR/html4/index/elements.html
+    // http://www.w3.org/TR/html4/index/attributes.html
+    // https://uzzal.wordpress.com/2009/10/08/fobidden-deprecated-html-tags-and-attributes/
+    // https://www.tutorialspoint.com/html5/html5_deprecated_tags.htm
+    public static final Map<String, Set<String>> deprecated_attributes = ofEntries
+        ( entry("abbr", Set.of("td", "t"))
+        , entry("align", Set.of("caption", "iframe", "img", "input", "legend", "object", "table", "hr", "div", "h1"
+        , "h2", "h3", "h4", "h5", "h6", "p", "col", "colgroup", "tbody", "td", "tfoot", "th", "thead", "tr"))
+        , entry("alink", Set.of("body"))
+        , entry("axis", Set.of("td", "t"))
+        , entry("archive", Set.of("object"))
+        , entry("background", Set.of("body"))
+        , entry("bgcolor", Set.of("body", "table", "th", "tr", "td"))
+        , entry("border", Set.of("img", "object", "table"))
+        , entry("cellpadding", Set.of("table"))
+        , entry("cellspacing", Set.of("table"))
+        , entry("char", Set.of("col", "colgroup", "tbody", "td", "tfoot", "th", "thead", "tr"))
+        , entry("charoff", Set.of("col", "colgroup", "tbody", "td", "tfoot", "th", "thead", "tr"))
+        , entry("charset", Set.of("link", "a"))
+        , entry("classid", Set.of("object"))
+        , entry("clear", Set.of("br"))
+        , entry("codebase", Set.of("object"))
+        , entry("codetype", Set.of("object"))
+        , entry("compact", Set.of("ol", "ul", "dl", "menu"))
+        , entry("coords", Set.of("a"))
+        , entry("declare", Set.of("object"))
+        , entry("frame", Set.of("table"))
+        , entry("frameborder", Set.of("iframe"))
+        , entry("hspace", Set.of("img", "object"))
+        , entry("link", Set.of("body"))
+        , entry("longdesc", Set.of("img", "iframe"))
+        , entry("marginheight", Set.of("iframe"))
+        , entry("marginwidth", Set.of("iframe"))
+        , entry("name", Set.of("img"))
+        , entry("nohref", Set.of("area"))
+        , entry("noshade", Set.of("hr"))
+        , entry("nowrap", Set.of("td", "tr", "th"))
+        , entry("profile", Set.of("head"))
+        , entry("rev", Set.of("link", "a"))
+        , entry("rules", Set.of("table"))
+        , entry("scheme", Set.of("meta"))
+        , entry("scope", Set.of("td"))
+        , entry("scrolling", Set.of("iframe"))
+        , entry("shape", Set.of("a"))
+        , entry("size", Set.of("basefont", "font", "hr"))
+        , entry("standby", Set.of("object"))
+        , entry("start", Set.of("ol"))
+        , entry("target", Set.of("link"))
+        , entry("text", Set.of("body"))
+        , entry("type", Set.of("li", "param", "ol", "ul"))
+        , entry("valign", Set.of("col", "colgroup", "tbody", "td", "tfoot", "th", "thead", "tr"))
+        , entry("value", Set.of("li"))
+        , entry("valuetype", Set.of("param"))
+        , entry("version", Set.of("html"))
+        , entry("vlink", Set.of("body"))
+        , entry("vspace", Set.of("img", "object"))
+        , entry("width", Set.of("hr", "pre", "td", "th", "table", "col", "colgroup"))
+        );
+
+    public static final Set<String> event_handler_attributes = Set.of("onafterprint", "onbeforeprint"
+            , "onbeforeunload", "onerror", "onhashchange", "onload", "onmessage", "onoffline", "ononline"
+            , "onpagehide", "onpageshow", "onpopstate", "onresize", "onstorage", "onunload");
+
+    // https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input
+    // https://www.w3schools.com/html/html_form_input_types.asp
+    public static final Set<String> known_input_types = Set.of("button", "checkbox", "color", "date",
+            "datetime-local", "email", "file", "hidden", "image", "month", "number", "password", "radio",
+            "range", "reset", "search", "submit", "tel", "text", "time", "url", "week", "datetime");
 
 }
