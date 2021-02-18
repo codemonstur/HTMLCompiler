@@ -1,5 +1,5 @@
 vendor: com.github.codemonstur
-version: 4.4.0
+version: 4.5.0
 enablePreview: false
 packaging: maven-plugin
 dependencies:
@@ -37,4 +37,4 @@ dependencies:
 
 build
     echo [${PROJECT_NAME}] Building
-    run-target -i clean build
+    run-task -i clean build

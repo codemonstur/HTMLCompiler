@@ -61,6 +61,6 @@ No more minified files everywhere. No more manually compressing resources.
 ```
 2. Run `mvn package`
 
-The code will compile all HTML files in `src/main/websrc` to `target/classes/webbin` while mirroring the directory structure.
+The code will compile all HTML files in `src/main/websrc` to `task/classes/webbin` while mirroring the directory structure.
 
 For an example how to set this up see here: in the `example` subdirectory.

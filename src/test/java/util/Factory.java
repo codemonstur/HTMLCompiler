@@ -20,7 +20,7 @@ public enum Factory {;
     public static Stream<HtmlCompiler> provideCompilers() {
         final Logger log = newLogger(System.out::println, System.out::println);
         final LibraryArchive archive = new LibraryArchive();
-        final ChecksConfig checks = new ChecksConfig(emptySet(), emptySet(), new HashMap<>());
+        final ChecksConfig checks = new ChecksConfig(emptySet(), emptySet(), emptySet(), new HashMap<>());
         return complementOf(of(nop)).stream().map(type -> type.newHtmlCompiler(log, archive, checks));
     }
 

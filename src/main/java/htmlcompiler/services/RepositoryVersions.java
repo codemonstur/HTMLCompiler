@@ -1,8 +1,8 @@
 package htmlcompiler.services;
 
 import com.google.gson.reflect.TypeToken;
-import htmlcompiler.pojos.versions.Version;
 import htmlcompiler.pojos.versions.CdnJsResponse;
+import htmlcompiler.pojos.versions.Version;
 import htmlcompiler.tools.HTTP;
 import htmlcompiler.tools.Logger;
 
@@ -19,6 +19,7 @@ import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static htmlcompiler.tools.Filenames.toRelativePath;
 import static htmlcompiler.tools.Json.GSON;
 import static java.nio.file.Files.*;
 import static java.nio.file.StandardOpenOption.CREATE;
@@ -42,7 +43,7 @@ public enum RepositoryVersions {;
                 , findNewerPatch(libraryVersion, allVersions));
 
             if (!isNullOrEmpty(message)) {
-                log.warn(String.format("File %s uses outdated library %s:%s; %s%n", fileName, libraryName, libraryVersion.original, message));
+                log.warn(String.format("File %s uses outdated library %s:%s; %s%n", toRelativePath(fileName), libraryName, libraryVersion.original, message));
             }
         }
     }
