@@ -1,0 +1,6 @@
+4.5.0
+
+Better logging for outdated libraries
+Added check for <input> types
+Added ability to ignore unknown <input> types
+Disabled unit tests for incubation code
