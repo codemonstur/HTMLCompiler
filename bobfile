@@ -38,3 +38,10 @@ dependencies:
 build
     echo [${PROJECT_NAME}] Building
     run-task -i clean build
+
+release-notes
+  	echo [${PROJECT_NAME}] Writing release notes to src/docs/releases/release-${PROJECT_VERSION}.txt
+    echo "${PROJECT_VERSION}" > src/docs/releases/release-${PROJECT_VERSION}.txt
+    echo "" >> src/docs/releases/release-${PROJECT_VERSION}.txt
+    PREVIOUS_TAG = `git tag | sort -r | head -n 1`
+  	git log --pretty="%s" ${PREVIOUS_TAG}... master >> src/docs/releases/release-${PROJECT_VERSION}.txt
