@@ -6,12 +6,10 @@ import htmlcompiler.pojos.error.InvalidInput;
 import htmlcompiler.pojos.library.LibraryArchive;
 import htmlcompiler.tags.neko.TagProcessor;
 import htmlcompiler.tools.Logger;
-import org.apache.xerces.parsers.DOMParser;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import xmlparser.XmlParser;
 
@@ -21,7 +19,6 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.IOException;
-import java.io.StringReader;
 import java.io.StringWriter;
 import java.nio.file.Path;
 import java.util.HashMap;
@@ -46,12 +43,10 @@ import static org.w3c.dom.Node.ELEMENT_NODE;
 
 public abstract class DefaultNekoCompiler implements NekoCompiler {
 
-    private final DOMParser parser;
     private final HtmlCompressor compressor;
     private final Map<String, TagProcessor> processors;
 
-    public DefaultNekoCompiler(final Logger log, final LibraryArchive archive, final DOMParser parser) {
-        this.parser = parser;
+    public DefaultNekoCompiler(final Logger log, final LibraryArchive archive) {
         this.compressor = newDefaultHtmlCompressor();
         this.processors = newDefaultTagProcessors(log, this, archive);
     }
@@ -108,10 +103,7 @@ public abstract class DefaultNekoCompiler implements NekoCompiler {
         processors.getOrDefault(node.getNodeName(), NOOP).process(file, document, node);
     }
 
-    public Document htmlToDocument(final String html) throws IOException, SAXException {
-        parser.parse(new InputSource(new StringReader(html)));
-        return parser.getDocument();
-    }
+    public abstract Document htmlToDocument(final String html) throws IOException, SAXException;
 
     public String toHtml(final Node node) throws TransformerException, IOException {
         final Transformer transformer = TransformerFactory.newInstance().newTransformer();

@@ -4,6 +4,7 @@ import com.mitchellbosecke.pebble.PebbleEngine;
 import com.mitchellbosecke.pebble.error.PebbleException;
 import com.mitchellbosecke.pebble.template.PebbleTemplate;
 import de.neuland.jade4j.Jade4J;
+import de.neuland.pug4j.Pug4J;
 import htmlcompiler.pojos.error.InvalidTemplate;
 
 import java.io.StringWriter;
@@ -20,6 +21,10 @@ public enum TemplateEngines {;
 
     public static HtmlTemplateEngine newJade4jEngine(final Map<String, String> context) {
         return file -> Jade4J.render(file.toAbsolutePath().toString(), Collections.unmodifiableMap(context));
+    }
+
+    public static HtmlTemplateEngine newPug4jEngine(final Map<String, String> context) {
+        return file -> Pug4J.render(file.toAbsolutePath().toString(), Collections.unmodifiableMap(context));
     }
 
     public static HtmlTemplateEngine newPebbleEngine(final Map<String, String> context) {

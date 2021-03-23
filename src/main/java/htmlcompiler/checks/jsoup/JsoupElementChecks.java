@@ -20,13 +20,13 @@ public enum JsoupElementChecks {;
 
     public static void buttonHasHref(final Logger log, final ChecksConfig config, final Path file, final Element element) {
         if ("button".equals(element.tagName()) && element.hasAttr("href"))
-            log.warn("File " + toRelativePath(file) + " contains a <button> with an href attribute");
+            log.warn("File " + toRelativePath(file) + " contains a <button> with an 'href=' attribute");
     }
 
     public static void hasStyleAttribute(final Logger log, final ChecksConfig config, final Path file, final Element element) {
         for (final var attribute : element.attributes()) {
             if ("style".equalsIgnoreCase(attribute.getKey())) {
-                log.warn("File " + toRelativePath(file) + " contains a <style> attribute");
+                log.warn("File " + toRelativePath(file) + " contains a 'style=' attribute");
             }
         }
     }

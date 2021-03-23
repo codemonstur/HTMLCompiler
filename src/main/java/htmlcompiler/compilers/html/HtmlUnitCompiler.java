@@ -5,13 +5,22 @@ import htmlcompiler.pojos.library.LibraryArchive;
 import htmlcompiler.tools.Logger;
 import net.sourceforge.htmlunit.cyberneko.HTMLConfiguration;
 import org.apache.xerces.parsers.DOMParser;
+import org.w3c.dom.Document;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 import org.xml.sax.SAXNotRecognizedException;
 import org.xml.sax.SAXNotSupportedException;
 
+import java.io.IOException;
+import java.io.StringReader;
+
 public final class HtmlUnitCompiler extends DefaultNekoCompiler {
 
+    private final DOMParser parser;
+
     public HtmlUnitCompiler(final Logger log, final LibraryArchive archive, final ChecksConfig checksConfiguration) {
-        super(log, archive, newCyberNekoParser());
+        super(log, archive);
+        this.parser = newCyberNekoParser();
     }
 
     private static DOMParser newCyberNekoParser() {
@@ -24,6 +33,12 @@ public final class HtmlUnitCompiler extends DefaultNekoCompiler {
         } catch (SAXNotRecognizedException | SAXNotSupportedException e) {
             throw new IllegalStateException("Initialization error", e);
         }
+    }
+
+    @Override
+    public Document htmlToDocument(final String html) throws IOException, SAXException {
+        parser.parse(new InputSource(new StringReader(html)));
+        return parser.getDocument();
     }
 
 }

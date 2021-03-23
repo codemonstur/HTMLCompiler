@@ -54,7 +54,7 @@ public interface FileCompiler {
         return Map.ofEntries
             ( entry(".pebble", newHtmlCompiler(html, newPebbleEngine(context)))
             , entry(".jade", newHtmlCompiler(html, newJade4jEngine(context)))
-            , entry(".pug", newHtmlCompiler(html, newJade4jEngine(context)))
+            , entry(".pug", newHtmlCompiler(html, newPug4jEngine(context)))
             , entry(".htm", newHtmlCompiler(html, Files::readString))
             , entry(".html", newHtmlCompiler(html, Files::readString))
             , entry(".hct", newHtmlCompiler(html, Files::readString))
