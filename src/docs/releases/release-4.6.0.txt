@@ -1,0 +1,5 @@
+4.6.0
+
+Updated versions of dependencies
+Added pug4j
+Fixed logging of filenames in checks
