@@ -1,0 +1,3 @@
+4.7.0
+
+Added setting to ignore newer major versions of libraries
