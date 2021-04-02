@@ -13,7 +13,7 @@ import static htmlcompiler.tools.IO.toLocation;
 public enum Import {;
 
     public static TagVisitor newImportVisitor(final JsoupCompiler compiler) {
-        return (TailVisitor) (file, node, depth) -> {
+        return (TailVisitor) (config, file, node, depth) -> {
             final Path include = toSourceLocation(node, "src", file);
             final String content = Files.readString(include);
             if (content.isEmpty()) node.remove();

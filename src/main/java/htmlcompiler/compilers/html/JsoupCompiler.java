@@ -88,7 +88,7 @@ public final class JsoupCompiler implements HtmlCompiler {
                 if (node instanceof Element) {
                     final Element elem = (Element) node;
                     try {
-                        processors.getOrDefault(node.nodeName(), NOOP).head(file, elem, depth);
+                        processors.getOrDefault(node.nodeName(), NOOP).head(checksConfig, file, elem, depth);
                     } catch (Exception e) {
                         errors.add(e);
                     }
@@ -98,7 +98,7 @@ public final class JsoupCompiler implements HtmlCompiler {
                 if (node instanceof Element) {
                     final Element elem = (Element) node;
                     try {
-                        processors.getOrDefault(node.nodeName(), NOOP).tail(file, elem, depth);
+                        processors.getOrDefault(node.nodeName(), NOOP).tail(checksConfig, file, elem, depth);
                     } catch (Exception e) {
                         errors.add(e);
                     }

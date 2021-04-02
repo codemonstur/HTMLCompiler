@@ -24,7 +24,7 @@ import static htmlcompiler.tools.IO.toLocation;
 public enum Script {;
 
     public static TagVisitor newScriptVisitor(final Logger log, final JsoupCompiler html, final ScriptBag scripts) {
-        return (TailVisitor) (file, node, depth) -> {
+        return (TailVisitor) (config, file, node, depth) -> {
             if (!node.hasAttr("src") && node.hasAttr("inline"))
                 throw new InvalidInput("script inline attempted on tag without src attribute");
             if (node.hasAttr("src") && !isScriptEmpty(node))
@@ -45,7 +45,7 @@ public enum Script {;
             }
 
             if (node.hasAttr("src") && isScriptEmpty(node))
-                checkVersionLibrary(log, file.toString(), node.attr("src"));
+                checkVersionLibrary(log, file.toString(), node.attr("src"), config.ignoreMajorVersions);
 
             if (!isScriptEmpty(node)) {
                 final ScriptType type = detectScriptType(node, null);

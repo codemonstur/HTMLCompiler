@@ -31,14 +31,15 @@ public enum RepositoryVersions {;
 
     private static final Pattern IS_CDNJS = Pattern.compile("https?:\\/\\/cdnjs\\.cloudflare\\.com\\/ajax\\/libs\\/([^\\/]+)\\/([^\\/]+)\\/.*");
 
-    public static void checkVersionLibrary(final Logger log, final String fileName, final String url) throws IOException, InterruptedException {
+    public static void checkVersionLibrary(final Logger log, final String fileName, final String url
+            , final boolean ignoreMajor) throws IOException, InterruptedException {
         final Matcher matcher = IS_CDNJS.matcher(url);
         if (matcher.find()) {
             final var libraryName = matcher.group(1);
             final var libraryVersion = new Version(matcher.group(2));
             final var allVersions = listVersions(libraryName);
             final var message = toVersionMessage
-                ( findNewerMajor(libraryVersion, allVersions)
+                ( ignoreMajor ? Optional.empty() : findNewerMajor(libraryVersion, allVersions)
                 , findNewerMinor(libraryVersion, allVersions)
                 , findNewerPatch(libraryVersion, allVersions));
 

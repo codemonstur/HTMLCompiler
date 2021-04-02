@@ -13,7 +13,7 @@ import static xmlparser.utils.Functions.isNullOrEmpty;
 public enum Library {;
 
     public static TagVisitor newLibraryVisitor(final LibraryArchive archive) {
-        return (TailVisitor) (file, node, depth) -> {
+        return (TailVisitor) (config, file, node, depth) -> {
             replaceWith(node, createTag(node, archive));
         };
     }

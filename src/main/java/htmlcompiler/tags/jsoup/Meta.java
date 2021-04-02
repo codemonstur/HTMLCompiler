@@ -14,7 +14,7 @@ import static xmlparser.utils.Functions.isNullOrEmpty;
 public enum Meta {;
 
     public static TagVisitor newMetaVisitor(final LibraryArchive archive) {
-        return (TailVisitor) (file, node, depth) -> {
+        return (TailVisitor) (config, file, node, depth) -> {
             final String name = node.attr("name");
             if ("library".equals(name)) {
                 replaceWith(node, createTag(node, archive));

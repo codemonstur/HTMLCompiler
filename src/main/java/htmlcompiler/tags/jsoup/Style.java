@@ -16,7 +16,7 @@ import static htmlcompiler.tools.IO.toLocation;
 public enum Style {;
 
     public static TagVisitor newStyleVisitor() {
-        return (TailVisitor) (file, element, depth) -> {
+        return (TailVisitor) (config, file, element, depth) -> {
             if (element.hasAttr("inline")) {
                 final Path location = toLocation(file, element.attr("src"), "style tag in %s has an invalid src location '%s'");
 

@@ -20,26 +20,26 @@ public final class ChecksConfig {
     public final Set<String> ignoreAttributes;
     public final Set<String> ignoreInputTypes;
     public final Map<String, Boolean> checks;
+    public final boolean ignoreMajorVersions;
 
-    private ChecksConfig() {
-        this.ignoreTags = new HashSet<>();
-        this.ignoreAttributes = new HashSet<>();
-        this.ignoreInputTypes = new HashSet<>();
-        this.checks = new HashMap<>();
+    public ChecksConfig() {
+        this(new HashSet<>(), new HashSet<>(), new HashSet<>(), new HashMap<>(), false);
     }
 
     public ChecksConfig(final Set<String> ignoreTags, final Set<String> ignoreAttributes,
-                        final Set<String> ignoreInputTypes, final Map<String, Boolean> checks) {
+                        final Set<String> ignoreInputTypes, final Map<String, Boolean> checks,
+                        final boolean ignoreMajorVersions) {
         this.ignoreTags = ignoreTags;
         this.ignoreAttributes = ignoreAttributes;
         this.ignoreInputTypes = ignoreInputTypes;
         this.checks = checks;
+        this.ignoreMajorVersions = ignoreMajorVersions;
     }
 
     public static ChecksConfig readChecksConfiguration(final String confLocation) throws IOException {
-        if (confLocation.isBlank()) return new ChecksConfig(emptySet(), emptySet(), emptySet(), new HashMap<>());
+        if (confLocation.isBlank()) return new ChecksConfig(emptySet(), emptySet(), emptySet(), new HashMap<>(), false);
         final Path confFile = Paths.get(confLocation);
-        if (!isRegularFile(confFile)) return new ChecksConfig(emptySet(), emptySet(), emptySet(), new HashMap<>());
+        if (!isRegularFile(confFile)) return new ChecksConfig(emptySet(), emptySet(), emptySet(), new HashMap<>(), false);
 
         try (final Reader in = newBufferedReader(confFile)) {
             return GSON.fromJson(in, ChecksConfig.class);

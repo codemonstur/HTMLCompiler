@@ -14,7 +14,7 @@ import static java.util.Collections.emptySet;
 public final class JsoupCheckListBuilder {
 
     public static JsoupCheckListBuilder newJsoupCheckList() {
-        return new JsoupCheckListBuilder(new ChecksConfig(emptySet(), emptySet(), emptySet(), new HashMap<>()));
+        return new JsoupCheckListBuilder(new ChecksConfig(emptySet(), emptySet(), emptySet(), new HashMap<>(), false));
     }
     public static JsoupCheckListBuilder newJsoupCheckList(final ChecksConfig conf) {
         return new JsoupCheckListBuilder(conf);

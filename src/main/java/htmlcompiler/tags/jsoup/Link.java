@@ -23,13 +23,13 @@ import static java.nio.file.Files.readAllBytes;
 public enum Link {;
 
     public static TagVisitor newLinkVisitor(final Logger log) {
-        return (TailVisitor) (file, node, depth) -> {
+        return (TailVisitor) (config, file, node, depth) -> {
             if (isLinkFavicon(node) && node.hasAttr("inline")) {
                 inlineFavicon(node, file);
                 return;
             }
             if (isLinkStyleSheet(node) && node.hasAttr("href"))
-                checkVersionLibrary(log, file.toString(), node.attr("href"));
+                checkVersionLibrary(log, file.toString(), node.attr("href"), config.ignoreMajorVersions);
 
             if (isLinkStyleSheet(node) && node.hasAttr("inline")) {
                 final Element style = inlineStylesheet(node, file, node.ownerDocument());

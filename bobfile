@@ -1,5 +1,5 @@
 vendor: com.github.codemonstur
-version: 4.6.0
+version: 4.7.0
 enablePreview: false
 packaging: maven-plugin
 dependencies:
@@ -46,3 +46,13 @@ release-notes
     echo "" >> src/docs/releases/release-${PROJECT_VERSION}.txt
     PREVIOUS_TAG = `git tag | sort -r | head -n 1`
   	git log --pretty="%s" ${PREVIOUS_TAG}... master >> src/docs/releases/release-${PROJECT_VERSION}.txt
+
+deploy
+    mvn clean package
+    echo [${PROJECT_NAME}] Tagging and pushing to github
+    git tag ${PROJECT_NAME}-${PROJECT_VERSION}
+    git push && git push --tags
+    echo "[${PROJECT_NAME}] Creating github release"
+    hub release create -a target/${PROJECT_NAME}-${PROJECT_VERSION}.jar -F src/docs/releases/release-${PROJECT_VERSION}.txt ${PROJECT_NAME}-${PROJECT_VERSION}
+    echo "[${PROJECT_NAME}] Uploading to maven central"
+    mvn clean deploy -P release

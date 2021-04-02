@@ -6,12 +6,10 @@ import htmlcompiler.pojos.compile.ChecksConfig;
 import htmlcompiler.pojos.library.LibraryArchive;
 import htmlcompiler.tools.Logger;
 
-import java.util.HashMap;
 import java.util.stream.Stream;
 
 import static htmlcompiler.pojos.compile.CompilerType.nop;
 import static htmlcompiler.tools.Logger.newLogger;
-import static java.util.Collections.emptySet;
 import static java.util.EnumSet.complementOf;
 import static java.util.EnumSet.of;
 
@@ -20,7 +18,7 @@ public enum Factory {;
     public static Stream<HtmlCompiler> provideCompilers() {
         final Logger log = newLogger(System.out::println, System.out::println);
         final LibraryArchive archive = new LibraryArchive();
-        final ChecksConfig checks = new ChecksConfig(emptySet(), emptySet(), emptySet(), new HashMap<>());
+        final ChecksConfig checks = new ChecksConfig();
         return complementOf(of(nop)).stream().map(type -> type.newHtmlCompiler(log, archive, checks));
     }
 

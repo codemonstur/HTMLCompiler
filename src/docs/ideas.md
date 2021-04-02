@@ -25,6 +25,7 @@
   - From material
   - From gentelella
   - From coreui
+- A library meta tag (supported by Jsoup)
 - Support more library tags
   Look at CDNs and how they store their stuff, should be able to extract a bunch of libraries
 - Add support for stylus: http://stylus-lang.com/, https://github.com/stylus/stylus

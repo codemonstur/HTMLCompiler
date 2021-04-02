@@ -14,7 +14,7 @@ import static htmlcompiler.tools.IO.toLocation;
 public enum Image {;
 
     public static TagVisitor newImageVisitor(final JsoupCompiler compiler) {
-        return (TailVisitor) (file, node, depth) -> {
+        return (TailVisitor) (config, file, node, depth) -> {
             if (node.hasAttr("inline")) {
                 final Path location = toLocation(file, node.attr("src"), "img tag in %s has an invalid src location '%s'");
 
