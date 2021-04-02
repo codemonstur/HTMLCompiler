@@ -48,7 +48,8 @@ release-notes
   	git log --pretty="%s" ${PREVIOUS_TAG}... master >> src/docs/releases/release-${PROJECT_VERSION}.txt
 
 deploy
-    mvn clean package
+    echo [${PROJECT_NAME}] Building
+ |  mvn clean package -Dorg.slf4j.simpleLogger.defaultLogLevel=warn
     echo [${PROJECT_NAME}] Tagging and pushing to github
     git tag ${PROJECT_NAME}-${PROJECT_VERSION}
     git push && git push --tags
