@@ -1,0 +1,4 @@
+4.8.0
+
+Added validator for configurable checks
+Small build file improvements

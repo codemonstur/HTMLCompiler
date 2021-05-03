@@ -1,14 +1,14 @@
 package unittests;
 
-import htmlcompiler.compilers.html.HtmlCompiler;
+import htmlcompiler.compilers.HtmlCompiler;
 import htmlcompiler.pojos.error.InvalidInput;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.api.Test;
 import util.Parsing;
 
 import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static util.Factory.newHtmlCompiler;
 
 public class TestSimpleCompile {
 
@@ -17,16 +17,16 @@ public class TestSimpleCompile {
         "content=\"IE=edge\"><meta name=\"viewport\" content=\"width=device-width, " +
         "initial-scale=1\"><title>Test doctype</title></head><body></body></html>";
 
-    @ParameterizedTest
-    @MethodSource("util.Factory#provideCompilers")
-    public void compileWithDoctype(final HtmlCompiler compiler) throws IOException, InvalidInput {
+    @Test
+    public void compileWithDoctype() throws IOException, InvalidInput {
+        final HtmlCompiler compiler = newHtmlCompiler();
         final String output = Parsing.compileFile(compiler, "src/test/resources/html/with-doctype.html");
         assertEquals("Invalid generated HTML", output_html_doctype, output);
     }
 
-    @ParameterizedTest
-    @MethodSource("util.Factory#provideCompilers")
-    public void compileWithoutDoctype(final HtmlCompiler compiler) throws IOException, InvalidInput {
+    @Test
+    public void compileWithoutDoctype() throws IOException, InvalidInput {
+        final HtmlCompiler compiler = newHtmlCompiler();
         final String output = Parsing.compileFile(compiler, "src/test/resources/html/without-doctype.html");
         assertEquals("Invalid generated HTML", output_html_doctype, output);
     }
@@ -34,9 +34,9 @@ public class TestSimpleCompile {
     private static final String html_output_uppercase =
         "<!DOCTYPE html><html><head><title>Test html</title></head><body></body></html>";
 
-    @ParameterizedTest
-    @MethodSource("util.Factory#provideCompilers")
-    public void compileUppercase(final HtmlCompiler compiler) throws IOException, InvalidInput {
+    @Test
+    public void compileUppercase() throws IOException, InvalidInput {
+        final HtmlCompiler compiler = newHtmlCompiler();
         final String output = Parsing.compileFile(compiler, "src/test/resources/html/uppercase.html");
         assertEquals("Invalid generated HTML", html_output_uppercase, output);
     }
@@ -44,9 +44,9 @@ public class TestSimpleCompile {
     private static final String html_output_empty_script =
         "<!DOCTYPE html><html><head><title>Test html</title></head><body></body></html>";
 
-    @ParameterizedTest
-    @MethodSource("util.Factory#provideCompilers")
-    public void compileEmptyScript(final HtmlCompiler compiler) throws IOException, InvalidInput {
+    @Test
+    public void compileEmptyScript() throws IOException, InvalidInput {
+        final HtmlCompiler compiler = newHtmlCompiler();
         final String output = Parsing.compileFile(compiler, "src/test/resources/html/empty-script.html");
         assertEquals("Invalid generated HTML", html_output_empty_script, output);
     }

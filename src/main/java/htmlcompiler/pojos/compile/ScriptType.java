@@ -1,12 +1,12 @@
 package htmlcompiler.pojos.compile;
 
-import htmlcompiler.compilers.scripts.CodeCompiler;
+import htmlcompiler.compilers.CodeCompiler;
 import org.w3c.dom.Element;
 
 import java.nio.file.Path;
 
-import static htmlcompiler.compilers.scripts.CodeCompiler.newNopCompiler;
-import static htmlcompiler.compilers.scripts.JsCompiler.*;
+import static htmlcompiler.compilers.CodeCompiler.newNopCompiler;
+import static htmlcompiler.compilers.JsCompiler.*;
 
 public enum ScriptType {
     minified_javascript(newNopCompiler()),

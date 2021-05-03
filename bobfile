@@ -1,20 +1,13 @@
 vendor: com.github.codemonstur
-version: 4.7.0
+version: 5.0.0
 enablePreview: false
 packaging: maven-plugin
 dependencies:
   - repository: org.jsoup:jsoup:1.13.1
-  - repository: org.codelibs:nekohtml:2.1.1
-  - repository: net.sourceforge.htmlunit:neko-htmlunit:2.48.0
-  - repository: net.sourceforge.nekohtml:nekohtml:1.9.22
-  # Necessary to avoid a META tag from being added to the HTML output
-  # https://stackoverflow.com/questions/1409091/how-do-i-prevent-the-java-xml-transformer-using-html-method-from-adding-meta
-  - repository: xalan:xalan:2.7.2
   - repository: com.google.code.gson:gson:2.8.6
   - repository: commons-io:commons-io:2.8.0
   - repository: com.yahoo.platform.yui:yuicompressor:2.4.8
   - repository: com.googlecode.htmlcompressor:htmlcompressor:1.5.2
-  - repository: commons-cli:commons-cli:1.4
   - repository: de.inetsoftware:jlessc:1.10
   - repository: com.vaadin:vaadin-sass-compiler:0.9.13
   - repository: io.pebbletemplates:pebble:3.1.5

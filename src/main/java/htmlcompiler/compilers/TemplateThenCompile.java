@@ -1,6 +1,5 @@
 package htmlcompiler.compilers;
 
-import htmlcompiler.compilers.html.HtmlCompiler;
 import htmlcompiler.tools.OnlyFileVisitor;
 
 import java.io.IOException;

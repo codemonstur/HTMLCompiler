@@ -1,7 +1,7 @@
 package htmlcompiler.commands;
 
 import htmlcompiler.compilers.TemplateThenCompile;
-import htmlcompiler.pojos.compile.CompilerType;
+import htmlcompiler.compilers.HtmlCompiler;
 import htmlcompiler.pojos.compile.Task;
 import htmlcompiler.pojos.library.LibraryArchive;
 import htmlcompiler.services.LoopingSingleThread;
@@ -21,9 +21,10 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import static htmlcompiler.compilers.TemplateThenCompile.newTemplateThenCompile;
-import static htmlcompiler.pojos.compile.Config.readChecksConfiguration;
+import static htmlcompiler.pojos.compile.CompilerConfig.readChecksConfiguration;
 import static htmlcompiler.services.DirectoryWatcher.newDirectoryWatcher;
 import static htmlcompiler.services.Http.newHttpServer;
+import static htmlcompiler.tools.Filenames.toRelativePath;
 import static htmlcompiler.tools.Logger.YYYY_MM_DD_HH_MM_SS;
 import static java.lang.String.format;
 import static java.nio.file.Files.isRegularFile;
@@ -36,7 +37,6 @@ import static java.util.stream.Collectors.toSet;
 public enum Host {;
 
     public static class HostCommandConfig {
-        public CompilerType type;
         public String validation;
         public Path inputDir;
         public Path outputDir;
@@ -53,7 +53,7 @@ public enum Host {;
     public static void executeHost(final Logger log, final HostCommandConfig config) throws IOException, InterruptedException {
         final var libs = new LibraryArchive();
         final var checksSettings = readChecksConfiguration(config.validation);
-        final var html = config.type.newHtmlCompiler(log, libs, checksSettings);
+        final var html = new HtmlCompiler(log, libs, checksSettings);
         final var ttc = newTemplateThenCompile(config.inputDir, config.outputDir, config.replaceExtension, config.variables, html);
         final var queue = new LinkedBlockingQueue<Task>();
 
@@ -91,9 +91,9 @@ public enum Host {;
             try {
                 final boolean isKnownTemplate = rootPages.contains(take.path.normalize().toAbsolutePath());
                 if (isKnownTemplate) {
-                    log.warn("Compiling file " + take.path);
+                    log.warn(toRelativePath(take.path), false);
                     ttc.compileTemplate(take.path);
-                    log.warn("Compiled file " + take.path);
+                    log.warn("... done");
                 } else {
                     if (isChildOf(take.path, rootDir))
                         rootPages.add(take.path.normalize().toAbsolutePath());
@@ -101,11 +101,10 @@ public enum Host {;
                     queue.clear();
                     log.warn("Compiling all files in root");
                     for (final var path : rootPages) {
-                        log.warn("Compiling file " + path);
+                        log.warn(toRelativePath(path), false);
                         ttc.compileTemplate(path);
-                        log.warn("Compiled file " + path);
+                        log.warn("... done");
                     }
-                    log.warn("Compiled all files in root");
                 }
             } catch (Exception e) {
                 log.warn(e.getMessage());

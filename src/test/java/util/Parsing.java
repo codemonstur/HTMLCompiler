@@ -1,6 +1,6 @@
 package util;
 
-import htmlcompiler.compilers.html.HtmlCompiler;
+import htmlcompiler.compilers.HtmlCompiler;
 import htmlcompiler.pojos.error.InvalidInput;
 
 import java.io.IOException;

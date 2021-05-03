@@ -1,14 +1,14 @@
 package unittests;
 
-import htmlcompiler.compilers.html.HtmlCompiler;
+import htmlcompiler.compilers.HtmlCompiler;
 import htmlcompiler.pojos.error.InvalidInput;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.api.Test;
 import util.Parsing;
 
 import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static util.Factory.newHtmlCompiler;
 
 public class TestIntegrity {
 
@@ -18,9 +18,9 @@ public class TestIntegrity {
         "+/65qSTC8qPa2bKxZl\" crossorigin=\"anonymous\"></script><script src=\"https://www.google" +
         ".com/recaptcha/api.js\"></script></head><body></body></html>";
 
-    @ParameterizedTest
-    @MethodSource("util.Factory#provideCompilers")
-    public void compileIntegrityDefault(final HtmlCompiler compiler) throws IOException, InvalidInput {
+    @Test
+    public void compileIntegrityDefault() throws IOException, InvalidInput {
+        final HtmlCompiler compiler = newHtmlCompiler();
         final String output = Parsing.compileFile(compiler, "src/test/resources/html/integrity-default.html");
         assertEquals("Invalid generated HTML", html_output_integrity_default, output);
     }
@@ -29,9 +29,9 @@ public class TestIntegrity {
         "<!DOCTYPE html><html><head><title>Test html</title><script async defer src=\"https://apis.google" +
         ".com/js/platform.js\"></script></head><body></body></html>";
 
-    @ParameterizedTest
-    @MethodSource("util.Factory#provideCompilers")
-    public void compileIntegrityDisable(final HtmlCompiler compiler) throws IOException, InvalidInput {
+    @Test
+    public void compileIntegrityDisable() throws IOException, InvalidInput {
+        final HtmlCompiler compiler = newHtmlCompiler();
         final String output = Parsing.compileFile(compiler, "src/test/resources/html/integrity-disable.html");
         assertEquals("Invalid generated HTML", html_output_integrity_disable, output);
     }
@@ -41,9 +41,9 @@ public class TestIntegrity {
         "integrity=\"sha384-kp3la1AzGc/SpDx/1HegMoGOSC9o9doWJLb3H20jZpwCfm5VnuMLcRcXl9BW5R9U\" " +
         "crossorigin=\"anonymous\"></script></head><body></body></html>";
 
-    @ParameterizedTest
-    @MethodSource("util.Factory#provideCompilers")
-    public void compileIntegrityForce(final HtmlCompiler compiler) throws IOException, InvalidInput {
+    @Test
+    public void compileIntegrityForce() throws IOException, InvalidInput {
+        final HtmlCompiler compiler = newHtmlCompiler();
         final String output = Parsing.compileFile(compiler, "src/test/resources/html/integrity-force.html");
         assertEquals("Invalid generated HTML", html_output_integrity_force, output);
     }

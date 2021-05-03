@@ -1,11 +1,5 @@
 package htmlcompiler.compilers;
 
-import htmlcompiler.compilers.TemplateEngines.*;
-import htmlcompiler.compilers.html.HtmlCompiler;
-import htmlcompiler.compilers.scripts.CodeCompiler;
-import htmlcompiler.compilers.scripts.Compressor;
-import htmlcompiler.compilers.scripts.CssCompiler;
-import htmlcompiler.compilers.scripts.JsCompiler;
 import htmlcompiler.pojos.error.InvalidInput;
 import htmlcompiler.pojos.error.InvalidTemplate;
 
@@ -15,9 +9,9 @@ import java.nio.file.Path;
 import java.util.Map;
 
 import static htmlcompiler.compilers.TemplateEngines.*;
-import static htmlcompiler.compilers.scripts.CodeCompiler.newNopCompiler;
-import static htmlcompiler.compilers.scripts.CssCompiler.*;
-import static htmlcompiler.compilers.scripts.JsCompiler.*;
+import static htmlcompiler.compilers.CodeCompiler.newNopCompiler;
+import static htmlcompiler.compilers.CssCompiler.*;
+import static htmlcompiler.compilers.JsCompiler.*;
 import static java.util.Map.entry;
 
 public interface FileCompiler {

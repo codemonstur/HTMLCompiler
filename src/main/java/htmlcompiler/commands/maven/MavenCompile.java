@@ -2,7 +2,6 @@ package htmlcompiler.commands.maven;
 
 import htmlcompiler.commands.Compile;
 import htmlcompiler.commands.Compile.CompileCommandConfig;
-import htmlcompiler.pojos.compile.CompilerType;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Mojo;
@@ -24,8 +23,6 @@ public final class MavenCompile extends AbstractMojo {
     public boolean recursive;
     @Parameter(defaultValue = "true")
     public boolean replaceExtension;
-    @Parameter(defaultValue = "jsoup")
-    public CompilerType type;
     @Parameter(defaultValue = "src/main/webcnf/validation.json")
     public String validation;
 
@@ -42,7 +39,6 @@ public final class MavenCompile extends AbstractMojo {
         config.baseDir = project.getBasedir().toPath();
         config.recursive = recursive;
         config.replaceExtension = replaceExtension;
-        config.type = type;
         config.validation = validation;
         return config;
     }

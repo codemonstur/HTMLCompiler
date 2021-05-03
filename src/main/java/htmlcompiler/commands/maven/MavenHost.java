@@ -2,7 +2,6 @@ package htmlcompiler.commands.maven;
 
 import htmlcompiler.commands.Host;
 import htmlcompiler.commands.Host.HostCommandConfig;
-import htmlcompiler.pojos.compile.CompilerType;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Mojo;
@@ -31,8 +30,6 @@ public final class MavenHost extends AbstractMojo {
     public String requestApiSpecification;
     @Parameter(defaultValue = "src/main/webcnf/validation.json")
     public String validation;
-    @Parameter(defaultValue = "jsoup")
-    public CompilerType type;
 
     @Override
     public void execute() throws MojoFailureException {
@@ -52,7 +49,6 @@ public final class MavenHost extends AbstractMojo {
         config.requestApiEnabled = requestApiEnabled;
         config.requestApiSpecification = requestApiSpecification;
         config.validation = validation;
-        config.type = type;
         return config;
     }
 

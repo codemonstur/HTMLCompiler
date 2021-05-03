@@ -1,14 +1,14 @@
 package unittests;
 
-import htmlcompiler.compilers.html.HtmlCompiler;
+import htmlcompiler.compilers.HtmlCompiler;
 import htmlcompiler.pojos.error.InvalidInput;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.api.Test;
 import util.Parsing;
 
 import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static util.Factory.newHtmlCompiler;
 
 public class TestInlining {
 
@@ -24,9 +24,9 @@ public class TestInlining {
         "/8QAFBEBAAAAAAAAAAAAAAAAAAAAAP/aAAgBAwEBPxB//8QAFBEBAAAAAAAAAAAAAAAAAAAAAP/aAAgBAgEBPxB" +
         "//8QAFBABAAAAAAAAAAAAAAAAAAAAAP/aAAgBAQABPxB//9k=\"></body></html>";
 
-    @ParameterizedTest
-    @MethodSource("util.Factory#provideCompilers")
-    public void compileInlineImage(final HtmlCompiler compiler) throws IOException, InvalidInput {
+    @Test
+    public void compileInlineImage() throws IOException, InvalidInput {
+        final HtmlCompiler compiler = newHtmlCompiler();
         final String output = Parsing.compileFile(compiler, "src/test/resources/inlining/image.html");
         assertEquals("Invalid generated HTML", html_output_image, output);
     }
@@ -37,9 +37,9 @@ public class TestInlining {
         "cvZmF2aWNvbi5pY28iIGlubGluZT4KICAgIDx0aXRsZT5UZXN0IGh0bWw8L3RpdGxlPgo8L2hlYWQ+Cjxib2R5PgoKPC9i" +
         "b2R5Pgo8L2h0bWw+\"><title>Test html</title></head><body></body></html>";
 
-    @ParameterizedTest
-    @MethodSource("util.Factory#provideCompilers")
-    public void compileInlineFavicon(final HtmlCompiler compiler) throws IOException, InvalidInput {
+    @Test
+    public void compileInlineFavicon() throws IOException, InvalidInput {
+        final HtmlCompiler compiler = newHtmlCompiler();
         final String output = Parsing.compileFile(compiler, "src/test/resources/inlining/favicon.html");
         assertEquals("Invalid generated HTML", html_output_favicon, output);
     }
@@ -52,9 +52,9 @@ public class TestInlining {
         "}\n" +
         "</script></head><body></body></html>";
 
-    @ParameterizedTest
-    @MethodSource("util.Factory#provideCompilers")
-    public void compileInlineScript(final HtmlCompiler compiler) throws IOException, InvalidInput {
+    @Test
+    public void compileInlineScript() throws IOException, InvalidInput {
+        final HtmlCompiler compiler = newHtmlCompiler();
         final String output = Parsing.compileFile(compiler, "src/test/resources/inlining/script.html");
         assertEquals("Invalid generated HTML", html_output_script, output);
     }
@@ -65,9 +65,9 @@ public class TestInlining {
         "}\n" +
         "</style></head><body></body></html>";
 
-    @ParameterizedTest
-    @MethodSource("util.Factory#provideCompilers")
-    public void compileInlineStyle(final HtmlCompiler compiler) throws IOException, InvalidInput {
+    @Test
+    public void compileInlineStyle() throws IOException, InvalidInput {
+        final HtmlCompiler compiler = newHtmlCompiler();
         final String output = Parsing.compileFile(compiler, "src/test/resources/inlining/style.html");
         assertEquals("Invalid generated HTML", html_output_style, output);
     }

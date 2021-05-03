@@ -1,6 +1,6 @@
 package htmlcompiler.commands;
 
-import htmlcompiler.pojos.compile.CompilerType;
+import htmlcompiler.compilers.HtmlCompiler;
 import htmlcompiler.pojos.library.LibraryArchive;
 import htmlcompiler.tools.Logger;
 
@@ -10,13 +10,12 @@ import java.util.Map;
 
 import static htmlcompiler.compilers.TemplateThenCompile.compileDirectories;
 import static htmlcompiler.compilers.TemplateThenCompile.newTemplateThenCompile;
-import static htmlcompiler.pojos.compile.Config.readChecksConfiguration;
+import static htmlcompiler.pojos.compile.CompilerConfig.readChecksConfiguration;
 
 public enum Compile {;
 
     public static class CompileCommandConfig {
         public String validation;
-        public CompilerType type;
         public Path inputDir;
         public Path outputDir;
         public boolean replaceExtension;
@@ -28,7 +27,7 @@ public enum Compile {;
     public static void executeCompile(final Logger log, final CompileCommandConfig config) throws IOException {
         final var libs = new LibraryArchive();
         final var checksSettings = readChecksConfiguration(config.validation);
-        final var html = config.type.newHtmlCompiler(log, libs, checksSettings);
+        final var html = new HtmlCompiler(log, libs, checksSettings);
         final var ttc = newTemplateThenCompile(config.inputDir, config.outputDir, config.replaceExtension, config.variables, html);
 
         compileDirectories(config.inputDir, ttc, config.recursive);
