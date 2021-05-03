@@ -21,7 +21,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import static htmlcompiler.compilers.TemplateThenCompile.newTemplateThenCompile;
-import static htmlcompiler.pojos.compile.ChecksConfig.readChecksConfiguration;
+import static htmlcompiler.pojos.compile.Config.readChecksConfiguration;
 import static htmlcompiler.services.DirectoryWatcher.newDirectoryWatcher;
 import static htmlcompiler.services.Http.newHttpServer;
 import static htmlcompiler.tools.Logger.YYYY_MM_DD_HH_MM_SS;

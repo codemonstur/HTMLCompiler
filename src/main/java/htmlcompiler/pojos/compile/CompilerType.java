@@ -13,7 +13,7 @@ public enum CompilerType {
     cyberneko(CyberNekoCompiler::new);
 
     public interface HtmlCompilerContructor {
-        HtmlCompiler newCompiler(Logger log, LibraryArchive archive, ChecksConfig checksConfiguration);
+        HtmlCompiler newCompiler(Logger log, LibraryArchive archive, Config configuration);
     }
 
     private final HtmlCompilerContructor constructor;
@@ -21,8 +21,8 @@ public enum CompilerType {
         this.constructor = constructor;
     }
 
-    public HtmlCompiler newHtmlCompiler(final Logger log, final LibraryArchive archive, final ChecksConfig checksConfiguration) {
-        return constructor.newCompiler(log, archive, checksConfiguration);
+    public HtmlCompiler newHtmlCompiler(final Logger log, final LibraryArchive archive, final Config configuration) {
+        return constructor.newCompiler(log, archive, configuration);
     }
 
 }

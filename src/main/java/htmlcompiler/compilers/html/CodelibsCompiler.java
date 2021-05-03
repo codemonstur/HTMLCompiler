@@ -1,6 +1,6 @@
 package htmlcompiler.compilers.html;
 
-import htmlcompiler.pojos.compile.ChecksConfig;
+import htmlcompiler.pojos.compile.Config;
 import htmlcompiler.pojos.library.LibraryArchive;
 import htmlcompiler.tools.Logger;
 import org.codelibs.nekohtml.HTMLConfiguration;
@@ -18,7 +18,7 @@ public final class CodelibsCompiler extends DefaultNekoCompiler {
 
     private final DOMParser parser;
 
-    public CodelibsCompiler(final Logger log, final LibraryArchive archive, final ChecksConfig checksConfiguration) {
+    public CodelibsCompiler(final Logger log, final LibraryArchive archive, final Config configuration) {
         super(log, archive);
         this.parser = newCodelibsParser();
     }

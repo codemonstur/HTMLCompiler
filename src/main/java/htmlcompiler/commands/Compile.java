@@ -10,7 +10,7 @@ import java.util.Map;
 
 import static htmlcompiler.compilers.TemplateThenCompile.compileDirectories;
 import static htmlcompiler.compilers.TemplateThenCompile.newTemplateThenCompile;
-import static htmlcompiler.pojos.compile.ChecksConfig.readChecksConfiguration;
+import static htmlcompiler.pojos.compile.Config.readChecksConfiguration;
 
 public enum Compile {;
 

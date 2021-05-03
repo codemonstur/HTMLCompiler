@@ -1,39 +1,37 @@
 package htmlcompiler.checks.jsoup;
 
 import htmlcompiler.checks.jsoup.JsoupElementChecks.JsoupElementCheck;
-import htmlcompiler.pojos.compile.ChecksConfig;
+import htmlcompiler.pojos.compile.Config;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import static java.lang.Boolean.TRUE;
-import static java.util.Collections.emptySet;
 
 public final class JsoupCheckListBuilder {
 
     public static JsoupCheckListBuilder newJsoupCheckList() {
-        return new JsoupCheckListBuilder(new ChecksConfig(emptySet(), emptySet(), emptySet(), new HashMap<>(), false));
+        return new JsoupCheckListBuilder(new Config());
     }
-    public static JsoupCheckListBuilder newJsoupCheckList(final ChecksConfig conf) {
+    public static JsoupCheckListBuilder newJsoupCheckList(final Config conf) {
         return new JsoupCheckListBuilder(conf);
     }
 
     private final List<JsoupElementCheck> list;
-    private final ChecksConfig conf;
+    private final Config config;
 
-    private JsoupCheckListBuilder(final ChecksConfig conf) {
+    private JsoupCheckListBuilder(final Config config) {
         this.list = new ArrayList<>();
-        this.conf = conf;
+        this.config = config;
     }
     public JsoupCheckListBuilder addConfiguration(final Map<String, Boolean> conf) {
-        this.conf.checks.putAll(conf);
+        this.config.checks.putAll(conf);
         return this;
     }
 
     public JsoupCheckListBuilder addIfEnabled(final String name, final JsoupElementCheck check) {
-        if (conf.checks.getOrDefault(name, TRUE)) list.add(check);
+        if (config.checks.getOrDefault(name, TRUE)) list.add(check);
         return this;
     }
 

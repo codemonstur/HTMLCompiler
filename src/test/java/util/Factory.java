@@ -2,7 +2,7 @@ package util;
 
 import com.googlecode.htmlcompressor.compressor.HtmlCompressor;
 import htmlcompiler.compilers.html.HtmlCompiler;
-import htmlcompiler.pojos.compile.ChecksConfig;
+import htmlcompiler.pojos.compile.Config;
 import htmlcompiler.pojos.library.LibraryArchive;
 import htmlcompiler.tools.Logger;
 
@@ -18,7 +18,7 @@ public enum Factory {;
     public static Stream<HtmlCompiler> provideCompilers() {
         final Logger log = newLogger(System.out::println, System.out::println);
         final LibraryArchive archive = new LibraryArchive();
-        final ChecksConfig checks = new ChecksConfig();
+        final Config checks = new Config();
         return complementOf(of(nop)).stream().map(type -> type.newHtmlCompiler(log, archive, checks));
     }
 

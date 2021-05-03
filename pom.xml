@@ -34,14 +34,14 @@
     </developers>
 
     <prerequisites>
-        <maven>3.0.5</maven>
+        <maven>3.8.1</maven>
     </prerequisites>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>11</maven.compiler.source>
-        <maven.compiler.target>11</maven.compiler.target>
-        <maven.compiler.release>11</maven.compiler.release>
+        <maven.compiler.source>16</maven.compiler.source>
+        <maven.compiler.target>16</maven.compiler.target>
+        <maven.compiler.release>16</maven.compiler.release>
     </properties>
 
     <distributionManagement>
@@ -296,7 +296,6 @@
             <version>5.8.0-M1</version>
             <scope>test</scope>
         </dependency>
-
 
         <dependency>
             <groupId>com.google.javascript</groupId>

@@ -1,6 +1,6 @@
 package htmlcompiler.compilers.html;
 
-import htmlcompiler.pojos.compile.ChecksConfig;
+import htmlcompiler.pojos.compile.Config;
 import htmlcompiler.pojos.library.LibraryArchive;
 import htmlcompiler.tools.Logger;
 import net.sourceforge.htmlunit.cyberneko.HTMLConfiguration;
@@ -18,7 +18,7 @@ public final class HtmlUnitCompiler extends DefaultNekoCompiler {
 
     private final DOMParser parser;
 
-    public HtmlUnitCompiler(final Logger log, final LibraryArchive archive, final ChecksConfig checksConfiguration) {
+    public HtmlUnitCompiler(final Logger log, final LibraryArchive archive, final Config configuration) {
         super(log, archive);
         this.parser = newCyberNekoParser();
     }
