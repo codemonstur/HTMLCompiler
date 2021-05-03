@@ -1,0 +1,5 @@
+5.0.0
+
+Deleted all neko backends
+Added compiler config per file
+Improved logging
