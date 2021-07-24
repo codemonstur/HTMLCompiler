@@ -123,8 +123,8 @@ public final class HtmlCompiler {
                     final var element = (Element) node;
                     for (final var check : checks) check.checkElement(log, config, file, element);
                     for (final var siblings : config.validator.siblingAttributes.entrySet()) {
-                        if (element.hasAttr(siblings.getKey()) && isNullOrEmpty(element.attr(siblings.getValue())))
-                            log.warn("File " + toRelativePath(file) + " has a tag '" + element.tagName() + "' with an attribute '" + siblings.getKey() + "' + but not '" + siblings.getValue() + "'");
+                        if (!isNullOrEmpty(element.attr(siblings.getKey())) && isNullOrEmpty(element.attr(siblings.getValue())))
+                            log.warn("File " + toRelativePath(file) + " has a tag '" + element.tagName() + "' with an attribute '" + siblings.getKey() + "' but not '" + siblings.getValue() + "'");
                     }
                 }
                 if (node instanceof TextNode) {

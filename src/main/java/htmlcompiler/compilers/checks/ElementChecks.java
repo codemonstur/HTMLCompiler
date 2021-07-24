@@ -45,13 +45,20 @@ public enum ElementChecks {;
 
     public static void missingAltForImages(final Logger log, final CompilerConfig config, final Path file, final Element element) {
         if ("img".equals(element.tagName()) && isNullOrEmpty(element.attr("alt")))
-            log.warn("File " + toRelativePath(file) + " contains an <img> tag without an alt attribute");
+            log.warn("File " + toRelativePath(file) + " contains an <img> tag without an 'alt' attribute");
     }
 
     public static void missingPlaceholderForInputs(final Logger log, final CompilerConfig config, final Path file, final Element element) {
         if ("input".equals(element.tagName()) && "text".equals(element.attr("type"))
          && !element.hasAttr("disabled") && isNullOrEmpty(element.attr("placeholder")))
-            log.warn("File " + toRelativePath(file) + " contains an <input> tag without a placeholder attribute");
+            log.warn("File " + toRelativePath(file) + " contains an <input type=\"text\"> tag without a 'placeholder' attribute");
+    }
+
+    public static void missingPatternForInputs(final Logger log, final CompilerConfig config, final Path file, final Element element) {
+        if ("input".equals(element.tagName()) && "text".equals(element.attr("type"))
+         && !element.hasAttr("disabled") && isNullOrEmpty(element.attr("pattern"))) {
+            log.warn("File " + toRelativePath(file) + " contains an <input type=\"text\"> tag without a 'pattern' attribute");
+        }
     }
 
     public static void missingInputType(final Logger log, final CompilerConfig config, final Path file, final Element element) {

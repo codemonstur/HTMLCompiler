@@ -46,6 +46,7 @@ public final class CheckListBuilder {
         addIfEnabled("has_uppercase_tags_or_attributes", ElementChecks::hasUppercaseTagsOrAttributes);
         addIfEnabled("missing_alt_for_images", ElementChecks::missingAltForImages);
         addIfEnabled("missing_placeholder_for_inputs", ElementChecks::missingPlaceholderForInputs);
+        addIfEnabled("missing_pattern_for_inputs", ElementChecks::missingPatternForInputs);
         addIfEnabled("missing_input_type", ElementChecks::missingInputType);
         addIfEnabled("unknown_input_type", ElementChecks::unknownInputType);
         addIfEnabled("dont_use_bold", ElementChecks::dontUseBold);
