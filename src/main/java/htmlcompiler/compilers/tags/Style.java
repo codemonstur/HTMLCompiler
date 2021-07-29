@@ -1,5 +1,6 @@
 package htmlcompiler.compilers.tags;
 
+import htmlcompiler.compilers.tags.TagVisitor.TailVisitor;
 import htmlcompiler.pojos.compile.StyleType;
 import org.jsoup.nodes.Element;
 
@@ -7,6 +8,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 
 import static htmlcompiler.compilers.CssCompiler.compressCssCode;
+import static htmlcompiler.compilers.tags.TagParsing.*;
 import static htmlcompiler.pojos.compile.StyleType.css;
 import static htmlcompiler.pojos.compile.StyleType.detectStyleType;
 import static htmlcompiler.tools.IO.toLocation;
@@ -14,37 +16,37 @@ import static htmlcompiler.tools.IO.toLocation;
 public enum Style {;
 
     public static TagVisitor newStyleVisitor() {
-        return (TagVisitor.TailVisitor) (config, file, element, depth) -> {
+        return (TailVisitor) (config, file, element, depth) -> {
             if (element.hasAttr("inline")) {
                 final Path location = toLocation(file, element.attr("src"), "style tag in %s has an invalid src location '%s'");
 
                 final StyleType type = detectStyleType(element, css);
-                TagParsing.setData(element, compressIfRequested(element, type.compile(location)));
-                TagParsing.removeAttributes(element, "inline", "compress", "src", "type");
+                setData(element, compressIfRequested(element, type.compile(location)));
+                removeAttributes(element, "inline", "compress", "src", "type");
 
-                final Element previousSibling = TagParsing.previousElementSibling(element);
-                if (TagParsing.isInlineStyle(previousSibling) && !TagParsing.isScriptEmpty(previousSibling)) {
-                    TagParsing.setData(element, previousSibling.data() + element.data());
+                final Element previousSibling = previousElementSibling(element);
+                if (isInlineStyle(previousSibling) && !isScriptEmpty(previousSibling)) {
+                    setData(element, previousSibling.data() + element.data());
                     previousSibling.attr("htmlcompiler", "delete-me");
                 }
                 return;
             }
 
-            if (!TagParsing.isStyleEmpty(element)) {
+            if (!isStyleEmpty(element)) {
                 final StyleType type = detectStyleType(element, css);
-                TagParsing.setData(element, compressIfRequested(element, type.compile(element.data(), file)));
-                TagParsing.removeAttributes(element,"compress", "type");
+                setData(element, compressIfRequested(element, type.compile(element.data(), file)));
+                removeAttributes(element,"compress", "type");
 
-                final Element previousSibling = TagParsing.previousElementSibling(element);
-                if (TagParsing.isInlineStyle(previousSibling) && !TagParsing.isStyleEmpty(previousSibling)) {
-                    TagParsing.setData(element, previousSibling.data() + element.data());
+                final Element previousSibling = previousElementSibling(element);
+                if (isInlineStyle(previousSibling) && !isStyleEmpty(previousSibling)) {
+                    setData(element, previousSibling.data() + element.data());
                     previousSibling.attr("htmlcompiler", "delete-me");
                 }
 
                 return;
             }
             if (element.hasAttr("to-absolute")) {
-                TagParsing.makeAbsolutePath(element, "src");
+                makeAbsolutePath(element, "src");
             }
         };
     }

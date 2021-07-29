@@ -1,17 +1,21 @@
 package htmlcompiler.compilers.tags;
 
 import htmlcompiler.compilers.HtmlCompiler;
+import htmlcompiler.compilers.tags.TagVisitor.TailVisitor;
 import htmlcompiler.pojos.compile.MoveType;
 import htmlcompiler.pojos.compile.ScriptBag;
 import htmlcompiler.pojos.compile.ScriptType;
 import htmlcompiler.pojos.error.InvalidInput;
 import htmlcompiler.tools.Logger;
+import htmlcompiler.tools.MutableInteger;
 import org.jsoup.nodes.Element;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.function.Function;
 
 import static htmlcompiler.compilers.JsCompiler.compressJavascriptCode;
+import static htmlcompiler.compilers.tags.TagParsing.*;
 import static htmlcompiler.pojos.compile.MoveType.storeCode;
 import static htmlcompiler.pojos.compile.MoveType.toMoveType;
 import static htmlcompiler.pojos.compile.ScriptType.detectScriptType;
@@ -22,13 +26,13 @@ import static htmlcompiler.tools.IO.toLocation;
 public enum Script {;
 
     public static TagVisitor newScriptVisitor(final Logger log, final HtmlCompiler html, final ScriptBag scripts) {
-        return (TagVisitor.TailVisitor) (config, file, node, depth) -> {
+        return (TailVisitor) (config, file, node, depth) -> {
             if (!node.hasAttr("src") && node.hasAttr("inline"))
                 throw new InvalidInput("script inline attempted on tag without src attribute");
-            if (node.hasAttr("src") && !TagParsing.isScriptEmpty(node))
+            if (node.hasAttr("src") && !isScriptEmpty(node))
                 throw new InvalidInput("script tag has both src tag and text content");
 
-            if (!node.hasAttr("src") && TagParsing.isScriptEmpty(node)) {
+            if (!node.hasAttr("src") && isScriptEmpty(node)) {
                 node.attr("htmlcompiler", "delete-me");
                 return;
             }
@@ -37,23 +41,23 @@ public enum Script {;
                 final ScriptType scriptType = detectScriptType(node, javascript);
                 final String code = compileScriptTag(node, scriptType, file);
                 storeCode(compressIfRequested(node, code), type, scripts);
-                TagParsing.setData(node, "");
+                setData(node, "");
                 node.attr("htmlcompiler", "delete-me");
                 return;
             }
 
-            if (node.hasAttr("src") && TagParsing.isScriptEmpty(node))
+            if (node.hasAttr("src") && isScriptEmpty(node))
                 checkVersionLibrary(log, file.toString(), node.attr("src"), config.ignoreMajorVersions);
 
-            if (!TagParsing.isScriptEmpty(node)) {
+            if (!isScriptEmpty(node)) {
                 final ScriptType type = detectScriptType(node, null);
                 if (type != null) {
-                    TagParsing.setData(node, compressIfRequested(node, type.compile(node.data(), file)));
-                    TagParsing.removeAttributes(node, "inline", "compress", "src", "type");
+                    setData(node, compressIfRequested(node, type.compile(node.data(), file)));
+                    removeAttributes(node, "inline", "compress", "src", "type");
 
-                    final Element previousSibling = TagParsing.previousElementSibling(node);
-                    if (TagParsing.isInlineScript(previousSibling) && !TagParsing.isScriptEmpty(previousSibling)) {
-                        TagParsing.setData(node, previousSibling.data() + node.data());
+                    final Element previousSibling = previousElementSibling(node);
+                    if (isInlineScript(previousSibling) && !isScriptEmpty(previousSibling)) {
+                        setData(node, previousSibling.data() + node.data());
                         previousSibling.attr("htmlcompiler", "delete-me");
                     }
 
@@ -61,41 +65,42 @@ public enum Script {;
                 }
             }
 
-            if (TagParsing.isHtml(node) && !TagParsing.isScriptEmpty(node)) {
+            if (isHtml(node) && !isScriptEmpty(node)) {
                 final String compiled = html.compileHtmlFragment(file, node.data()).html();
                 final String result = node.hasAttr("compress")
                         ? html.compressHtmlCode(compiled) : compiled;
-                TagParsing.removeAttributes(node, "inline", "compress");
-                TagParsing.setData(node, result);
+                removeAttributes(node, "inline", "compress");
+                setData(node, result);
                 return;
             }
 
             if (node.hasAttr("inline")) {
                 final ScriptType type = detectScriptType(node, javascript);
                 final Path location = toLocation(file, node.attr("src"), "script tag in %s has an invalid src location '%s'");
-                TagParsing.setData(node, compressIfRequested(node, type.compile(location)));
-                TagParsing.removeAttributes(node, "inline", "compress", "src", "type");
+                html.linkCounts.computeIfAbsent(location.toAbsolutePath().toString(), s -> new MutableInteger()).increment();
+                setData(node, compressIfRequested(node, type.compile(location)));
+                removeAttributes(node, "inline", "compress", "src", "type");
 
-                final Element previousSibling = TagParsing.previousElementSibling(node);
-                if (TagParsing.isInlineScript(previousSibling) && !TagParsing.isScriptEmpty(previousSibling)) {
-                    TagParsing.setData(node, previousSibling.data() + node.data());
+                final Element previousSibling = previousElementSibling(node);
+                if (isInlineScript(previousSibling) && !isScriptEmpty(previousSibling)) {
+                    setData(node, previousSibling.data() + node.data());
                     previousSibling.attr("htmlcompiler", "delete-me");
                 }
 
                 return;
             }
             if (node.hasAttr("src") && !node.hasAttr("integrity") && !node.hasAttr("no-integrity")) {
-                TagParsing.addIntegrityAttributes(node, node.attr("src"), log);
+                addIntegrityAttributes(node, node.attr("src"), log);
             }
             if (node.hasAttr("to-absolute")) {
-                TagParsing.makeAbsolutePath(node, "src");
+                makeAbsolutePath(node, "src");
             }
-            TagParsing.removeAttributes(node, "to-absolute", "no-integrity");
+            removeAttributes(node, "to-absolute", "no-integrity");
         };
     }
 
     private static String compileScriptTag(final Element element, final ScriptType scriptType, final Path parent) throws Exception {
-        if (!TagParsing.isScriptEmpty(element)) return scriptType.compile(element.data(), parent);
+        if (!isScriptEmpty(element)) return scriptType.compile(element.data(), parent);
 
         final Path location = toLocation(parent, element.attr("src"), "script tag in %s has an invalid src location '%s'");
         return scriptType.compile(location);

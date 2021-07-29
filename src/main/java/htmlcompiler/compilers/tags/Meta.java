@@ -1,5 +1,6 @@
 package htmlcompiler.compilers.tags;
 
+import htmlcompiler.compilers.tags.TagVisitor.TailVisitor;
 import htmlcompiler.pojos.error.InvalidInput;
 import htmlcompiler.pojos.library.Attribute;
 import htmlcompiler.pojos.library.LibraryArchive;
@@ -7,16 +8,17 @@ import htmlcompiler.pojos.library.LibraryDescription;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
+import static htmlcompiler.compilers.tags.TagParsing.*;
 import static htmlcompiler.compilers.tags.TagParsing.replaceWith;
 import static xmlparser.utils.Functions.isNullOrEmpty;
 
 public enum Meta {;
 
     public static TagVisitor newMetaVisitor(final LibraryArchive archive) {
-        return (TagVisitor.TailVisitor) (config, file, node, depth) -> {
+        return (TailVisitor) (config, file, node, depth) -> {
             final String name = node.attr("name");
             if ("library".equals(name)) {
-                TagParsing.replaceWith(node, createTag(node, archive));
+                replaceWith(node, createTag(node, archive));
             }
         };
     }

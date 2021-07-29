@@ -1,5 +1,6 @@
 package htmlcompiler.compilers.tags;
 
+import htmlcompiler.compilers.tags.TagVisitor.TailVisitor;
 import htmlcompiler.pojos.error.InvalidInput;
 import htmlcompiler.pojos.library.Attribute;
 import htmlcompiler.pojos.library.LibraryArchive;
@@ -12,8 +13,8 @@ import static xmlparser.utils.Functions.isNullOrEmpty;
 public enum Library {;
 
     public static TagVisitor newLibraryVisitor(final LibraryArchive archive) {
-        return (TagVisitor.TailVisitor) (config, file, node, depth) -> {
-            TagParsing.replaceWith(node, createTag(node, archive));
+        return (TailVisitor) (config, file, node, depth) -> {
+            replaceWith(node, createTag(node, archive));
         };
     }
 

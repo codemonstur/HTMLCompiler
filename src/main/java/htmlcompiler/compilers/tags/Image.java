@@ -1,18 +1,22 @@
 package htmlcompiler.compilers.tags;
 
 import htmlcompiler.compilers.HtmlCompiler;
+import htmlcompiler.compilers.tags.TagVisitor.TailVisitor;
 import org.jsoup.nodes.Element;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import static htmlcompiler.compilers.tags.TagParsing.*;
+import static htmlcompiler.compilers.tags.TagParsing.copyAttributes;
+import static htmlcompiler.compilers.tags.TagParsing.makeAbsolutePath;
 import static htmlcompiler.pojos.compile.ImageType.isBinaryImage;
 import static htmlcompiler.tools.IO.toLocation;
 
 public enum Image {;
 
     public static TagVisitor newImageVisitor(final HtmlCompiler compiler) {
-        return (TagVisitor.TailVisitor) (config, file, node, depth) -> {
+        return (TailVisitor) (config, file, node, depth) -> {
             if (node.hasAttr("inline")) {
                 final Path location = toLocation(file, node.attr("src"), "img tag in %s has an invalid src location '%s'");
 
@@ -21,15 +25,15 @@ public enum Image {;
                     node.removeAttr("inline");
                     node.removeAttr("src");
 
-                    TagParsing.copyAttributes(node, newImage);
-                    TagParsing.replaceWith(node, newImage);
+                    copyAttributes(node, newImage);
+                    replaceWith(node, newImage);
 
                 } else if (isBinaryImage(location)) {
                     node.removeAttr("inline");
-                    node.attr("src", TagParsing.toDataUrl(location));
+                    node.attr("src", toDataUrl(location));
                 }
             } else if (node.hasAttr("to-absolute")) {
-                TagParsing.makeAbsolutePath(node, "src");
+                makeAbsolutePath(node, "src");
             }
         };
     }
