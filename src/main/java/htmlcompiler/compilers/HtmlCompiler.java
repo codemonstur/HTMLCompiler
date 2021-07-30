@@ -63,7 +63,7 @@ public final class HtmlCompiler {
         final ScriptBag scripts = new ScriptBag();
         final Map<String, TagVisitor> processors = new HashMap<>();
         processors.put("style", newStyleVisitor());
-        processors.put("link", newLinkVisitor(log));
+        processors.put("link", newLinkVisitor(log, html));
         processors.put("img", newImageVisitor(html));
         processors.put("script", newScriptVisitor(log, html, scripts));
         processors.put("body", newBodyVisitor(scripts));
