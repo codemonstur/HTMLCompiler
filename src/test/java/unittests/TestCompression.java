@@ -20,7 +20,7 @@ public class TestCompression {
     public void compressHtml() throws IOException, InvalidInput {
         final HtmlCompiler compiler = newHtmlCompiler();
         final String output = Parsing.compileFile(compiler, "src/test/resources/html/compress-html.html");
-        assertEquals("Invalid generated HTML", html_output_compress_html, output);
+        assertEquals(html_output_compress_html, output, "Invalid generated HTML");
     }
 
 }

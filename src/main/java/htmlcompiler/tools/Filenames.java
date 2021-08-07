@@ -29,6 +29,7 @@ public enum Filenames {;
         return toRelativePath(Paths.get(fileName));
     }
     public static String toRelativePath(final Path path) {
+        if (!path.isAbsolute()) return path.toString();
         return CURRENT_WORKING_DIRECTORY.relativize(path).toString();
     }
 

@@ -13,7 +13,7 @@ import static util.Factory.newHtmlCompiler;
 public class TestInlining {
 
     private static final String html_output_image =
-        "<!DOCTYPE html><html><head><title>Test html</title></head><body><img src=\"data:image/jpeg;base64," +
+        "<!DOCTYPE html><html><head><title>TestApp html</title></head><body><img src=\"data:image/jpeg;base64," +
         "/9j/4AAQSkZJRgABAQEASABIAAD//gATQ3JlYXRlZCB3aXRoIEdJTVD" +
         "/2wBDAAMCAgMCAgMDAwMEAwMEBQgFBQQEBQoHBwYIDAoMDAsKCwsNDhIQDQ4RDgsLEBYQERMUFRUVDA8XGBYUGBIUFRT" +
         "/2wBDAQMEBAUEBQkFBQkUDQsNFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBT" +
@@ -28,25 +28,25 @@ public class TestInlining {
     public void compileInlineImage() throws IOException, InvalidInput {
         final HtmlCompiler compiler = newHtmlCompiler();
         final String output = Parsing.compileFile(compiler, "src/test/resources/inlining/image.html");
-        assertEquals("Invalid generated HTML", html_output_image, output);
+        assertEquals(html_output_image, output, "Invalid generated HTML");
     }
 
     public static final String html_output_favicon =
         "<!DOCTYPE html><html><head><link rel=\"icon\" type=\"image/ico\" href=\"data:image/ico;base64," +
         "PGh0bWw+CjxoZWFkPgogICAgPGxpbmsgcmVsPSJpY29uIiB0eXBlPSJpbWFnZS9pY28iIGhyZWY9Ii4uL3N0YXRpYy9pbW" +
         "cvZmF2aWNvbi5pY28iIGlubGluZT4KICAgIDx0aXRsZT5UZXN0IGh0bWw8L3RpdGxlPgo8L2hlYWQ+Cjxib2R5PgoKPC9i" +
-        "b2R5Pgo8L2h0bWw+\"><title>Test html</title></head><body></body></html>";
+        "b2R5Pgo8L2h0bWw+\"><title>TestApp html</title></head><body></body></html>";
 
     @Test
     public void compileInlineFavicon() throws IOException, InvalidInput {
         final HtmlCompiler compiler = newHtmlCompiler();
         final String output = Parsing.compileFile(compiler, "src/test/resources/inlining/favicon.html");
-        assertEquals("Invalid generated HTML", html_output_favicon, output);
+        assertEquals(html_output_favicon, output, "Invalid generated HTML");
     }
 
     public static final String html_output_script =
         "<!DOCTYPE html><html><head><script>function merging1(){console.log(\"Merging 1\")};</script>" +
-        "<title>Test html</title><script>\n" +
+        "<title>TestApp html</title><script>\n" +
         "function merging1() {\n" +
         "    console.log(\"Merging 1\");\n" +
         "}\n" +
@@ -56,11 +56,11 @@ public class TestInlining {
     public void compileInlineScript() throws IOException, InvalidInput {
         final HtmlCompiler compiler = newHtmlCompiler();
         final String output = Parsing.compileFile(compiler, "src/test/resources/inlining/script.html");
-        assertEquals("Invalid generated HTML", html_output_script, output);
+        assertEquals(html_output_script, output, "Invalid generated HTML");
     }
 
     public static final String html_output_style =
-        "<!DOCTYPE html><html><head><style>*{width:100%}</style><title>Test html</title><style>* {\n" +
+        "<!DOCTYPE html><html><head><style>*{width:100%}</style><title>TestApp html</title><style>* {\n" +
         "    width: 100%;\n" +
         "}\n" +
         "</style></head><body></body></html>";
@@ -69,7 +69,7 @@ public class TestInlining {
     public void compileInlineStyle() throws IOException, InvalidInput {
         final HtmlCompiler compiler = newHtmlCompiler();
         final String output = Parsing.compileFile(compiler, "src/test/resources/inlining/style.html");
-        assertEquals("Invalid generated HTML", html_output_style, output);
+        assertEquals(html_output_style, output, "Invalid generated HTML");
     }
 
 }

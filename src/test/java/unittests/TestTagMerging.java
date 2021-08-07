@@ -19,7 +19,7 @@ public class TestTagMerging {
     public void mergeFiveScriptTags() throws Exception {
         final HtmlCompiler compiler = newHtmlCompiler();
         final String output = compileFile(compiler, "src/test/resources/merging/test3.html");
-        assertEquals("Merge output not equal", output_html_five_scripts, output);
+        assertEquals(output_html_five_scripts, output, "Merge output not equal");
     }
 
     private static final String output_html_two_links =
@@ -33,7 +33,7 @@ public class TestTagMerging {
     public void mergeTwoLinkTags() throws Exception {
         final HtmlCompiler compiler = newHtmlCompiler();
         final String output = compileFile(compiler, "src/test/resources/merging/test2.html");
-        assertEquals("Merge output not equal", output_html_two_links, output);
+        assertEquals(output_html_two_links, output, "Merge output not equal");
     }
 
 }
