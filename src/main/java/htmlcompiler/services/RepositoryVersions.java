@@ -8,6 +8,7 @@ import htmlcompiler.tools.Logger;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.net.ConnectException;
 import java.net.URI;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
@@ -35,16 +36,21 @@ public enum RepositoryVersions {;
             , final boolean ignoreMajor) throws IOException, InterruptedException {
         final Matcher matcher = IS_CDNJS.matcher(url);
         if (matcher.find()) {
-            final var libraryName = matcher.group(1);
-            final var libraryVersion = new Version(matcher.group(2));
-            final var allVersions = listVersions(libraryName);
-            final var message = toVersionMessage
-                ( ignoreMajor ? Optional.empty() : findNewerMajor(libraryVersion, allVersions)
-                , findNewerMinor(libraryVersion, allVersions)
-                , findNewerPatch(libraryVersion, allVersions));
+            try {
+                final var libraryName = matcher.group(1);
+                final var libraryVersion = new Version(matcher.group(2));
+                final var allVersions = listVersions(libraryName);
+                final var message = toVersionMessage
+                    ( ignoreMajor ? Optional.empty() : findNewerMajor(libraryVersion, allVersions)
+                    , findNewerMinor(libraryVersion, allVersions)
+                    , findNewerPatch(libraryVersion, allVersions)
+                    );
 
-            if (!isNullOrEmpty(message)) {
-                log.warn(String.format("File %s uses outdated library %s:%s; %s%n", toRelativePath(fileName), libraryName, libraryVersion.original, message));
+                if (!isNullOrEmpty(message)) {
+                    log.warn(String.format("File %s uses outdated library %s:%s; %s", toRelativePath(fileName), libraryName, libraryVersion.original, message));
+                }
+            } catch (ConnectException e) {
+                log.warn("Connect error while downloading version list for library " + url);
             }
         }
     }

@@ -146,7 +146,7 @@ public final class HtmlCompiler {
         });
 
         for (final Exception e : errors) {
-            log.warn("Error occurred: " + e.getMessage());
+            log.warn(e.getClass().getSimpleName() + ": " + e.getMessage());
         }
         if (!errors.isEmpty()) {
             throw new InvalidInput("HTML failed to compile, fix errors first");
