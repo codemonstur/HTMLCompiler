@@ -12,7 +12,6 @@ import org.jsoup.nodes.Node;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.function.Function;
 
 import static htmlcompiler.compilers.CssCompiler.compressCssCode;
 import static htmlcompiler.compilers.tags.TagParsing.*;
@@ -20,8 +19,11 @@ import static htmlcompiler.pojos.compile.ImageType.toMimeType;
 import static htmlcompiler.pojos.compile.StyleType.css;
 import static htmlcompiler.pojos.compile.StyleType.detectStyleType;
 import static htmlcompiler.services.RepositoryVersions.checkVersionLibrary;
+import static htmlcompiler.tools.IO.loadResource;
 import static htmlcompiler.tools.IO.toLocation;
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.nio.file.Files.readAllBytes;
+import static xmlparser.utils.Functions.isNullOrEmpty;
 
 public enum Link {;
 
@@ -31,6 +33,25 @@ public enum Link {;
                 inlineFavicon(node, file);
                 return;
             }
+
+            if (isCssUtil(node)) {
+                final String cssUtilName = node.attr("href");
+                if (isNullOrEmpty(cssUtilName)) throw new InvalidInput("Found CSS-util import without href attribute");
+
+                html.cssUtils.computeIfAbsent(cssUtilName, s -> new MutableInteger()).increment();
+                final Element style = node.ownerDocument().createElement("style");
+                setData(style, compressCssCode(loadCssUtil(cssUtilName)));
+
+                final Element previousSibling = previousElementSibling(node);
+                if (isInlineStyle(previousSibling) && !isStyleEmpty(previousSibling)) {
+                    setData(style, previousSibling.data() + style.data());
+                    previousSibling.attr("htmlcompiler", "delete-me");
+                }
+
+                replaceWith(node, style);
+                return;
+            }
+
             if (isLinkStyleSheet(node) && node.hasAttr("href"))
                 checkVersionLibrary(log, file.toString(), node.attr("href"), config.ignoreMajorVersions);
 
@@ -63,6 +84,17 @@ public enum Link {;
         final String type = (element.hasAttr("type")) ? element.attr("type") : toMimeType(location);
         element.removeAttr("inline");
         element.attr("href", toDataUrl(type, readAllBytes(file)));
+    }
+
+    private static boolean isCssUtil(final Element node) {
+        return node.hasAttr("rel") && "css-util".equals(node.attr("rel"));
+    }
+    private static String loadCssUtil(final String cssUtilName) throws InvalidInput {
+        try {
+            return loadResource("/css-utils/" + cssUtilName + ".css", UTF_8);
+        } catch (IOException e) {
+            throw new InvalidInput("CSS util " + cssUtilName + " does not exist", e);
+        }
     }
 
     private static Element inlineStylesheet(final Element element, final Path location, final Document document)

@@ -2,9 +2,8 @@ package htmlcompiler.tools;
 
 import htmlcompiler.pojos.error.InvalidInput;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -57,4 +56,22 @@ public enum IO {;
             throw e;
         }
     }
+
+    public static String loadResource(final String resourcePath, final Charset charset) throws IOException {
+        try (final var in = IO.class.getResourceAsStream(resourcePath)) {
+            if (in == null) throw new FileNotFoundException("Resource " + resourcePath + " does not exist.");
+            return streamAsString(in, charset);
+        }
+    }
+
+    private static String streamAsString(final InputStream in, final Charset charset) throws IOException {
+        try (final var result = new ByteArrayOutputStream()) {
+            final byte[] buffer = new byte[1024];
+            for (int read; (read = in.read(buffer)) != -1;) {
+                result.write(buffer, 0, read);
+            }
+            return result.toString(charset);
+        }
+    }
+
 }

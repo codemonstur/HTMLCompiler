@@ -1,11 +1,11 @@
 package htmlcompiler.compilers;
 
 import com.googlecode.htmlcompressor.compressor.HtmlCompressor;
+import htmlcompiler.compilers.tags.TagVisitor;
 import htmlcompiler.pojos.compile.CompilerConfig;
 import htmlcompiler.pojos.compile.ScriptBag;
 import htmlcompiler.pojos.error.InvalidInput;
 import htmlcompiler.pojos.library.LibraryArchive;
-import htmlcompiler.compilers.tags.TagVisitor;
 import htmlcompiler.tools.Logger;
 import htmlcompiler.tools.MutableInteger;
 import org.jsoup.Jsoup;
@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.BiConsumer;
 
 import static htmlcompiler.compilers.checks.CheckListBuilder.newJsoupCheckList;
 import static htmlcompiler.compilers.tags.Body.newBodyVisitor;
@@ -44,6 +43,7 @@ public final class HtmlCompiler {
     private final Map<String, TagVisitor> processors;
     private final Map<String, CompilerConfig> configs;
     public final Map<String, MutableInteger> linkCounts = new HashMap<>();
+    public final Map<String, MutableInteger> cssUtils = new HashMap<>();
 
     public HtmlCompiler(final Logger log, final LibraryArchive archive, final Map<String, CompilerConfig> configs) {
         this.log = log;
@@ -122,6 +122,10 @@ public final class HtmlCompiler {
         linkCounts.forEach((link, count) -> {
             if (count.getValue() > 1)
                 log.warn("File " + toRelativePath(file) + " contains " + count.getValue() + " entries to " + toRelativePath(link));
+        });
+        cssUtils.forEach((util, count) -> {
+            if (count.getValue() > 1)
+                log.warn("CSS-util " + util + " is imported more than once");
         });
 
         final var checks = newJsoupCheckList(config).addAllEnabled().build();
