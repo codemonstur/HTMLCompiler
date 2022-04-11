@@ -59,10 +59,11 @@ public final class HtmlCompiler {
         return compressor;
     }
 
-    private static Map<String, TagVisitor> newDefaultTagProcessors(final Logger log, final HtmlCompiler html, final LibraryArchive archive) {
+    private static Map<String, TagVisitor> newDefaultTagProcessors(final Logger log, final HtmlCompiler html
+            , final LibraryArchive archive) {
         final ScriptBag scripts = new ScriptBag();
         final Map<String, TagVisitor> processors = new HashMap<>();
-        processors.put("style", newStyleVisitor());
+        processors.put("style", newStyleVisitor(log));
         processors.put("link", newLinkVisitor(log, html));
         processors.put("img", newImageVisitor(html));
         processors.put("script", newScriptVisitor(log, html, scripts));

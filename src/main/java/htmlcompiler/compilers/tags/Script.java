@@ -40,7 +40,7 @@ public enum Script {;
                 final MoveType type = toMoveType(node.attr("move"), null);
                 final ScriptType scriptType = detectScriptType(node, javascript);
                 final String code = compileScriptTag(node, scriptType, file);
-                storeCode(compressIfRequested(node, code), type, scripts);
+                storeCode(compressIfRequested(log, node, code), type, scripts);
                 setData(node, "");
                 node.attr("htmlcompiler", "delete-me");
                 return;
@@ -52,7 +52,7 @@ public enum Script {;
             if (!isScriptEmpty(node)) {
                 final ScriptType type = detectScriptType(node, null);
                 if (type != null) {
-                    setData(node, compressIfRequested(node, type.compile(node.data(), file)));
+                    setData(node, compressIfRequested(log, node, type.compile(node.data(), file)));
                     removeAttributes(node, "inline", "compress", "src", "type");
 
                     final Element previousSibling = previousElementSibling(node);
@@ -78,7 +78,7 @@ public enum Script {;
                 final ScriptType type = detectScriptType(node, javascript);
                 final Path location = toLocation(file, node.attr("src"), "script tag in %s has an invalid src location '%s'");
                 html.linkCounts.computeIfAbsent(location.toAbsolutePath().toString(), s -> new MutableInteger()).increment();
-                setData(node, compressIfRequested(node, type.compile(location)));
+                setData(node, compressIfRequested(log, node, type.compile(location)));
                 removeAttributes(node, "inline", "compress", "src", "type");
 
                 final Element previousSibling = previousElementSibling(node);
@@ -106,9 +106,9 @@ public enum Script {;
         return scriptType.compile(location);
     }
 
-    private static String compressIfRequested(final Element element, final String code) throws IOException {
+    private static String compressIfRequested(final Logger log, final Element element, final String code) throws IOException {
         if (code == null || code.isEmpty()) return code;
-        return element.hasAttr("compress") ? compressJavascriptCode(code) : code;
+        return element.hasAttr("compress") ? compressJavascriptCode(log, code) : code;
     }
 
 }

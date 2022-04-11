@@ -35,12 +35,19 @@ public enum Link {;
             }
 
             if (isCssUtil(node)) {
-                final String cssUtilName = node.attr("href");
-                if (isNullOrEmpty(cssUtilName)) throw new InvalidInput("Found CSS-util import without href attribute");
+                final String cssUtilNames = node.attr("href");
+                if (isNullOrEmpty(cssUtilNames)) throw new InvalidInput("Found CSS-util import without href attribute");
 
-                html.cssUtils.computeIfAbsent(cssUtilName, s -> new MutableInteger()).increment();
+                final StringBuilder css = new StringBuilder();
+                for (final String cssUtilName : cssUtilNames.split("[ ,]")) {
+                    if (isNullOrEmpty(cssUtilName)) continue;
+
+                    html.cssUtils.computeIfAbsent(cssUtilName, s -> new MutableInteger()).increment();
+                    css.append(loadCssUtil(cssUtilName));
+                }
+
                 final Element style = node.ownerDocument().createElement("style");
-                setData(style, compressCssCode(loadCssUtil(cssUtilName)));
+                setData(style, compressCssCode(log, css.toString()));
 
                 final Element previousSibling = previousElementSibling(node);
                 if (isInlineStyle(previousSibling) && !isStyleEmpty(previousSibling)) {
@@ -58,7 +65,7 @@ public enum Link {;
             if (isLinkStyleSheet(node) && node.hasAttr("inline")) {
                 final Path location = toLocation(file, node.attr("href"), "<link> in %s has an invalid href location '%s'");
                 html.linkCounts.computeIfAbsent(location.toAbsolutePath().toString(), s -> new MutableInteger()).increment();
-                final Element style = inlineStylesheet(node, location, node.ownerDocument());
+                final Element style = inlineStylesheet(log, node, location, node.ownerDocument());
 
                 final Element previousSibling = previousElementSibling(node);
                 if (isInlineStyle(previousSibling) && !isStyleEmpty(previousSibling)) {
@@ -97,7 +104,7 @@ public enum Link {;
         }
     }
 
-    private static Element inlineStylesheet(final Element element, final Path location, final Document document)
+    private static Element inlineStylesheet(final Logger log, final Element element, final Path location, final Document document)
             throws Exception {
 
         final Element style = document.createElement("style");
@@ -105,7 +112,7 @@ public enum Link {;
         setData(style, type.compile(location));
 
         if (element.hasAttr("compress"))
-            setData(style, compressCssCode(style.data()));
+            setData(style, compressCssCode(log, style.data()));
 
         removeAttributes(element, "href", "rel", "inline", "compress");
         copyAttributes(element, style);

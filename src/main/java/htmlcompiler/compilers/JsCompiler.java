@@ -1,6 +1,9 @@
 package htmlcompiler.compilers;
 
 import com.yahoo.platform.yui.compressor.JavaScriptCompressor;
+import htmlcompiler.tools.Logger;
+import org.mozilla.javascript.ErrorReporter;
+import org.mozilla.javascript.EvaluatorException;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -10,8 +13,18 @@ import static htmlcompiler.compilers.CodeCompiler.newExternalToolCompiler;
 
 public enum JsCompiler {;
 
-    public static String compressJavascriptCode(final String code) throws IOException {
-        final JavaScriptCompressor compressor = new JavaScriptCompressor(new StringReader(code), null);
+    public static String compressJavascriptCode(final Logger log, final String code) throws IOException {
+        final JavaScriptCompressor compressor = new JavaScriptCompressor(new StringReader(code), new ErrorReporter() {
+            public void warning(final String message, final String sourceName, final int line, final String lineSource, final int lineOffset) {
+                log.warn("In file " + sourceName + " on line " + line + " offset " + lineOffset + ": " + message);
+            }
+            public void error(final String message, final String sourceName, final int line, final String lineSource, final int lineOffset) {
+                log.error("In file " + sourceName + " on line " + line + " offset " + lineOffset + ": " + message);
+            }
+            public EvaluatorException runtimeError(final String message, final String sourceName, final int line, final String lineSource, final int lineOffset) {
+                return new EvaluatorException(message, sourceName, line, lineSource, lineOffset);
+            }
+        });
         final StringWriter writer = new StringWriter();
         compressor.compress(writer, -1, true, false, false, false);
         return writer.toString();

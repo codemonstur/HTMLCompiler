@@ -10,6 +10,7 @@
   - Body tags in head
   - Head tags in body
   - block elements inside inline elements
+  - Implement checks for accessibility rules: https://a11y-automation.dev/violations
 - Make validation checks work for neko compilers
 - Allow for check hints inside HTML pages
 - Run lighthouse on some code and turn all its warnings into checks

@@ -6,6 +6,7 @@ import com.vaadin.sass.internal.handler.SCSSDocumentHandler;
 import com.vaadin.sass.internal.handler.SCSSDocumentHandlerImpl;
 import com.vaadin.sass.internal.parser.Parser;
 import com.yahoo.platform.yui.compressor.CssCompressor;
+import htmlcompiler.tools.Logger;
 import org.w3c.css.sac.InputSource;
 
 import java.io.*;
@@ -16,7 +17,7 @@ import static htmlcompiler.compilers.CodeCompiler.newExternalToolCompiler;
 
 public enum CssCompiler {;
 
-    public static String compressCssCode(final String code) throws IOException {
+    public static String compressCssCode(final Logger logger, final String code) throws IOException {
         final CssCompressor compressor = new CssCompressor(new StringReader(code));
         final StringWriter writer = new StringWriter();
         compressor.compress(writer, -1);

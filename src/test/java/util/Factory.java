@@ -13,7 +13,7 @@ import static htmlcompiler.tools.Logger.newLogger;
 public enum Factory {;
 
     public static HtmlCompiler newHtmlCompiler() {
-        final Logger log = newLogger(System.out::print, System.out::print);
+        final Logger log = newLogger(System.out::print, System.out::print, System.out::print);
         final LibraryArchive archive = new LibraryArchive();
         final CompilerConfig checks = new CompilerConfig();
         return new HtmlCompiler(log, archive, Map.of("", checks));

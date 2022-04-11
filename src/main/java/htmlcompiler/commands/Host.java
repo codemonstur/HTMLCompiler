@@ -54,7 +54,7 @@ public enum Host {;
         final var libs = new LibraryArchive();
         final var checksSettings = readChecksConfiguration(config.validation);
         final var html = new HtmlCompiler(log, libs, checksSettings);
-        final var ttc = newTemplateThenCompile(config.inputDir, config.outputDir, config.replaceExtension, config.variables, html);
+        final var ttc = newTemplateThenCompile(log, config.inputDir, config.outputDir, config.replaceExtension, config.variables, html);
         final var queue = new LinkedBlockingQueue<Task>();
 
         final var server = newHttpServer(config.port, config.requestApiEnabled, config.requestApiSpecification, config.hostedPaths);

@@ -28,7 +28,7 @@ public enum Compile {;
         final var libs = new LibraryArchive();
         final var checksSettings = readChecksConfiguration(config.validation);
         final var html = new HtmlCompiler(log, libs, checksSettings);
-        final var ttc = newTemplateThenCompile(config.inputDir, config.outputDir, config.replaceExtension, config.variables, html);
+        final var ttc = newTemplateThenCompile(log, config.inputDir, config.outputDir, config.replaceExtension, config.variables, html);
 
         compileDirectories(config.inputDir, ttc, config.recursive);
     }
