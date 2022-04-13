@@ -48,12 +48,13 @@ public enum Host {;
         public Path[] hostedPaths;
         public String watchedDirectories;
         public Path baseDir;
+        public String jsCompressorType;
     }
 
     public static void executeHost(final Logger log, final HostCommandConfig config) throws IOException, InterruptedException {
         final var libs = new LibraryArchive();
         final var checksSettings = readChecksConfiguration(config.validation);
-        final var html = new HtmlCompiler(log, libs, checksSettings);
+        final var html = new HtmlCompiler(log, config.jsCompressorType, libs, checksSettings);
         final var ttc = newTemplateThenCompile(log, config.inputDir, config.outputDir, config.replaceExtension, config.variables, html);
         final var queue = new LinkedBlockingQueue<Task>();
 
@@ -106,7 +107,7 @@ public enum Host {;
                         log.warn("... done");
                     }
                 }
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 log.warn(e.getMessage());
                 e.printStackTrace();
             }

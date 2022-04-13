@@ -154,11 +154,18 @@
             <version>2.11.0</version>
         </dependency>
 
+        <!-- YOU compressor is old and doesn't support ES2015 and other stuff, need to get closure compiler to work -->
         <dependency>
             <groupId>com.yahoo.platform.yui</groupId>
             <artifactId>yuicompressor</artifactId>
             <version>2.4.8</version>
         </dependency>
+        <dependency>
+            <groupId>com.google.javascript</groupId>
+            <artifactId>closure-compiler</artifactId>
+            <version>v20220405</version>
+        </dependency>
+
 
         <dependency>
             <groupId>com.googlecode.htmlcompressor</groupId>
@@ -245,13 +252,6 @@
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
             <version>5.8.0-RC1</version>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>com.google.javascript</groupId>
-            <artifactId>closure-compiler</artifactId>
-            <version>v20210808</version>
             <scope>test</scope>
         </dependency>
 

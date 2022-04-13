@@ -6,6 +6,6 @@ import java.io.IOException;
 
 public interface Compressor {
 
-    String compress(Logger log, String code) throws IOException;
+    String compress(String code);
 
 }

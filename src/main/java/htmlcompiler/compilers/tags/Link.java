@@ -47,7 +47,7 @@ public enum Link {;
                 }
 
                 final Element style = node.ownerDocument().createElement("style");
-                setData(style, compressCssCode(log, css.toString()));
+                setData(style, compressCssCode(css.toString()));
 
                 final Element previousSibling = previousElementSibling(node);
                 if (isInlineStyle(previousSibling) && !isStyleEmpty(previousSibling)) {
@@ -112,7 +112,7 @@ public enum Link {;
         setData(style, type.compile(location));
 
         if (element.hasAttr("compress"))
-            setData(style, compressCssCode(log, style.data()));
+            setData(style, compressCssCode(style.data()));
 
         removeAttributes(element, "href", "rel", "inline", "compress");
         copyAttributes(element, style);

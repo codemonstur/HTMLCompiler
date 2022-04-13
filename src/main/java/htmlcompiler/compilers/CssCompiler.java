@@ -17,11 +17,14 @@ import static htmlcompiler.compilers.CodeCompiler.newExternalToolCompiler;
 
 public enum CssCompiler {;
 
-    public static String compressCssCode(final Logger logger, final String code) throws IOException {
-        final CssCompressor compressor = new CssCompressor(new StringReader(code));
-        final StringWriter writer = new StringWriter();
-        compressor.compress(writer, -1);
-        return writer.toString();
+    public static String compressCssCode(final String code) {
+        try (final var reader = new StringReader(code) ; final var writer = new StringWriter()) {
+            final CssCompressor compressor = new CssCompressor(reader);
+            compressor.compress(writer, -1);
+            return writer.toString();
+        } catch (final IOException e) {
+            throw new IllegalStateException("IOException on StringReader or StringWriter", e);
+        }
     }
 
     public static CodeCompiler newStylusCompiler() {

@@ -22,12 +22,13 @@ public enum Compile {;
         public Map<String, String> variables;
         public Path baseDir;
         public boolean recursive;
+        public String jsCompressorType;
     }
 
     public static void executeCompile(final Logger log, final CompileCommandConfig config) throws IOException {
         final var libs = new LibraryArchive();
         final var checksSettings = readChecksConfiguration(config.validation);
-        final var html = new HtmlCompiler(log, libs, checksSettings);
+        final var html = new HtmlCompiler(log, config.jsCompressorType, libs, checksSettings);
         final var ttc = newTemplateThenCompile(log, config.inputDir, config.outputDir, config.replaceExtension, config.variables, html);
 
         compileDirectories(config.inputDir, ttc, config.recursive);

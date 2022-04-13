@@ -12,9 +12,7 @@ import org.jsoup.nodes.Element;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.function.Function;
 
-import static htmlcompiler.compilers.JsCompiler.compressJavascriptCode;
 import static htmlcompiler.compilers.tags.TagParsing.*;
 import static htmlcompiler.pojos.compile.MoveType.storeCode;
 import static htmlcompiler.pojos.compile.MoveType.toMoveType;
@@ -22,6 +20,7 @@ import static htmlcompiler.pojos.compile.ScriptType.detectScriptType;
 import static htmlcompiler.pojos.compile.ScriptType.javascript;
 import static htmlcompiler.services.RepositoryVersions.checkVersionLibrary;
 import static htmlcompiler.tools.IO.toLocation;
+import static htmlcompiler.tools.Strings.isNullOrEmpty;
 
 public enum Script {;
 
@@ -40,7 +39,8 @@ public enum Script {;
                 final MoveType type = toMoveType(node.attr("move"), null);
                 final ScriptType scriptType = detectScriptType(node, javascript);
                 final String code = compileScriptTag(node, scriptType, file);
-                storeCode(compressIfRequested(log, node, code), type, scripts);
+
+                storeCode( shouldCompress(code, node) ? html.compressJs(code) : code, type, scripts);
                 setData(node, "");
                 node.attr("htmlcompiler", "delete-me");
                 return;
@@ -52,7 +52,8 @@ public enum Script {;
             if (!isScriptEmpty(node)) {
                 final ScriptType type = detectScriptType(node, null);
                 if (type != null) {
-                    setData(node, compressIfRequested(log, node, type.compile(node.data(), file)));
+                    final String code = type.compile(node.data(), file);
+                    setData(node, shouldCompress(code, node) ? html.compressJs(code) : code);
                     removeAttributes(node, "inline", "compress", "src", "type");
 
                     final Element previousSibling = previousElementSibling(node);
@@ -78,7 +79,8 @@ public enum Script {;
                 final ScriptType type = detectScriptType(node, javascript);
                 final Path location = toLocation(file, node.attr("src"), "script tag in %s has an invalid src location '%s'");
                 html.linkCounts.computeIfAbsent(location.toAbsolutePath().toString(), s -> new MutableInteger()).increment();
-                setData(node, compressIfRequested(log, node, type.compile(location)));
+                final String code = type.compile(location);
+                setData(node, shouldCompress(code, node) ? html.compressJs(code) : code);
                 removeAttributes(node, "inline", "compress", "src", "type");
 
                 final Element previousSibling = previousElementSibling(node);
@@ -106,9 +108,7 @@ public enum Script {;
         return scriptType.compile(location);
     }
 
-    private static String compressIfRequested(final Logger log, final Element element, final String code) throws IOException {
-        if (code == null || code.isEmpty()) return code;
-        return element.hasAttr("compress") ? compressJavascriptCode(log, code) : code;
+    public static boolean shouldCompress(final String code, final Element element) {
+        return !isNullOrEmpty(code) && element.hasAttr("compress");
     }
-
 }

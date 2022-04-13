@@ -34,7 +34,7 @@ public interface FileCompiler {
         return new FileCompiler() {
             public String compile(Path file) throws InvalidTemplate {
                 try {
-                    return compressor.compress(logger, compiler.compileCode(file));
+                    return compressor.compress(compiler.compileCode(file));
                 } catch (Exception e) {
                     throw new InvalidTemplate(e);
                 }
@@ -58,11 +58,11 @@ public interface FileCompiler {
             , entry(".scss", newScriptCompiler(logger, CssCompiler::compressCssCode, newScssCompiler(), ".min.css"))
             , entry(".sass", newScriptCompiler(logger, CssCompiler::compressCssCode, newSassCompiler(), ".min.css"))
             , entry(".stylus", newScriptCompiler(logger, CssCompiler::compressCssCode, newStylusCompiler(), ".min.css"))
-            , entry(".js", newScriptCompiler(logger, JsCompiler::compressJavascriptCode, newNopCompiler(), ".min.js"))
-            , entry(".jspp", newScriptCompiler(logger, JsCompiler::compressJavascriptCode, newJsppCompiler(), ".min.js"))
-            , entry(".js++", newScriptCompiler(logger, JsCompiler::compressJavascriptCode, newJsppCompiler(), ".min.js"))
-            , entry(".dart", newScriptCompiler(logger, JsCompiler::compressJavascriptCode, newDartCompiler(), ".min.js"))
-            , entry(".ts", newScriptCompiler(logger, JsCompiler::compressJavascriptCode, newTypescriptCompiler(), ".min.js"))
+            , entry(".js", newScriptCompiler(logger, html.jsCompressor, newNopCompiler(), ".min.js"))
+            , entry(".jspp", newScriptCompiler(logger, html.jsCompressor, newJsppCompiler(), ".min.js"))
+            , entry(".js++", newScriptCompiler(logger, html.jsCompressor, newJsppCompiler(), ".min.js"))
+            , entry(".dart", newScriptCompiler(logger, html.jsCompressor, newDartCompiler(), ".min.js"))
+            , entry(".ts", newScriptCompiler(logger, html.jsCompressor, newTypescriptCompiler(), ".min.js"))
             );
     }
 

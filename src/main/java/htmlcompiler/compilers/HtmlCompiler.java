@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static htmlcompiler.compilers.JsCompiler.newJsCompressor;
 import static htmlcompiler.compilers.checks.CheckListBuilder.newJsoupCheckList;
 import static htmlcompiler.compilers.tags.Body.newBodyVisitor;
 import static htmlcompiler.compilers.tags.Head.newHeadVisitor;
@@ -38,17 +39,19 @@ import static xmlparser.utils.Functions.isNullOrEmpty;
 
 public final class HtmlCompiler {
 
-    private final Logger log;
-    private final HtmlCompressor compressor;
-    private final Map<String, TagVisitor> processors;
-    private final Map<String, CompilerConfig> configs;
+    public final Logger log;
+    public final HtmlCompressor compressor;
+    public final Compressor jsCompressor;
+    public final Map<String, TagVisitor> processors;
+    public final Map<String, CompilerConfig> configs;
     public final Map<String, MutableInteger> linkCounts = new HashMap<>();
     public final Map<String, MutableInteger> cssUtils = new HashMap<>();
 
-    public HtmlCompiler(final Logger log, final LibraryArchive archive, final Map<String, CompilerConfig> configs) {
+    public HtmlCompiler(final Logger log, final String jsCompressorType, final LibraryArchive archive, final Map<String, CompilerConfig> configs) {
         this.log = log;
         this.compressor = newDefaultHtmlCompressor();
         this.processors = newDefaultTagProcessors(log, this, archive);
+        this.jsCompressor = newJsCompressor(log, jsCompressorType);
         this.configs = configs;
     }
 
@@ -84,6 +87,10 @@ public final class HtmlCompiler {
         return compressor.compress(content);
     }
 
+    public String compressJs(final String content) {
+        return jsCompressor.compress(content);
+    }
+
     public String compileHtmlCode(final Path file, final String content) throws InvalidInput {
         return compileAndValidateHtml(file, removeDoctype(Jsoup.parse(content))).html();
     }
@@ -103,7 +110,7 @@ public final class HtmlCompiler {
                 if (node instanceof final Element elem) {
                     try {
                         processors.getOrDefault(node.nodeName(), NOOP).head(config, file, elem, depth);
-                    } catch (Exception e) {
+                    } catch (final Exception e) {
                         errors.add(e);
                     }
                 }
@@ -112,7 +119,7 @@ public final class HtmlCompiler {
                 if (node instanceof final Element elem) {
                     try {
                         processors.getOrDefault(node.nodeName(), NOOP).tail(config, file, elem, depth);
-                    } catch (Exception e) {
+                    } catch (final Exception e) {
                         errors.add(e);
                     }
                 }

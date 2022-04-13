@@ -13,6 +13,7 @@ import static htmlcompiler.compilers.tags.TagParsing.*;
 import static htmlcompiler.pojos.compile.StyleType.css;
 import static htmlcompiler.pojos.compile.StyleType.detectStyleType;
 import static htmlcompiler.tools.IO.toLocation;
+import static htmlcompiler.tools.Strings.isNullOrEmpty;
 
 public enum Style {;
 
@@ -22,7 +23,8 @@ public enum Style {;
                 final Path location = toLocation(file, element.attr("src"), "style tag in %s has an invalid src location '%s'");
 
                 final StyleType type = detectStyleType(element, css);
-                setData(element, compressIfRequested(log, element, type.compile(location)));
+                final String code = type.compile(location);
+                setData(element, shouldCompress(code, element) ? compressCssCode(code) : code);
                 removeAttributes(element, "inline", "compress", "src", "type");
 
                 final Element previousSibling = previousElementSibling(element);
@@ -35,7 +37,8 @@ public enum Style {;
 
             if (!isStyleEmpty(element)) {
                 final StyleType type = detectStyleType(element, css);
-                setData(element, compressIfRequested(log, element, type.compile(element.data(), file)));
+                final String code = type.compile(element.data(), file);
+                setData(element, shouldCompress(code, element) ? compressCssCode(code) : code);
                 removeAttributes(element,"compress", "type");
 
                 final Element previousSibling = previousElementSibling(element);
@@ -52,9 +55,8 @@ public enum Style {;
         };
     }
 
-    private static String compressIfRequested(final Logger log, final Element element, final String code) throws IOException {
-        if (code == null || code.isEmpty()) return code;
-        return element.hasAttr("compress") ? compressCssCode(log, code) : code;
+    private static boolean shouldCompress(final String code, final Element element) {
+        return !isNullOrEmpty(code) && element.hasAttr("compress");
     }
 
 }
