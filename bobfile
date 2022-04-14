@@ -1,7 +1,7 @@
-include https://raw.githubusercontent.com/codemonstur/bobfiles/master/foss-lib-github-maven
+include https://raw.githubusercontent.com/codemonstur/bobfiles/master/foss-lib-github
 
 vendor: com.github.codemonstur
-version: 5.4.0
+version: 5.4.1
 enablePreview: false
 packaging: maven-plugin
 dependencies:
@@ -11,6 +11,9 @@ dependencies:
   - repository: com.yahoo.platform.yui:yuicompressor:2.4.8
   - repository: com.googlecode.htmlcompressor:htmlcompressor:1.5.2
   - repository: com.google.javascript:closure-compiler:v20220405
+  # These two appear to be transitive dependencies of the closure compiler, but gcc seems broken
+  - repository: com.google.guava:failureaccess:1.0.1
+  - repository: com.google.guava:guava:14.0
   - repository: de.inetsoftware:jlessc:1.10
   - repository: com.vaadin:vaadin-sass-compiler:0.9.13
   - repository: io.pebbletemplates:pebble:3.1.5

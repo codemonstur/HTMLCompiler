@@ -18,11 +18,11 @@
 
 
     <properties>
-        <maven.compiler.source>8</maven.compiler.source>
-        <maven.compiler.task>8</maven.compiler.task>
-        <maven.compiler.release>8</maven.compiler.release>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.requestApiSpecification>src/main/websrc/requests.json</project.requestApiSpecification>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>18</maven.compiler.source>
+        <maven.compiler.target>18</maven.compiler.target>
+        <maven.compiler.release>18</maven.compiler.release>
     </properties>
 
     <build>
@@ -31,7 +31,7 @@
             <plugin>
                 <groupId>com.github.codemonstur</groupId>
                 <artifactId>htmlcompiler</artifactId>
-                <version>2.3.1</version>
+                <version>5.3.0</version>
                 <executions>
                     <execution><goals><goal>compile</goal></goals></execution>
                     <execution>

@@ -3,7 +3,7 @@
 
     <groupId>com.github.codemonstur</groupId>
     <artifactId>htmlcompiler</artifactId>
-    <version>5.4.0</version>
+    <version>5.4.1</version>
     <packaging>maven-plugin</packaging>
 
     <name>${project.groupId}:${project.artifactId}</name>
@@ -164,6 +164,18 @@
             <groupId>com.google.javascript</groupId>
             <artifactId>closure-compiler</artifactId>
             <version>v20220405</version>
+        </dependency>
+
+        <!-- These appear to be transitive dependencies of the google closure compiler, but unlisted somehow -->
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>14.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>failureaccess</artifactId>
+            <version>1.0.1</version>
         </dependency>
 
 
