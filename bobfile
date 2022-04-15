@@ -8,12 +8,10 @@ dependencies:
   - repository: org.jsoup:jsoup:1.14.2
   - repository: com.google.code.gson:gson:2.8.8
   - repository: commons-io:commons-io:2.11.0
+  - repository: com.github.hazendaz:htmlcompressor:1.7.3
   - repository: com.yahoo.platform.yui:yuicompressor:2.4.8
-  - repository: com.googlecode.htmlcompressor:htmlcompressor:1.5.2
   - repository: com.google.javascript:closure-compiler:v20220405
-  # These two appear to be transitive dependencies of the closure compiler, but gcc seems broken
-  - repository: com.google.guava:failureaccess:1.0.1
-  - repository: com.google.guava:guava:14.0
+  - repository: com.google.guava:guava:31.1-jre
   - repository: de.inetsoftware:jlessc:1.10
   - repository: com.vaadin:vaadin-sass-compiler:0.9.13
   - repository: io.pebbletemplates:pebble:3.1.5

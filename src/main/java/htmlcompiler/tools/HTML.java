@@ -45,7 +45,7 @@ public enum HTML {;
         "property", "stop-color", "stop-opacity", "offset", "x1", "y1", "x2", "y2", "rx", "x",
         "transform", "values", "in", "stdDeviation", "result", "y", "filterunits", "onclick",
         "pointer-events", "stroke", "stroke-miterlimit", "stroke-width", "visibility", "allowfullscreen",
-        "frameborder", "fill-opacity");
+        "frameborder", "fill-opacity", "nonce");
 
     // https://uzzal.wordpress.com/2009/10/08/fobidden-deprecated-html-tags-and-attributes/
     // https://www.tutorialspoint.com/html5/html5_deprecated_tags.htm

@@ -10,7 +10,7 @@ import static util.Parsing.compileFile;
 public class TestTagMerging {
 
     private static final String output_html_five_scripts =
-        "<!DOCTYPE html><html lang=\"en\"><head></head><body><script>function merging1(){console.log(\"Merging " +
+        "<!DOCTYPE html><html lang=\"en\"><head></head><body><script>'use strict';function merging1(){console.log(\"Merging " +
         "1\")};function merging2(){console.log(\"Merging 2\")};function merging3(){console.log(\"Merging " +
         "3\")};function merging4(){console.log(\"Merging 4\")};function merging5(){console.log(\"Merging " +
         "5\")};</script></body></html>";

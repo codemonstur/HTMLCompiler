@@ -32,10 +32,10 @@ public class TestInlining {
     }
 
     public static final String html_output_favicon =
-        "<!DOCTYPE html><html><head><link rel=\"icon\" type=\"image/ico\" href=\"data:image/ico;base64," +
-        "PGh0bWw+CjxoZWFkPgogICAgPGxpbmsgcmVsPSJpY29uIiB0eXBlPSJpbWFnZS9pY28iIGhyZWY9Ii4uL3N0YXRpYy9pbW" +
-        "cvZmF2aWNvbi5pY28iIGlubGluZT4KICAgIDx0aXRsZT5UZXN0IGh0bWw8L3RpdGxlPgo8L2hlYWQ+Cjxib2R5PgoKPC9i" +
-        "b2R5Pgo8L2h0bWw+\"><title>TestApp html</title></head><body></body></html>";
+            "<!DOCTYPE html><html><head><link rel=\"icon\" type=\"image/ico\" href=\"data:image/ico;base64," +
+            "PGh0bWw+CjxoZWFkPgogICAgPGxpbmsgcmVsPSJpY29uIiB0eXBlPSJpbWFnZS9pY28iIGhyZWY9Ii4uL3N0YXRpYy9pbW" +
+            "cvZmF2aWNvbi5pY28iIGlubGluZT4KICAgIDx0aXRsZT5UZXN0QXBwIGh0bWw8L3RpdGxlPgo8L2hlYWQ+Cjxib2R5PgoK" +
+            "PC9ib2R5Pgo8L2h0bWw+\"><title>TestApp html</title></head><body></body></html>";
 
     @Test
     public void compileInlineFavicon() throws IOException, InvalidInput {
@@ -45,7 +45,7 @@ public class TestInlining {
     }
 
     public static final String html_output_script =
-        "<!DOCTYPE html><html><head><script>function merging1(){console.log(\"Merging 1\")};</script>" +
+        "<!DOCTYPE html><html><head><script>'use strict';function merging1(){console.log(\"Merging 1\")};</script>" +
         "<title>TestApp html</title><script>\n" +
         "function merging1() {\n" +
         "    console.log(\"Merging 1\");\n" +

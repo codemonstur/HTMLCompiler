@@ -58,7 +58,10 @@ public enum Script {;
 
                     final Element previousSibling = previousElementSibling(node);
                     if (isInlineScript(previousSibling) && !isScriptEmpty(previousSibling)) {
-                        setData(node, previousSibling.data() + node.data());
+                        String newCode = node.data();
+                        if (newCode.startsWith("'use strict';"))
+                            newCode = newCode.substring("'use strict';".length());
+                        setData(node, previousSibling.data() + newCode);
                         previousSibling.attr("htmlcompiler", "delete-me");
                     }
 
@@ -85,7 +88,10 @@ public enum Script {;
 
                 final Element previousSibling = previousElementSibling(node);
                 if (isInlineScript(previousSibling) && !isScriptEmpty(previousSibling)) {
-                    setData(node, previousSibling.data() + node.data());
+                    String newCode = node.data();
+                    if (newCode.startsWith("'use strict';"))
+                        newCode = newCode.substring("'use strict';".length());
+                    setData(node, previousSibling.data() + newCode);
                     previousSibling.attr("htmlcompiler", "delete-me");
                 }
 

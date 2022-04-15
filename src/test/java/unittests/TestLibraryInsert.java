@@ -18,6 +18,8 @@ public class TestLibraryInsert {
         "src=\"https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min" +
         ".js\"></script></head><body></body></html>";
 
+    // This test fails with Jsoup because it doesn't recognise the <library> tag and moves it to the body
+    // Don't have a solution for this right now. Fortunately the meta-tag option works fine
     @Test
     public void compileLibraryTag() throws IOException, InvalidInput {
         final HtmlCompiler compiler = newHtmlCompiler();

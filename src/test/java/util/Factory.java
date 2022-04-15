@@ -16,7 +16,7 @@ public enum Factory {;
         final Logger log = newLogger(System.out::print, System.out::print, System.out::print);
         final LibraryArchive archive = new LibraryArchive();
         final CompilerConfig checks = new CompilerConfig();
-        return new HtmlCompiler(log, "gcc-advanced", archive, Map.of("", checks));
+        return new HtmlCompiler(log, "gcc-simple", archive, Map.of("", checks));
     }
 
     public static HtmlCompressor newDefaultHtmlCompressor() {

@@ -13,7 +13,7 @@ import static util.Factory.newHtmlCompiler;
 public class TestScriptEncoding {
 
     private static final String html_output_script_encode =
-        "<!DOCTYPE html><html><head><title>TestApp html</title><script>if(1>2){console.log(\"Hello, world!\")}if(1<2){console.log(\"Hello, world!\")};</script></head><body></body></html>";
+        "<!DOCTYPE html><html><head><title>TestApp html</title><script>'use strict';console.log(\"Hello, second!\");</script></head><body></body></html>";
 
     @Test
     public void compileScriptEncode() throws IOException, InvalidInput {
