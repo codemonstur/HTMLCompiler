@@ -1,7 +1,7 @@
 include https://raw.githubusercontent.com/codemonstur/bobfiles/master/foss-lib-github
 
 vendor: com.github.codemonstur
-version: 5.4.1
+version: 5.4.2
 enablePreview: false
 packaging: maven-plugin
 dependencies:

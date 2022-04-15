@@ -1,0 +1,6 @@
+5.4.2
+
+Fixed JS compression with GCC
+Set default GCC compression to simple
+Added 'use strict'
+Added nonce attribute to known list
