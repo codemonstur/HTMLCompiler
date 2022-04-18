@@ -1,0 +1,5 @@
+5.5.1
+
+Added deprecated tags setting
+Added checks enabled setting
+Added individual settings for html/css/js compression
