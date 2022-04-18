@@ -106,13 +106,13 @@ public final class HtmlCompiler {
     }
 
     public String compressHtml(final String code) {
-        return compressionEnabled ? htmlCompressor.compress(code) : code;
+        return compressionEnabled && htmlCompressionEnabled ? htmlCompressor.compress(code) : code;
     }
     public String compressCss(final String code) {
-        return compressionEnabled ? cssCompressor.compress(code) : code;
+        return compressionEnabled && cssCompressionEnabled ? cssCompressor.compress(code) : code;
     }
     public String compressJs(final String code) {
-        return compressionEnabled ? jsCompressor.compress(code).trim() : code;
+        return compressionEnabled && jsCompressionEnabled ? jsCompressor.compress(code).trim() : code;
     }
 
     public String compileHtmlCode(final Path file, final String content) throws InvalidInput {
