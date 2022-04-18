@@ -18,7 +18,7 @@ import static htmlcompiler.compilers.CodeCompiler.newExternalToolCompiler;
 public enum CssCompiler {;
 
     public static String compressCssCode(final String code) {
-        try (final var reader = new StringReader(code) ; final var writer = new StringWriter()) {
+        try (final var reader = new StringReader(code); final var writer = new StringWriter()) {
             final CssCompressor compressor = new CssCompressor(reader);
             compressor.compress(writer, -1);
             return writer.toString();
@@ -34,10 +34,10 @@ public enum CssCompiler {;
 
     public static CodeCompiler newLessCompiler() {
         return new CodeCompiler() {
-            public String compileCode(String code, Path parent) {
+            public String compileCode(final String code, final Path parent) {
                 return Less.compile(null, code, false);
             }
-            public String compileCode(Path style) throws IOException {
+            public String compileCode(final Path style) throws IOException {
                 return Less.compile(null, Files.readString(style), false);
             }
         };
@@ -47,14 +47,14 @@ public enum CssCompiler {;
         final CodeCompiler tool = newToolScssCompiler();
         final CodeCompiler lib = newInternalSassCompiler();
         return new CodeCompiler() {
-            public String compileCode(String code, Path parent) throws Exception {
+            public String compileCode(final String code, final Path parent) throws Exception {
                 try {
                     return tool.compileCode(code, parent);
                 } catch (FileNotFoundException e) {
                     return lib.compileCode(code, parent);
                 }
             }
-            public String compileCode(Path style) throws Exception {
+            public String compileCode(final Path style) throws Exception {
                 try {
                     return tool.compileCode(style);
                 } catch (FileNotFoundException e) {
@@ -68,14 +68,14 @@ public enum CssCompiler {;
         final CodeCompiler tool = newToolSassCompiler();
         final CodeCompiler lib = newInternalSassCompiler();
         return new CodeCompiler() {
-            public String compileCode(String code, Path parent) throws Exception {
+            public String compileCode(final String code, final Path parent) throws Exception {
                 try {
                     return tool.compileCode(code, parent);
                 } catch (FileNotFoundException e) {
                     return lib.compileCode(code, parent);
                 }
             }
-            public String compileCode(Path style) throws Exception {
+            public String compileCode(final Path style) throws Exception {
                 try {
                     return tool.compileCode(style);
                 } catch (FileNotFoundException e) {
@@ -98,10 +98,10 @@ public enum CssCompiler {;
     public static CodeCompiler newInternalSassCompiler() {
         final Parser sassCompiler = new Parser();
         return new CodeCompiler() {
-            public String compileCode(String code, Path parent) throws Exception {
+            public String compileCode(final String code, final Path parent) throws Exception {
                 return toCssCode(toCompiledStylesheet(sassCompiler, code));
             }
-            public String compileCode(Path style) throws Exception {
+            public String compileCode(final Path style) throws Exception {
                 return toCssCode(toCompiledStylesheet(sassCompiler, Files.readString(style)));
             }
             private ScssStylesheet toCompiledStylesheet(final Parser sassCompiler, final String code) {

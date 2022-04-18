@@ -10,7 +10,6 @@ import htmlcompiler.tools.Logger;
 import htmlcompiler.tools.MutableInteger;
 import org.jsoup.nodes.Element;
 
-import java.io.IOException;
 import java.nio.file.Path;
 
 import static htmlcompiler.compilers.tags.TagParsing.*;
@@ -72,7 +71,7 @@ public enum Script {;
             if (isHtml(node) && !isScriptEmpty(node)) {
                 final String compiled = html.compileHtmlFragment(file, node.data()).html();
                 final String result = node.hasAttr("compress")
-                        ? html.compressHtmlCode(compiled) : compiled;
+                        ? html.compressHtml(compiled) : compiled;
                 removeAttributes(node, "inline", "compress");
                 setData(node, result);
                 return;

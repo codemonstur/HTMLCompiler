@@ -1,14 +1,13 @@
 package htmlcompiler.compilers.tags;
 
+import htmlcompiler.compilers.HtmlCompiler;
 import htmlcompiler.compilers.tags.TagVisitor.TailVisitor;
 import htmlcompiler.pojos.compile.StyleType;
 import htmlcompiler.tools.Logger;
 import org.jsoup.nodes.Element;
 
-import java.io.IOException;
 import java.nio.file.Path;
 
-import static htmlcompiler.compilers.CssCompiler.compressCssCode;
 import static htmlcompiler.compilers.tags.TagParsing.*;
 import static htmlcompiler.pojos.compile.StyleType.css;
 import static htmlcompiler.pojos.compile.StyleType.detectStyleType;
@@ -17,14 +16,14 @@ import static htmlcompiler.tools.Strings.isNullOrEmpty;
 
 public enum Style {;
 
-    public static TagVisitor newStyleVisitor(final Logger log) {
+    public static TagVisitor newStyleVisitor(final Logger log, final HtmlCompiler html) {
         return (TailVisitor) (config, file, element, depth) -> {
             if (element.hasAttr("inline")) {
                 final Path location = toLocation(file, element.attr("src"), "style tag in %s has an invalid src location '%s'");
 
                 final StyleType type = detectStyleType(element, css);
                 final String code = type.compile(location);
-                setData(element, shouldCompress(code, element) ? compressCssCode(code) : code);
+                setData(element, shouldCompress(code, element) ? html.compressCss(code) : code);
                 removeAttributes(element, "inline", "compress", "src", "type");
 
                 final Element previousSibling = previousElementSibling(element);
@@ -38,7 +37,7 @@ public enum Style {;
             if (!isStyleEmpty(element)) {
                 final StyleType type = detectStyleType(element, css);
                 final String code = type.compile(element.data(), file);
-                setData(element, shouldCompress(code, element) ? compressCssCode(code) : code);
+                setData(element, shouldCompress(code, element) ? html.compressCss(code) : code);
                 removeAttributes(element,"compress", "type");
 
                 final Element previousSibling = previousElementSibling(element);

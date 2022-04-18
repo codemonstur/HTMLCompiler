@@ -49,12 +49,20 @@ public enum Host {;
         public String watchedDirectories;
         public Path baseDir;
         public String jsCompressorType;
+        public boolean checksEnabled;
+        public boolean deprecatedTagsEnabled;
+        public boolean compressionEnabled;
+        public boolean htmlCompressionEnabled;
+        public boolean cssCompressionEnabled;
+        public boolean jsCompressionEnabled;
     }
 
     public static void executeHost(final Logger log, final HostCommandConfig config) throws IOException, InterruptedException {
         final var libs = new LibraryArchive();
         final var checksSettings = readChecksConfiguration(config.validation);
-        final var html = new HtmlCompiler(log, config.jsCompressorType, libs, checksSettings);
+        final var html = new HtmlCompiler(log, config.jsCompressorType, libs, checksSettings, config.checksEnabled,
+                config.compressionEnabled, config.deprecatedTagsEnabled, config.htmlCompressionEnabled,
+                config.cssCompressionEnabled, config.jsCompressionEnabled);
         final var ttc = newTemplateThenCompile(log, config.inputDir, config.outputDir, config.replaceExtension, config.variables, html);
         final var queue = new LinkedBlockingQueue<Task>();
 

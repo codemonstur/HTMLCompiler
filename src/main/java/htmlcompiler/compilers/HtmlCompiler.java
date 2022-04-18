@@ -40,19 +40,39 @@ import static xmlparser.utils.Functions.isNullOrEmpty;
 public final class HtmlCompiler {
 
     public final Logger log;
-    public final HtmlCompressor compressor;
+    public final HtmlCompressor htmlCompressor;
+    public final Compressor cssCompressor;
     public final Compressor jsCompressor;
     public final Map<String, TagVisitor> processors;
     public final Map<String, CompilerConfig> configs;
     public final Map<String, MutableInteger> linkCounts = new HashMap<>();
     public final Map<String, MutableInteger> cssUtils = new HashMap<>();
 
-    public HtmlCompiler(final Logger log, final String jsCompressorType, final LibraryArchive archive, final Map<String, CompilerConfig> configs) {
+    public final boolean checksEnabled;
+    public final boolean compressionEnabled;
+    public final boolean htmlCompressionEnabled;
+    public final boolean cssCompressionEnabled;
+    public final boolean jsCompressionEnabled;
+    public final boolean deprecatedTagsEnabled;
+
+    public HtmlCompiler(final Logger log, final String jsCompressorType, final LibraryArchive archive,
+                        final Map<String, CompilerConfig> configs, final boolean checksEnabled,
+                        final boolean compressionEnabled, final boolean deprecatedTagsEnabled,
+                        final boolean htmlCompressionEnabled, final boolean cssCompressionEnabled,
+                        final boolean jsCompressionEnabled) {
         this.log = log;
-        this.compressor = newDefaultHtmlCompressor();
-        this.processors = newDefaultTagProcessors(log, this, archive);
+        this.htmlCompressor = newDefaultHtmlCompressor();
+        this.cssCompressor = CssCompiler::compressCssCode;
         this.jsCompressor = newJsCompressor(log, jsCompressorType);
+
+        this.processors = newDefaultTagProcessors(log, this, archive);
         this.configs = configs;
+        this.checksEnabled = checksEnabled;
+        this.compressionEnabled = compressionEnabled;
+        this.htmlCompressionEnabled = htmlCompressionEnabled;
+        this.cssCompressionEnabled = cssCompressionEnabled;
+        this.jsCompressionEnabled = jsCompressionEnabled;
+        this.deprecatedTagsEnabled = deprecatedTagsEnabled;
     }
 
     private static HtmlCompressor newDefaultHtmlCompressor() {
@@ -66,29 +86,33 @@ public final class HtmlCompiler {
             , final LibraryArchive archive) {
         final ScriptBag scripts = new ScriptBag();
         final Map<String, TagVisitor> processors = new HashMap<>();
-        processors.put("style", newStyleVisitor(log));
+        processors.put("style", newStyleVisitor(log, html));
         processors.put("link", newLinkVisitor(log, html));
         processors.put("img", newImageVisitor(html));
         processors.put("script", newScriptVisitor(log, html, scripts));
-        processors.put("body", newBodyVisitor(scripts));
-        processors.put("head", newHeadVisitor(scripts));
-        processors.put("import", newImportVisitor(html));
-        processors.put("include", newIncludeVisitor(html));
-        processors.put("library", newLibraryVisitor(archive));
-        processors.put("meta", newMetaVisitor(archive));
+        if (html.deprecatedTagsEnabled) {
+            processors.put("body", newBodyVisitor(scripts));
+            processors.put("head", newHeadVisitor(scripts));
+            processors.put("import", newImportVisitor(html));
+            processors.put("include", newIncludeVisitor(html));
+            processors.put("library", newLibraryVisitor(archive));
+            processors.put("meta", newMetaVisitor(archive));
+        }
         return processors;
     }
 
-    public String doctypeCompressCompile(final Path file, final String content) throws InvalidInput {
-        return "<!DOCTYPE html>"+compressHtmlCode(compileHtmlCode(file, content));
+    public String doctypeCompressCompile(final Path file, final String code) throws InvalidInput {
+        return "<!DOCTYPE html>" + compressHtml(compileHtmlCode(file, code));
     }
 
-    public String compressHtmlCode(final String content) {
-        return compressor.compress(content);
+    public String compressHtml(final String code) {
+        return compressionEnabled ? htmlCompressor.compress(code) : code;
     }
-
-    public String compressJs(final String content) {
-        return jsCompressor.compress(content);
+    public String compressCss(final String code) {
+        return compressionEnabled ? cssCompressor.compress(code) : code;
+    }
+    public String compressJs(final String code) {
+        return compressionEnabled ? jsCompressor.compress(code).trim() : code;
     }
 
     public String compileHtmlCode(final Path file, final String content) throws InvalidInput {
@@ -136,26 +160,28 @@ public final class HtmlCompiler {
                 log.warn("CSS-util " + util + " is imported more than once");
         });
 
-        final var checks = newJsoupCheckList(config).addAllEnabled().build();
-        element.traverse(new NodeVisitor() {
-            public void head(final Node node, final int depth) {
-                if (node instanceof final Element element) {
-                    for (final var check : checks) check.checkElement(log, config, file, element);
-                    for (final var siblings : config.validator.siblingAttributes.entrySet()) {
-                        if (!isNullOrEmpty(element.attr(siblings.getKey())) && isNullOrEmpty(element.attr(siblings.getValue())))
-                            log.warn("File " + toRelativePath(file) + " has a tag '" + element.tagName() + "' with an attribute '" + siblings.getKey() + "' but not '" + siblings.getValue() + "'");
+        if (checksEnabled) {
+            final var checks = newJsoupCheckList(config).addAllEnabled().build();
+            element.traverse(new NodeVisitor() {
+                public void head(final Node node, final int depth) {
+                    if (node instanceof final Element element) {
+                        for (final var check : checks) check.checkElement(log, config, file, element);
+                        for (final var siblings : config.validator.siblingAttributes.entrySet()) {
+                            if (!isNullOrEmpty(element.attr(siblings.getKey())) && isNullOrEmpty(element.attr(siblings.getValue())))
+                                log.warn("File " + toRelativePath(file) + " has a tag '" + element.tagName() + "' with an attribute '" + siblings.getKey() + "' but not '" + siblings.getValue() + "'");
+                        }
+                    }
+                    if (node instanceof TextNode) {
+                        final var element = (Element) node.parent();
+                        for (final String attribute : config.validator.textNodeParentsHaveAttributes) {
+                            if (isNullOrEmpty(element.attr(attribute)))
+                                log.warn("File " + toRelativePath(file) + " contains a text node '" + ((TextNode) node).text() + "' with missing parent attribute '" + attribute + "'");
+                        }
                     }
                 }
-                if (node instanceof TextNode) {
-                    final var element = (Element) node.parent();
-                    for (final String attribute : config.validator.textNodeParentsHaveAttributes) {
-                        if (isNullOrEmpty(element.attr(attribute)))
-                            log.warn("File " + toRelativePath(file) + " contains a text node '" + ((TextNode) node).text() + "' with missing parent attribute '" + attribute + "'");
-                    }
-                }
-            }
-            public void tail(final Node node, final int depth) {}
-        });
+                public void tail(final Node node, final int depth) {}
+            });
+        }
 
         for (final Exception e : errors) {
             log.warn(e.getClass().getSimpleName() + ": " + e.getMessage());

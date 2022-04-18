@@ -10,7 +10,7 @@ public enum Head {;
 
     public static TagVisitor newHeadVisitor(final ScriptBag scripts) {
         return new TagVisitor() {
-            public void head(CompilerConfig config, Path file, Element node, int depth) {
+            public void head(final CompilerConfig config, final Path file, final Element node, final int depth) {
                 final String startCode = scripts.getScriptAtHeadStart().trim();
                 if (!startCode.isEmpty()) {
                     final Element scriptStart = node.ownerDocument().createElement("script");
@@ -18,7 +18,7 @@ public enum Head {;
                     node.childNodes().add(0, scriptStart);
                 }
             }
-            public void tail(CompilerConfig config, Path file, Element node, int depth) {
+            public void tail(final CompilerConfig config, final Path file, final Element node, final int depth) {
                 final String code = scripts.getScriptAtHeadEnd().trim();
                 if (!code.isEmpty()) {
                     final Element script = node.ownerDocument().createElement("script");
