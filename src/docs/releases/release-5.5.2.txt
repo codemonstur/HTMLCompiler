@@ -1,0 +1,3 @@
+5.5.2
+
+Changed all CSS-utils to unix line ends to avoid chrome bug
