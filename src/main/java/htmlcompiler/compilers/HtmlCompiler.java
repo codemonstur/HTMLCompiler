@@ -187,7 +187,7 @@ public final class HtmlCompiler {
             log.warn(e.getClass().getSimpleName() + ": " + e.getMessage());
         }
         if (!errors.isEmpty()) {
-            throw new InvalidInput("HTML failed to compile, fix errors first");
+            throw new InvalidInput("HTML failed to compile, fix errors first", errors.get(0));
         }
 
         return element;
