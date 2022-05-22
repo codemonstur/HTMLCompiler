@@ -32,4 +32,13 @@
 - Add support for stylus: http://stylus-lang.com/, https://github.com/stylus/stylus
 - Add option to select 'latest' library
 - Add version testing for external binaries
+- Implementeer alle a11y checks in htmlcompiler https://a11y-automation.dev/violations
 
+- Implement JWebAssemply to allow for Java client side code
+- Add a way of including a Java project as inline JavaScript by converting it
+  <script type="application/java" src="path/to/root" main-class="app.Main" 
+  dependencies="
+  dep/path/first.jar;
+  dep/path/second.jar;
+  groupId:artifactId:version;
+  "></script>
