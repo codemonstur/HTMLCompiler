@@ -39,6 +39,7 @@ No more minified files everywhere. No more manually compressing resources.
 - Remove unnecessary meta tag in output
 - Inline remotely hosted JavaScript and CSS
   - Check validity using integrity tag
+- Add support for [Autoprefixer](https://github.com/postcss/autoprefixer), or [autoprefixer4j](https://github.com/mwanji/autoprefixer4j)
 
 ### How to use as maven plugin
 
