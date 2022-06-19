@@ -21,10 +21,10 @@ public enum StyleType {
         this.compiler = compiler;
     }
     public String compile(final String jsCode, final Path parent) throws Exception {
-        return compiler.compileCode(jsCode, parent);
+        return compiler.compileCode(jsCode, parent).replace("\r", "");
     }
     public String compile(final Path location) throws Exception {
-        return compiler.compileCode(location);
+        return compiler.compileCode(location).replace("\r", "");
     }
 
     public static StyleType detectStyleType(final Element element, final StyleType defaultValue) {

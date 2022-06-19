@@ -35,15 +35,11 @@ No more minified files everywhere. No more manually compressing resources.
 
 ### Planned features (bugfixes)
 
-- Add an error reporter for when JavaScript or CSS has errors
-- Add combining of multiple inlined script and style tags into a single tag
 - Scaling images to a given size
 - Remove unnecessary meta tag in output
-- Removing unused JavaScript functions
-  - Integrate https://github.com/google/closure-compiler
-- Obfuscate css and javascript by rearranging code
 - Inline remotely hosted JavaScript and CSS
   - Check validity using integrity tag
+- Add support for [Autoprefixer](https://github.com/postcss/autoprefixer), or [autoprefixer4j](https://github.com/mwanji/autoprefixer4j)
 
 ### How to use as maven plugin
 
