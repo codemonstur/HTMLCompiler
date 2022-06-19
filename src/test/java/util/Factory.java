@@ -3,6 +3,7 @@ package util;
 import com.googlecode.htmlcompressor.compressor.HtmlCompressor;
 import htmlcompiler.compilers.HtmlCompiler;
 import htmlcompiler.pojos.compile.CompilerConfig;
+import htmlcompiler.pojos.compile.JsCompressionType;
 import htmlcompiler.pojos.library.LibraryArchive;
 import htmlcompiler.tools.Logger;
 
@@ -16,9 +17,9 @@ public enum Factory {;
         final Logger log = newLogger(System.out::print, System.out::print, System.out::print);
         final LibraryArchive archive = new LibraryArchive();
         final CompilerConfig checks = new CompilerConfig();
-        return new HtmlCompiler(log, "gcc-simple", archive, Map.of("", checks),
-            true, true, true,
-                true, true, true);
+        return new HtmlCompiler(log, JsCompressionType.gcc_simple, archive, Map.of("", checks),
+            true, true, true, true,
+            true, true, true);
     }
 
     public static HtmlCompressor newDefaultHtmlCompressor() {

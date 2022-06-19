@@ -3,6 +3,7 @@ package htmlcompiler.compilers;
 import com.googlecode.htmlcompressor.compressor.HtmlCompressor;
 import htmlcompiler.compilers.tags.TagVisitor;
 import htmlcompiler.pojos.compile.CompilerConfig;
+import htmlcompiler.pojos.compile.JsCompressionType;
 import htmlcompiler.pojos.compile.ScriptBag;
 import htmlcompiler.pojos.error.InvalidInput;
 import htmlcompiler.pojos.library.LibraryArchive;
@@ -21,7 +22,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static htmlcompiler.compilers.JsCompiler.newJsCompressor;
 import static htmlcompiler.compilers.checks.CheckListBuilder.newJsoupCheckList;
 import static htmlcompiler.compilers.tags.Body.newBodyVisitor;
 import static htmlcompiler.compilers.tags.Head.newHeadVisitor;
@@ -34,6 +34,7 @@ import static htmlcompiler.compilers.tags.Meta.newMetaVisitor;
 import static htmlcompiler.compilers.tags.Script.newScriptVisitor;
 import static htmlcompiler.compilers.tags.Style.newStyleVisitor;
 import static htmlcompiler.compilers.tags.TagVisitor.NOOP;
+import static htmlcompiler.services.RepositoryJsCode.cached;
 import static htmlcompiler.tools.Filenames.toRelativePath;
 import static xmlparser.utils.Functions.isNullOrEmpty;
 
@@ -43,6 +44,7 @@ public final class HtmlCompiler {
     public final HtmlCompressor htmlCompressor;
     public final Compressor cssCompressor;
     public final Compressor jsCompressor;
+    public final JsCompressionType jsCompressionType;
     public final Map<String, TagVisitor> processors;
     public final Map<String, CompilerConfig> configs;
     public final Map<String, MutableInteger> linkCounts = new HashMap<>();
@@ -54,17 +56,18 @@ public final class HtmlCompiler {
     public final boolean cssCompressionEnabled;
     public final boolean jsCompressionEnabled;
     public final boolean deprecatedTagsEnabled;
+    public final boolean cachedJsCompression;
 
-    public HtmlCompiler(final Logger log, final String jsCompressorType, final LibraryArchive archive,
+    public HtmlCompiler(final Logger log, final JsCompressionType jsCompressionType, final LibraryArchive archive,
                         final Map<String, CompilerConfig> configs, final boolean checksEnabled,
                         final boolean compressionEnabled, final boolean deprecatedTagsEnabled,
                         final boolean htmlCompressionEnabled, final boolean cssCompressionEnabled,
-                        final boolean jsCompressionEnabled) {
+                        final boolean jsCompressionEnabled, final boolean cachedJsCompression) {
         this.log = log;
         this.htmlCompressor = newDefaultHtmlCompressor();
         this.cssCompressor = CssCompiler::compressCssCode;
-        this.jsCompressor = newJsCompressor(log, jsCompressorType);
-
+        this.jsCompressor = jsCompressionType.toCompressor(log);
+        this.jsCompressionType = jsCompressionType;
         this.processors = newDefaultTagProcessors(log, this, archive);
         this.configs = configs;
         this.checksEnabled = checksEnabled;
@@ -73,6 +76,7 @@ public final class HtmlCompiler {
         this.cssCompressionEnabled = cssCompressionEnabled;
         this.jsCompressionEnabled = jsCompressionEnabled;
         this.deprecatedTagsEnabled = deprecatedTagsEnabled;
+        this.cachedJsCompression = cachedJsCompression;
     }
 
     private static HtmlCompressor newDefaultHtmlCompressor() {
@@ -112,7 +116,8 @@ public final class HtmlCompiler {
         return compressionEnabled && cssCompressionEnabled ? cssCompressor.compress(code) : code;
     }
     public String compressJs(final String code) {
-        return compressionEnabled && jsCompressionEnabled ? jsCompressor.compress(code).trim() : code;
+        if (!compressionEnabled || !jsCompressionEnabled) return code;
+        return cached(cachedJsCompression, jsCompressionType, code, jsCompressor);
     }
 
     public String compileHtmlCode(final Path file, final String content) throws InvalidInput {

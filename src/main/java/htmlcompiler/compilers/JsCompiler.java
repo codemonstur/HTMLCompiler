@@ -15,35 +15,24 @@ import static htmlcompiler.compilers.CodeCompiler.newExternalToolCompiler;
 
 public enum JsCompiler {;
 
-    public static Compressor newJsCompressor(final Logger log, final String type) {
-        return switch (type) {
-            case "gcc-simple" -> JsCompiler::compressJsWithGccSimple;
-            case "gcc-bundle" -> JsCompiler::compressJsWithGccBundle;
-            case "gcc-whitespace" -> JsCompiler::compressJsWithGccWhitespace;
-            case "gcc-advanced" -> JsCompiler::compressJsWithGccAdvanced;
-            case "yui" -> JsCompiler.newCompressJsWithYui(log);
-            default -> throw new IllegalArgumentException("No such compressor: " + type);
-        };
-    }
-
-    private static String compressJsWithGccSimple(final String code) {
+    public static String compressJsWithGccSimple(final String code) {
         final var compress = new ClosureJavaScriptCompressor(SIMPLE_OPTIMIZATIONS);
         return compress.compress(code);
     }
-    private static String compressJsWithGccWhitespace(final String code) {
+    public static String compressJsWithGccWhitespace(final String code) {
         final var compress = new ClosureJavaScriptCompressor(WHITESPACE_ONLY);
         return compress.compress(code);
     }
-    private static String compressJsWithGccBundle(final String code) {
+    public static String compressJsWithGccBundle(final String code) {
         final var compress = new ClosureJavaScriptCompressor(BUNDLE);
         return compress.compress(code);
     }
-    private static String compressJsWithGccAdvanced(final String code) {
+    public static String compressJsWithGccAdvanced(final String code) {
         final var compress = new ClosureJavaScriptCompressor(ADVANCED_OPTIMIZATIONS);
         return compress.compress(code);
     }
 
-    private static Compressor newCompressJsWithYui(final Logger log) {
+    public static Compressor newCompressJsWithYui(final Logger log) {
         return new Compressor() {
             @Override public String compress(final String code) {
                 try {
