@@ -5,7 +5,7 @@ version: 5.6.0
 enablePreview: false
 packaging: maven-plugin
 dependencies:
-  - repository: org.jsoup:jsoup:1.15.1
+  - repository: org.jsoup:jsoup:1.15.3
   - repository: com.google.code.gson:gson:2.9.0
   - repository: commons-io:commons-io:2.11.0
   - repository: com.github.hazendaz:htmlcompressor:1.7.3
