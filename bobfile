@@ -6,27 +6,27 @@ enablePreview: false
 packaging: maven-plugin
 dependencies:
   - repository: org.jsoup:jsoup:1.15.3
-  - repository: com.google.code.gson:gson:2.9.1
+  - repository: com.google.code.gson:gson:2.10.1
   - repository: commons-io:commons-io:2.11.0
-  - repository: com.github.hazendaz:htmlcompressor:1.7.3
+  - repository: com.github.hazendaz:htmlcompressor:1.8.0
   - repository: com.yahoo.platform.yui:yuicompressor:2.4.8
-  - repository: com.google.javascript:closure-compiler:v20220905
+  - repository: com.google.javascript:closure-compiler:v20230103
   - repository: com.google.guava:guava:31.1-jre
   - repository: de.inetsoftware:jlessc:1.10
   - repository: com.vaadin:vaadin-sass-compiler:0.9.13
-  - repository: io.pebbletemplates:pebble:3.1.6
+  - repository: io.pebbletemplates:pebble:3.2.0
   - repository: de.neuland-bfi:jade4j:1.3.2
-  - repository: de.neuland-bfi:pug4j:2.0.5
-  - repository: com.github.codemonstur:simplexml:3.0.0
+  - repository: de.neuland-bfi:pug4j:2.0.6
+  - repository: com.github.codemonstur:simplexml:3.1.0
   - repository: org.apache.maven:maven-plugin-api:3.8.6
     scope: provided
-  - repository: org.apache.maven.plugin-tools:maven-plugin-annotations:3.6.4
+  - repository: org.apache.maven.plugin-tools:maven-plugin-annotations:3.7.1
     scope: provided
   - repository: org.apache.maven:maven-project:3.0-alpha-2
     scope: provided
 #  - repository: com.helger:ph-css:6.3.0
 #    scope: test
-  - repository: net.sourceforge.cssparser:cssparser:0.9.29
+  - repository: net.sourceforge.cssparser:cssparser:0.9.30
     scope: test
-  - repository: org.junit.jupiter:junit-jupiter:5.9.1
+  - repository: org.junit.jupiter:junit-jupiter:5.9.2
     scope: test

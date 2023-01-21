@@ -102,7 +102,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-plugin-plugin</artifactId>
-                <version>3.6.4</version>
+                <version>3.7.1</version>
             </plugin>
 
             <plugin>
@@ -155,7 +155,7 @@
         <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
-            <version>2.9.1</version>
+            <version>2.10.1</version>
         </dependency>
 
         <dependency>
@@ -167,7 +167,7 @@
         <dependency>
             <groupId>com.github.hazendaz</groupId>
             <artifactId>htmlcompressor</artifactId>
-            <version>1.7.3</version>
+            <version>1.8.0</version>
         </dependency>
 
         <!-- YUI compressor is old and doesn't support ES2015 and other stuff, need to get closure compiler to work -->
@@ -179,7 +179,7 @@
         <dependency>
             <groupId>com.google.javascript</groupId>
             <artifactId>closure-compiler</artifactId>
-            <version>v20220905</version>
+            <version>v20230103</version>
         </dependency>
         <!-- Missing transitive dependency for closure-compiler -->
         <dependency>
@@ -203,7 +203,7 @@
         <dependency>
             <groupId>io.pebbletemplates</groupId>
             <artifactId>pebble</artifactId>
-            <version>3.1.6</version>
+            <version>3.2.0</version>
         </dependency>
         <dependency>
             <groupId>de.neuland-bfi</groupId>
@@ -213,13 +213,13 @@
         <dependency>
             <groupId>de.neuland-bfi</groupId>
             <artifactId>pug4j</artifactId>
-            <version>2.0.5</version>
+            <version>2.0.6</version>
         </dependency>
 
         <dependency>
             <groupId>com.github.codemonstur</groupId>
             <artifactId>simplexml</artifactId>
-            <version>3.0.0</version>
+            <version>3.1.0</version>
         </dependency>
 
         <!-- For Maven plugin -->
@@ -233,7 +233,7 @@
         <dependency>
             <groupId>org.apache.maven.plugin-tools</groupId>
             <artifactId>maven-plugin-annotations</artifactId>
-            <version>3.6.4</version>
+            <version>3.7.1</version>
             <scope>provided</scope>
         </dependency>
 
@@ -254,7 +254,7 @@
         <dependency>
             <groupId>net.sourceforge.cssparser</groupId>
             <artifactId>cssparser</artifactId>
-            <version>0.9.29</version>
+            <version>0.9.30</version>
             <scope>test</scope>
         </dependency>
 
@@ -268,7 +268,7 @@
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
-            <version>5.9.1</version>
+            <version>5.9.2</version>
             <scope>test</scope>
         </dependency>
 
