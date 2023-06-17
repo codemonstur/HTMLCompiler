@@ -1,20 +1,23 @@
 include https://raw.githubusercontent.com/codemonstur/bobfiles/master/foss-lib-github
 
 vendor: com.github.codemonstur
+name: htmlcompiler
 version: 5.6.0
+description: An HTML compiler, with maven plugin
+license:
+  name: MIT
 enablePreview: false
 packaging: maven-plugin
 dependencies:
   - repository: org.jsoup:jsoup:1.15.3
   - repository: com.google.code.gson:gson:2.10.1
   - repository: commons-io:commons-io:2.11.0
+  - repository: io.pebbletemplates:pebble:3.2.1
   - repository: com.github.hazendaz:htmlcompressor:1.8.0
   - repository: com.yahoo.platform.yui:yuicompressor:2.4.8
   - repository: com.google.javascript:closure-compiler:v20230103
-  - repository: com.google.guava:guava:31.1-jre
   - repository: de.inetsoftware:jlessc:1.10
   - repository: com.vaadin:vaadin-sass-compiler:0.9.13
-  - repository: io.pebbletemplates:pebble:3.2.0
   - repository: de.neuland-bfi:jade4j:1.3.2
   - repository: de.neuland-bfi:pug4j:2.0.6
   - repository: com.github.codemonstur:simplexml:3.1.0

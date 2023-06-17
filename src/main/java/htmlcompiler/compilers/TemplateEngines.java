@@ -1,8 +1,8 @@
 package htmlcompiler.compilers;
 
-import com.mitchellbosecke.pebble.PebbleEngine;
-import com.mitchellbosecke.pebble.error.PebbleException;
-import com.mitchellbosecke.pebble.template.PebbleTemplate;
+import io.pebbletemplates.pebble.PebbleEngine;
+import io.pebbletemplates.pebble.error.PebbleException;
+import io.pebbletemplates.pebble.template.PebbleTemplate;
 import de.neuland.jade4j.Jade4J;
 import de.neuland.pug4j.Pug4J;
 import htmlcompiler.pojos.error.InvalidTemplate;
