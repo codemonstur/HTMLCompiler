@@ -31,6 +31,7 @@ public interface TemplateThenCompile {
             if (inFile == null || !isRegularFile(inFile)) return;
 
             final String extension = toExtension(inFile, null);
+            if (extension == null) return;
             final var compiler = compilers.get(extension);
             if (compiler == null) return;
 
