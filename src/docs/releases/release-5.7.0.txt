@@ -1,0 +1,4 @@
+5.7.0
+
+Updated versions of dependencies
+Added output dir configuration
