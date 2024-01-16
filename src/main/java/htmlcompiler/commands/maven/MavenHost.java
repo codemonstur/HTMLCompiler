@@ -30,6 +30,8 @@ public final class MavenHost extends AbstractMojo {
     public String requestApiSpecification;
     @Parameter(defaultValue = "src/main/webcnf/validation.json")
     public String validation;
+    @Parameter(defaultValue = "webbin")
+    public String targetDir;
 
     @Override
     public void execute() throws MojoFailureException {
@@ -39,10 +41,13 @@ public final class MavenHost extends AbstractMojo {
     private HostCommandConfig newHostConfig() throws MojoFailureException {
         final var config = new HostCommandConfig();
         config.inputDir = MavenProjectReader.toInputDirectory(project);
-        config.outputDir = MavenProjectReader.toOutputDirectory(project);
+        config.outputDir = MavenProjectReader.toOutputDirectory(targetDir, project);
         config.variables = MavenProjectReader.newTemplateContext(project);
         config.baseDir = project.getBasedir().toPath();
-        config.hostedPaths = new Path[] { MavenProjectReader.toStaticDirectory(project), MavenProjectReader.toOutputDirectory(project) };
+        config.hostedPaths = new Path[] {
+            MavenProjectReader.toStaticDirectory(project),
+            MavenProjectReader.toOutputDirectory(targetDir, project)
+        };
         config.port = port;
         config.replaceExtension = replaceExtension;
         config.watchedDirectories = watchedDirectories;

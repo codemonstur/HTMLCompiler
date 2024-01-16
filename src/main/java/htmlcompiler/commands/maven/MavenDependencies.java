@@ -15,5 +15,4 @@ public final class MavenDependencies extends AbstractMojo {
         buildMavenTask(this, Dependencies::executeDependencies);
     }
 
-
 }

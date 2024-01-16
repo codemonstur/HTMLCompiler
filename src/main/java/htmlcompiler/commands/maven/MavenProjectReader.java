@@ -21,8 +21,8 @@ public enum MavenProjectReader {;
         return inputDir;
     }
 
-    public static Path toOutputDirectory(final MavenProject project) throws MojoFailureException {
-        final Path outputDir = Paths.get(project.getBuild().getOutputDirectory()).resolve("webbin");
+    public static Path toOutputDirectory(final String subdir, final MavenProject project) throws MojoFailureException {
+        final Path outputDir = Paths.get(project.getBuild().getOutputDirectory()).resolve(subdir);
         outputDir.toFile().mkdirs();
         if (!exists(outputDir)) throw new MojoFailureException("Output directory must exist: " + outputDir);
         if (!isDirectory(outputDir)) throw new MojoFailureException("Output directory must be a directory");

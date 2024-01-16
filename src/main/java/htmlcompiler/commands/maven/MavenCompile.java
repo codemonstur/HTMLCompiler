@@ -25,6 +25,8 @@ public final class MavenCompile extends AbstractMojo {
     public boolean replaceExtension;
     @Parameter(defaultValue = "src/main/webcnf/validation.json")
     public String validation;
+    @Parameter(defaultValue = "webbin")
+    public String targetDir;
 
     public void execute() throws MojoFailureException {
         if (!enabled) return;
@@ -34,7 +36,7 @@ public final class MavenCompile extends AbstractMojo {
     private CompileCommandConfig newCompileConfig() throws MojoFailureException {
         final var config = new CompileCommandConfig();
         config.inputDir = MavenProjectReader.toInputDirectory(project);
-        config.outputDir = MavenProjectReader.toOutputDirectory(project);
+        config.outputDir = MavenProjectReader.toOutputDirectory(targetDir, project);
         config.variables = MavenProjectReader.newTemplateContext(project);
         config.baseDir = project.getBasedir().toPath();
         config.recursive = recursive;
