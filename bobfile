@@ -2,10 +2,13 @@ include https://raw.githubusercontent.com/codemonstur/bobfiles/master/foss-lib-g
 
 vendor: com.github.codemonstur
 name: htmlcompiler
-version: 5.7.0
+version: 5.7.1
 description: An HTML compiler, with maven plugin
 license:
   name: MIT
+developer:
+  name: Jurgen Voorneveld
+  email: jegvoorneveld@gmail.com
 enablePreview: false
 packaging: maven-plugin
 dependencies:
