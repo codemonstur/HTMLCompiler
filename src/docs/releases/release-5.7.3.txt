@@ -1,4 +1,3 @@
 5.7.3
 
-Updated license year
-Added pom
+Forced use of mvn compile of plugin
