@@ -2,7 +2,7 @@ include https://raw.githubusercontent.com/codemonstur/bobfiles/master/foss-lib-g
 
 vendor: com.github.codemonstur
 name: htmlcompiler
-version: 5.7.1
+version: 5.7.3
 description: An HTML compiler, with maven plugin
 license:
   name: MIT
@@ -36,3 +36,17 @@ dependencies:
     scope: test
   - repository: org.junit.jupiter:junit-jupiter:5.10.1
     scope: test
+
+build
+ |  mvn clean package -DskipTests
+
+-- Uploads binaries to MavenCentral
+deploy-maven
+    info [${PROJECT_NAME}] Uploading to MavenCentral
+    jar-sources
+    jar-javadoc
+    deploy-maven-central
+    HAS_POM = `ls -a pom.xml 2>/dev/null | wc -l`
+    if (${HAS_POM} == 1)
+        sed -E -i 's/<version>[0-9.]+<\/version>/<version>${PROJECT_VERSION}<\/version>/g' README.md
+    endif

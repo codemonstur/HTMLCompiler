@@ -48,7 +48,7 @@ No more minified files everywhere. No more manually compressing resources.
 <plugin>
     <groupId>com.github.codemonstur</groupId>
     <artifactId>htmlcompiler</artifactId>
-    <version>5.3.0</version>
+    <version>5.7.2</version>
     <executions>
         <execution><goals><goal>compile</goal></goals></execution>
     </executions>
