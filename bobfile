@@ -39,14 +39,3 @@ dependencies:
 
 build
  |  mvn clean package -DskipTests
-
--- Uploads binaries to MavenCentral
-deploy-maven
-    info [${PROJECT_NAME}] Uploading to MavenCentral
-    jar-sources
-    jar-javadoc
-    deploy-maven-central
-    HAS_POM = `ls -a pom.xml 2>/dev/null | wc -l`
-    if (${HAS_POM} == 1)
-        sed -E -i 's/<version>[0-9.]+<\/version>/<version>${PROJECT_VERSION}<\/version>/g' README.md
-    endif
