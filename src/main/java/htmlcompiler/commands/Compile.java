@@ -13,6 +13,7 @@ import static htmlcompiler.compilers.TemplateThenCompile.compileDirectories;
 import static htmlcompiler.compilers.TemplateThenCompile.newTemplateThenCompile;
 import static htmlcompiler.pojos.compile.CompilerConfig.readChecksConfiguration;
 import static htmlcompiler.pojos.compile.JsCompressionType.gcc_advanced;
+import static htmlcompiler.pojos.compile.JsCompressionType.gcc_simple;
 import static htmlcompiler.utils.Strings.isNullOrEmpty;
 
 public enum Compile {;
@@ -35,7 +36,7 @@ public enum Compile {;
         public boolean cacheJsCompression = true;
 
         public JsCompressionType getJsCompressorType() {
-            if (isNullOrEmpty(jsCompressorType)) return gcc_advanced;
+            if (isNullOrEmpty(jsCompressorType)) return gcc_simple;
             return JsCompressionType.valueOf(jsCompressorType.replace('-', '_'));
         }
     }

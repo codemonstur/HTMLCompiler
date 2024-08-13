@@ -1,6 +1,7 @@
 package htmlcompiler.services;
 
 import com.google.gson.reflect.TypeToken;
+import htmlcompiler.utils.Logger;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
@@ -22,7 +23,7 @@ public enum RepositoryHashes {;
     private static Path locationCachedIntegrityValues;
     private static Map<String, String> cachedIntegrityValues;
 
-    public static String uriToIntegrityValue(final String uri) throws IOException, NoSuchAlgorithmException {
+    public static String uriToIntegrityValue(final String uri, final boolean force, final Logger log) throws IOException, NoSuchAlgorithmException {
         if (cachedIntegrityValues == null) {
             locationCachedIntegrityValues = getRepositoryDirectory().resolve("uri-to-integrity.json");
             cachedIntegrityValues = readHashMap(locationCachedIntegrityValues);
@@ -30,8 +31,11 @@ public enum RepositoryHashes {;
         String integrity = cachedIntegrityValues.get(uri);
         if (integrity != null) return integrity;
 
-        if (!urlHasCorsAllowed(uri))
-            throw new IOException("URI " + uri + " does not have * in Access-Control-Allow-Origin header. Consider loading this resource from a different URI or adding the 'no-integrity' attribute to the tag");
+        if (!urlHasCorsAllowed(uri)) {
+            final var message = "URI " + uri + " does not have * in Access-Control-Allow-Origin header. Consider loading this resource from a different URI or adding the 'no-integrity' attribute to the tag";
+            if (force) log.warn(message);
+            else throw new IOException(message);
+        }
 
         integrity = toIntegrityValue(urlToByteArray(uri));
         cachedIntegrityValues.put(uri, integrity);

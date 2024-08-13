@@ -1,6 +1,10 @@
 package htmlcompiler.utils;
 
 import org.apache.maven.plugin.logging.Log;
+import org.slf4j.LoggerFactory;
+import org.w3c.css.sac.CSSException;
+import org.w3c.css.sac.CSSParseException;
+import org.w3c.css.sac.ErrorHandler;
 
 import java.time.format.DateTimeFormatter;
 import java.util.function.Consumer;
@@ -32,6 +36,19 @@ public interface Logger {
             }
             public void error(final String message, final boolean withNewLine) {
                 log.error(message);
+            }
+        };
+    }
+    static ErrorHandler newVaadinLogger(final Logger logger) {
+        return new ErrorHandler() {
+            public void warning(CSSParseException e) throws CSSException {
+                logger.warn(e.getMessage());
+            }
+            public void error(CSSParseException e) throws CSSException {
+                logger.error(e.getMessage());
+            }
+            public void fatalError(CSSParseException e) throws CSSException {
+                logger.error(e.getMessage());
             }
         };
     }

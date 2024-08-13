@@ -66,7 +66,9 @@ public enum TagParsing {;
             , final Logger log) throws IOException, NoSuchAlgorithmException {
         try {
             if (isUrl(url)) {
-                element.attr("integrity", uriToIntegrityValue(url));
+                final boolean force = element.hasAttr("force-integrity");
+                element.attr("integrity", uriToIntegrityValue(url, force, log));
+                if (force) element.removeAttr("force-integrity");
                 if (!element.hasAttr("crossorigin"))
                     element.attr("crossorigin", "anonymous");
                 if (!element.hasAttr("referrerpolicy"))

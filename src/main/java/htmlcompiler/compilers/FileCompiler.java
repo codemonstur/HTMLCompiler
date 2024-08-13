@@ -29,8 +29,11 @@ public interface FileCompiler {
                 final var afterTemplateEngine = engine.compile(file);
                 System.out.println("------------------------------------------------------------------------");
                 System.out.println(afterTemplateEngine);
+                System.out.println("------------------------------------------------------------------------");
+                final var finalHtml = html.doctypeCompressCompile(file, afterTemplateEngine);
+                System.out.println(finalHtml);
                 System.out.println("========================================================================");
-                return html.doctypeCompressCompile(file, afterTemplateEngine);
+                return finalHtml;
             }
             public String outputExtension() {
                 return engine.outputExtension();
@@ -62,8 +65,7 @@ public interface FileCompiler {
             , entry(".html", newHtmlCompiler(html, Files::readString))
             , entry(".hct", newHtmlCompiler(html, Files::readString))
             , entry(".css", newScriptCompiler(logger, CssCompiler::compressCssCode, newNopCompiler(), ".min.css"))
-            , entry(".scss", newScriptCompiler(logger, CssCompiler::compressCssCode, newScssCompiler(), ".min.css"))
-            , entry(".sass", newScriptCompiler(logger, CssCompiler::compressCssCode, newSassCompiler(), ".min.css"))
+            , entry(".scss", newScriptCompiler(logger, CssCompiler::compressCssCode, newScssCompiler(logger), ".min.css"))
             , entry(".stylus", newScriptCompiler(logger, CssCompiler::compressCssCode, newStylusCompiler(), ".min.css"))
             , entry(".js", newScriptCompiler(logger, html.jsCompressor, newNopCompiler(), ".min.js"))
             , entry(".jspp", newScriptCompiler(logger, html.jsCompressor, newJsppCompiler(), ".min.js"))

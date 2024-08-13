@@ -2,7 +2,8 @@
   , "version": "3.2.1"
   , "type": "cdn"
   , "tagName": "script"
-  , "attributes": [ { "name": "crossorigin", "value":"anonymous" }
+  , "attributes": [ { "name": "crossorigin", "value": "anonymous" }
+                  , { "name": "referrerpolicy", "value": "no-referrer" }
                   , { "name": "integrity", "value": "sha384-xBuQ/xzmlsLoJpyjoggmTEz8OWUFM0/RC5BsqQBDX2v5cMvDHcMakNTNrHIW2I5f" }
                   , { "name": "src", "value": "https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js" }
                   ]

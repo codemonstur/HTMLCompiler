@@ -64,11 +64,6 @@ public final class HtmlCompiler {
                         final boolean htmlCompressionEnabled, final boolean cssCompressionEnabled,
                         final boolean jsCompressionEnabled, final boolean cachedJsCompression) {
         this.log = log;
-        this.htmlCompressor = newDefaultHtmlCompressor();
-        this.cssCompressor = CssCompiler::compressCssCode;
-        this.jsCompressor = jsCompressionType.toCompressor(log);
-        this.jsCompressionType = jsCompressionType;
-        this.processors = newDefaultTagProcessors(log, this, archive);
         this.configs = configs;
         this.checksEnabled = checksEnabled;
         this.compressionEnabled = compressionEnabled;
@@ -77,6 +72,11 @@ public final class HtmlCompiler {
         this.jsCompressionEnabled = jsCompressionEnabled;
         this.deprecatedTagsEnabled = deprecatedTagsEnabled;
         this.cachedJsCompression = cachedJsCompression;
+        this.htmlCompressor = newDefaultHtmlCompressor();
+        this.cssCompressor = CssCompiler::compressCssCode;
+        this.jsCompressor = jsCompressionType.toCompressor(log);
+        this.jsCompressionType = jsCompressionType;
+        this.processors = newDefaultTagProcessors(log, this, archive);
     }
 
     private static HtmlCompressor newDefaultHtmlCompressor() {
