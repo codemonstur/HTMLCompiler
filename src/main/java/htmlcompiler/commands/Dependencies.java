@@ -1,10 +1,10 @@
 package htmlcompiler.commands;
 
-import htmlcompiler.tools.Logger;
+import htmlcompiler.utils.Logger;
 
 import java.io.FileNotFoundException;
 
-import static htmlcompiler.tools.IO.findBinaryInPath;
+import static htmlcompiler.utils.IO.findBinaryInPath;
 
 public enum Dependencies {;
 

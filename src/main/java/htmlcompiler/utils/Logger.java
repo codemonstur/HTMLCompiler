@@ -1,4 +1,4 @@
-package htmlcompiler.tools;
+package htmlcompiler.utils;
 
 import org.apache.maven.plugin.logging.Log;
 
@@ -22,7 +22,7 @@ public interface Logger {
     void warn(String message, boolean withNewLine);
     void error(String message, boolean withNewLine);
 
-    static Logger newLogger(final Log log) {
+    static Logger newMavenLogger(final Log log) {
         return new Logger() {
             public void info(final String message, final boolean withNewLine) {
                 log.info(message);
@@ -34,6 +34,9 @@ public interface Logger {
                 log.error(message);
             }
         };
+    }
+    static Logger newConsoleLogger() {
+        return newLogger(System.out::println, System.err::println, System.err::println);
     }
     static Logger newLogger(final Consumer<String> info, final Consumer<String> warn, final Consumer<String> error) {
         return new Logger() {

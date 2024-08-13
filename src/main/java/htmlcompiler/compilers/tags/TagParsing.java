@@ -1,6 +1,6 @@
 package htmlcompiler.compilers.tags;
 
-import htmlcompiler.tools.Logger;
+import htmlcompiler.utils.Logger;
 import org.jsoup.nodes.Attribute;
 import org.jsoup.nodes.DataNode;
 import org.jsoup.nodes.Element;
@@ -13,8 +13,8 @@ import java.security.NoSuchAlgorithmException;
 
 import static htmlcompiler.pojos.compile.ImageType.toMimeType;
 import static htmlcompiler.services.RepositoryHashes.uriToIntegrityValue;
-import static htmlcompiler.tools.Coding.encodeBase64;
-import static htmlcompiler.tools.HTTP.isUrl;
+import static htmlcompiler.utils.Coding.encodeBase64;
+import static htmlcompiler.utils.HTTP.isUrl;
 
 public enum TagParsing {;
 
@@ -69,8 +69,10 @@ public enum TagParsing {;
                 element.attr("integrity", uriToIntegrityValue(url));
                 if (!element.hasAttr("crossorigin"))
                     element.attr("crossorigin", "anonymous");
+                if (!element.hasAttr("referrerpolicy"))
+                    element.attr("referrerpolicy", "no-referrer");
             }
-        } catch (IOException e) {
+        } catch (final IOException e) {
             log.warn("Failed to get data for tag src/href attribute " + url);
             log.warn(e.getMessage());
             throw e;

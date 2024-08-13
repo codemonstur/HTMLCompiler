@@ -2,7 +2,7 @@ package htmlcompiler.compilers;
 
 import htmlcompiler.pojos.error.InvalidInput;
 import htmlcompiler.pojos.error.InvalidTemplate;
-import htmlcompiler.tools.Logger;
+import htmlcompiler.utils.Logger;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -23,7 +23,14 @@ public interface FileCompiler {
     private static FileCompiler newHtmlCompiler(final HtmlCompiler html, final HtmlTemplateEngine engine) {
         return new FileCompiler() {
             public String compile(Path file) throws IOException, InvalidTemplate, InvalidInput {
-                return html.doctypeCompressCompile(file, engine.compile(file));
+                System.out.println("========================================================================");
+                System.out.println(file);
+                System.out.println(Files.readString(file));
+                final var afterTemplateEngine = engine.compile(file);
+                System.out.println("------------------------------------------------------------------------");
+                System.out.println(afterTemplateEngine);
+                System.out.println("========================================================================");
+                return html.doctypeCompressCompile(file, afterTemplateEngine);
             }
             public String outputExtension() {
                 return engine.outputExtension();

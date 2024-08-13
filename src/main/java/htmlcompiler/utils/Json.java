@@ -1,4 +1,4 @@
-package htmlcompiler.tools;
+package htmlcompiler.utils;
 
 import com.google.gson.Gson;
 

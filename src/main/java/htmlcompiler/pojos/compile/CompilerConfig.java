@@ -12,7 +12,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import static htmlcompiler.tools.Json.GSON;
+import static htmlcompiler.utils.Json.GSON;
+import static htmlcompiler.utils.Strings.isNullOrBlank;
 import static java.nio.file.Files.isRegularFile;
 import static java.nio.file.Files.newBufferedReader;
 
@@ -42,7 +43,7 @@ public final class CompilerConfig {
 
     private static final Type CONFIG_MAP_TYPE = new TypeToken<Map<String, CompilerConfig>>() {}.getType();
     public static Map<String, CompilerConfig> readChecksConfiguration(final String confLocation) throws IOException {
-        if (confLocation.isBlank()) return Map.of("", new CompilerConfig());
+        if (isNullOrBlank(confLocation)) return Map.of("", new CompilerConfig());
         final Path confFile = Paths.get(confLocation);
         if (!isRegularFile(confFile)) return Map.of("", new CompilerConfig());
 

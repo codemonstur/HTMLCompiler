@@ -1,4 +1,4 @@
-package htmlcompiler.tools;
+package htmlcompiler.utils;
 
 import java.nio.charset.Charset;
 import java.security.MessageDigest;

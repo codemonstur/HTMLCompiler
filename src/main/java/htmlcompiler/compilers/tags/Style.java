@@ -3,7 +3,7 @@ package htmlcompiler.compilers.tags;
 import htmlcompiler.compilers.HtmlCompiler;
 import htmlcompiler.compilers.tags.TagVisitor.TailVisitor;
 import htmlcompiler.pojos.compile.StyleType;
-import htmlcompiler.tools.Logger;
+import htmlcompiler.utils.Logger;
 import org.jsoup.nodes.Element;
 
 import java.nio.file.Path;
@@ -11,8 +11,8 @@ import java.nio.file.Path;
 import static htmlcompiler.compilers.tags.TagParsing.*;
 import static htmlcompiler.pojos.compile.StyleType.css;
 import static htmlcompiler.pojos.compile.StyleType.detectStyleType;
-import static htmlcompiler.tools.IO.toLocation;
-import static htmlcompiler.tools.Strings.isNullOrEmpty;
+import static htmlcompiler.utils.IO.toLocation;
+import static htmlcompiler.utils.Strings.isNullOrEmpty;
 
 public enum Style {;
 

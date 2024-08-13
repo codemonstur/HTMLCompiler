@@ -1,15 +1,15 @@
 package htmlcompiler.compilers.checks;
 
 import htmlcompiler.pojos.compile.CompilerConfig;
-import htmlcompiler.tools.Logger;
+import htmlcompiler.utils.Logger;
 import org.jsoup.nodes.Element;
 
 import java.nio.file.Path;
 import java.util.Set;
 
-import static htmlcompiler.tools.Filenames.toRelativePath;
-import static htmlcompiler.tools.HTML.*;
-import static htmlcompiler.tools.Strings.hasUppercase;
+import static htmlcompiler.utils.Filenames.toRelativePath;
+import static htmlcompiler.utils.HTML.*;
+import static htmlcompiler.utils.Strings.hasUppercase;
 import static xmlparser.utils.Functions.isNullOrEmpty;
 
 public enum ElementChecks {;

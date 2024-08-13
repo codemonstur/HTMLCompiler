@@ -7,8 +7,8 @@ import htmlcompiler.pojos.compile.JsCompressionType;
 import htmlcompiler.pojos.compile.ScriptBag;
 import htmlcompiler.pojos.error.InvalidInput;
 import htmlcompiler.pojos.library.LibraryArchive;
-import htmlcompiler.tools.Logger;
-import htmlcompiler.tools.MutableInteger;
+import htmlcompiler.utils.Logger;
+import htmlcompiler.utils.MutableInteger;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -35,7 +35,7 @@ import static htmlcompiler.compilers.tags.Script.newScriptVisitor;
 import static htmlcompiler.compilers.tags.Style.newStyleVisitor;
 import static htmlcompiler.compilers.tags.TagVisitor.NOOP;
 import static htmlcompiler.services.RepositoryJsCode.cached;
-import static htmlcompiler.tools.Filenames.toRelativePath;
+import static htmlcompiler.utils.Filenames.toRelativePath;
 import static xmlparser.utils.Functions.isNullOrEmpty;
 
 public final class HtmlCompiler {

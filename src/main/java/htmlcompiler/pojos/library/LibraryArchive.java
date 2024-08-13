@@ -6,13 +6,12 @@ import org.w3c.dom.Element;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.Reader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static htmlcompiler.tools.Json.GSON;
+import static htmlcompiler.utils.Json.GSON;
 
 public final class LibraryArchive {
 
@@ -20,13 +19,15 @@ public final class LibraryArchive {
 
     public LibraryArchive() {
         this.archive = new HashMap<>();
-        try (final Reader reader = new InputStreamReader(LibraryArchive.class.getResourceAsStream("/library-archive.json"))) {
+        final var inLibArchive = LibraryArchive.class.getResourceAsStream("/htmlcompiler/library-archive.json");
+        if (inLibArchive == null) throw new IllegalStateException("Missing /htmlcompiler/library-archive.json resource");
+        try (final var reader = new InputStreamReader(inLibArchive)) {
             final List<LibraryRecord> list = GSON.fromJson(reader, new TypeToken<ArrayList<LibraryRecord>>(){}.getType());
             for (final LibraryRecord record : list) {
                 archive.put(LibraryKey.toLibraryKey(record), LibraryDescription.toLibraryDescription(record));
             }
-        } catch (IOException e) {
-            throw new IllegalStateException("Missing /library-archive.json resource");
+        } catch (final IOException e) {
+            throw new IllegalStateException("Parsing error during libary-archive load", e);
         }
     }
 

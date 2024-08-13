@@ -5,8 +5,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import static htmlcompiler.tools.IO.findBinaryInPath;
-import static htmlcompiler.tools.IO.newTempFileWithContent;
+import static htmlcompiler.utils.IO.findBinaryInPath;
+import static htmlcompiler.utils.IO.newTempFileWithContent;
 
 public interface CodeCompiler {
 

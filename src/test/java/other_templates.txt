@@ -1,4 +1,4 @@
-// I removed some a bunch of the configured template engines, these really
+// I removed a bunch of the configured template engines, these really
 // don't add anything. I left pebble as the only classic template engine
 // and Jade4J because it is clearly better than the rest.
 

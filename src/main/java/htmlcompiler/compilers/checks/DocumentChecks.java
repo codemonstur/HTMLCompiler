@@ -1,13 +1,13 @@
 package htmlcompiler.compilers.checks;
 
-import htmlcompiler.tools.Logger;
+import htmlcompiler.utils.Logger;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
 import java.io.File;
 import java.nio.file.Path;
 
-import static htmlcompiler.tools.Filenames.toRelativePath;
+import static htmlcompiler.utils.Filenames.toRelativePath;
 import static xmlparser.utils.Functions.isNullOrEmpty;
 
 public enum DocumentChecks {;

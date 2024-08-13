@@ -1,6 +1,6 @@
 package incubation;
 
-import htmlcompiler.tools.Logger;
+import htmlcompiler.utils.Logger;
 
 import java.nio.file.Path;
 import java.util.HashMap;

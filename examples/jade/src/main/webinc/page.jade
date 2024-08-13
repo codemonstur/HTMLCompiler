@@ -1,0 +1,10 @@
+
+append templates
+    script#page(type='text/html', compress)
+        p I am an html page
+
+append scripts
+    script(type='text/javascript', compress).
+        function page() {
+            console.log('Page!');
+        }

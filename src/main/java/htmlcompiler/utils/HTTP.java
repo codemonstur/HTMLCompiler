@@ -1,4 +1,4 @@
-package htmlcompiler.tools;
+package htmlcompiler.utils;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;

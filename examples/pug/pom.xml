@@ -1,0 +1,45 @@
+<project>
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.github.codemonstur</groupId>
+    <artifactId>htmlcompiler-example-pug</artifactId>
+    <version>1.0</version>
+
+    <name>${project.groupId}:${project.artifactId}</name>
+    <description>An example of how to use the HTML compiler</description>
+
+    <licenses>
+        <license>
+            <name>MIT License</name>
+            <url>https://opensource.org/licenses/MIT</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <maven.compiler.source>18</maven.compiler.source>
+        <maven.compiler.target>18</maven.compiler.target>
+        <maven.compiler.release>18</maven.compiler.release>
+    </properties>
+
+    <build>
+        <finalName>${project.artifactId}</finalName>
+
+        <plugins>
+
+            <plugin>
+                <groupId>com.github.codemonstur</groupId>
+                <artifactId>htmlcompiler</artifactId>
+                <version>5.7.4</version>
+                <executions>
+                    <execution><goals><goal>compile</goal></goals></execution>
+                </executions>
+            </plugin>
+
+        </plugins>
+    </build>
+
+</project>

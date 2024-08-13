@@ -1,4 +1,4 @@
-package htmlcompiler.tools;
+package htmlcompiler.utils;
 
 import java.io.IOException;
 import java.nio.file.FileVisitResult;

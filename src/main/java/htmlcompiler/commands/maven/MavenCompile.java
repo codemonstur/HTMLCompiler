@@ -8,7 +8,7 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 
-import static htmlcompiler.tools.App.buildMavenTask;
+import static htmlcompiler.utils.App.buildMavenTask;
 import static org.apache.maven.plugins.annotations.LifecyclePhase.GENERATE_RESOURCES;
 
 @Mojo( defaultPhase = GENERATE_RESOURCES, name = "compile" )

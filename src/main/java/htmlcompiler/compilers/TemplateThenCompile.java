@@ -1,7 +1,7 @@
 package htmlcompiler.compilers;
 
-import htmlcompiler.tools.Logger;
-import htmlcompiler.tools.OnlyFileVisitor;
+import htmlcompiler.utils.Logger;
+import htmlcompiler.utils.OnlyFileVisitor;
 
 import java.io.IOException;
 import java.nio.file.FileVisitOption;
@@ -11,7 +11,7 @@ import java.util.EnumSet;
 import java.util.Map;
 
 import static htmlcompiler.compilers.FileCompiler.newFileCompilerMap;
-import static htmlcompiler.tools.Filenames.toExtension;
+import static htmlcompiler.utils.Filenames.toExtension;
 import static java.lang.Integer.MAX_VALUE;
 import static java.nio.file.FileVisitResult.CONTINUE;
 import static java.nio.file.Files.isRegularFile;

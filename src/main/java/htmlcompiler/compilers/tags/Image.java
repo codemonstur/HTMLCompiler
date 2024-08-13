@@ -11,7 +11,7 @@ import static htmlcompiler.compilers.tags.TagParsing.*;
 import static htmlcompiler.compilers.tags.TagParsing.copyAttributes;
 import static htmlcompiler.compilers.tags.TagParsing.makeAbsolutePath;
 import static htmlcompiler.pojos.compile.ImageType.isBinaryImage;
-import static htmlcompiler.tools.IO.toLocation;
+import static htmlcompiler.utils.IO.toLocation;
 
 public enum Image {;
 

@@ -1,6 +1,6 @@
 package tools;
 
-import htmlcompiler.tools.Filenames;
+import htmlcompiler.utils.Filenames;
 
 import java.nio.file.Paths;
 
