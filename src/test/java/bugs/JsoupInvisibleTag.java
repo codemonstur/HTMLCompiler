@@ -19,6 +19,7 @@ public class JsoupInvisibleTag {
         "<script src=\"test2.js\"></script>\n" +
         "</body>\n" +
         "</html>";
+
     public static void main(final String... args) {
         Document document = Jsoup.parse(html);
         document.traverse(new NodeVisitor() {

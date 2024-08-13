@@ -13,13 +13,12 @@ public enum Dependencies {;
         testExistenceBinary(log, "Dart compiler", "dart2js");
         testExistenceBinary(log, "JS++ compiler", "js++");
         testExistenceBinary(log, "Stylus compiler", "stylus");
-        testExistenceBinary(log, "Sass/Scss compiler", "sass");
     }
 
     private static void testExistenceBinary(final Logger log, final String name, final String binary) {
         try {
             findBinaryInPath(binary);
-        } catch (FileNotFoundException e) {
+        } catch (final FileNotFoundException e) {
             log.warn("Unable to find the " + name + ". Binary name is " + binary);
         }
     }

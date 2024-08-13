@@ -30,7 +30,7 @@ No more minified files everywhere. No more manually compressing resources.
 - Also compresses HTML inside script tag with type text/x-jquery-tmpl or text/html
 - Allow for calling htmlcompiler features through the command line
 - Inlining of link tags (favico)
-- SASS and LESS compiling
+- SCSS and LESS compiling
 - Inline link tag to stylesheet into style tag
 
 ### Planned features (bugfixes)
@@ -48,7 +48,7 @@ No more minified files everywhere. No more manually compressing resources.
 <plugin>
     <groupId>com.github.codemonstur</groupId>
     <artifactId>htmlcompiler</artifactId>
-    <version>5.7.4</version>
+    <version>5.7.5</version>
     <executions>
         <execution><goals><goal>compile</goal></goals></execution>
     </executions>

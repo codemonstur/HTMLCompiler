@@ -16,6 +16,7 @@ public class JsoupNPE2 {
         "<body>\n" +
         "</body>\n" +
         "</html>";
+
     public static void main(final String... args) {
         Document document = Jsoup.parse(html);
         document.traverse(new NodeVisitor() {

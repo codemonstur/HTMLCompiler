@@ -9,13 +9,15 @@ import htmlcompiler.utils.Logger;
 
 import java.util.Map;
 
+import static htmlcompiler.pojos.compile.JsCompressionType.gcc_simple;
+
 public enum Factory {;
 
     public static HtmlCompiler newHtmlCompiler() {
         final Logger log = Logger.newLogger(System.out::print, System.out::print, System.out::print);
         final LibraryArchive archive = new LibraryArchive();
         final CompilerConfig checks = new CompilerConfig();
-        return new HtmlCompiler(log, JsCompressionType.gcc_simple, archive, Map.of("", checks),
+        return new HtmlCompiler(log, gcc_simple, archive, Map.of("", checks),
             true, true, true, true,
             true, true, true);
     }

@@ -14,8 +14,8 @@ public class RunExamples {
 
     public static void main(final String... args) throws IOException {
         //executeCompile(newConsoleLogger(), exampleProject("old"));
-        executeCompile(newConsoleLogger(), exampleProject("jade"));
-        //executeCompile(newConsoleLogger(), exampleProject("pug"));
+        //executeCompile(newConsoleLogger(), exampleProject("jade"));
+        executeCompile(newConsoleLogger(), exampleProject("pug"));
     }
 
     private static CompileCommandConfig exampleProject(final String name) {

@@ -19,10 +19,10 @@ public enum Style {;
     public static TagVisitor newStyleVisitor(final Logger log, final HtmlCompiler html) {
         return (TailVisitor) (config, file, element, depth) -> {
             if (element.hasAttr("inline")) {
-                final Path location = toLocation(file, element.attr("src"), "style tag in %s has an invalid src location '%s'");
+                final var location = toLocation(file, element.attr("src"), "style tag in %s has an invalid src location '%s'");
 
-                final StyleType type = detectStyleType(element, css);
-                final String code = type.compile(location);
+                final var type = detectStyleType(element, css);
+                final var code = type.compile(location);
                 setData(element, shouldCompress(code, element) ? html.compressCss(code) : code);
                 removeAttributes(element, "inline", "compress", "src", "type");
 

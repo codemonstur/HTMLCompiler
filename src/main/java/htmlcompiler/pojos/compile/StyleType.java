@@ -1,19 +1,21 @@
 package htmlcompiler.pojos.compile;
 
 import htmlcompiler.compilers.CodeCompiler;
+import htmlcompiler.utils.Logger;
 import org.w3c.dom.Element;
 
 import java.nio.file.Path;
 
 import static htmlcompiler.compilers.CodeCompiler.newNopCompiler;
 import static htmlcompiler.compilers.CssCompiler.*;
+import static htmlcompiler.utils.Logger.newConsoleLogger;
 
 public enum StyleType {
     minified_css(newNopCompiler()),
     css(newNopCompiler()),
     less(newLessCompiler()),
-    sass(newSassCompiler()),
-    scss(newScssCompiler()),
+    // FIXME should use the maven logger somehow
+    scss(newScssCompiler(newConsoleLogger())),
     stylus(newStylusCompiler());
 
     private final CodeCompiler compiler;
@@ -46,7 +48,6 @@ public enum StyleType {
     private static StyleType contentTypeToStyleType(final String contentType, final StyleType defaultValue) {
         if (contentType.equalsIgnoreCase("text/css")) return css;
         if (contentType.equalsIgnoreCase("text/less")) return less;
-        if (contentType.equalsIgnoreCase("text/sass")) return sass;
         if (contentType.equalsIgnoreCase("text/scss")) return scss;
         if (contentType.equalsIgnoreCase("text/stylus")) return stylus;
         return defaultValue;
@@ -57,7 +58,6 @@ public enum StyleType {
         if (filename.endsWith(".css")) return css;
         if (filename.endsWith(".less")) return less;
         if (filename.endsWith(".scss")) return scss;
-        if (filename.endsWith(".sass")) return sass;
         if (filename.endsWith(".stylus")) return stylus;
         if (filename.endsWith(".styl")) return stylus;
         return defaultValue;
