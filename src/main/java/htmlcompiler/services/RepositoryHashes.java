@@ -10,11 +10,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static htmlcompiler.services.Repository.getRepositoryDirectory;
-import static htmlcompiler.tools.Coding.encodeBase64;
-import static htmlcompiler.tools.Coding.sha384;
-import static htmlcompiler.tools.HTTP.urlHasCorsAllowed;
-import static htmlcompiler.tools.HTTP.urlToByteArray;
-import static htmlcompiler.tools.Json.GSON;
+import static htmlcompiler.utils.Coding.encodeBase64;
+import static htmlcompiler.utils.Coding.sha384;
+import static htmlcompiler.utils.HTTP.urlHasCorsAllowed;
+import static htmlcompiler.utils.HTTP.urlToByteArray;
+import static htmlcompiler.utils.Json.GSON;
 import static java.nio.file.Files.*;
 
 public enum RepositoryHashes {;

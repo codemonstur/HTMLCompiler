@@ -1,11 +1,9 @@
 package htmlcompiler.commands;
 
-import htmlcompiler.compilers.Compressor;
 import htmlcompiler.compilers.HtmlCompiler;
-import htmlcompiler.compilers.JsCompiler;
 import htmlcompiler.pojos.compile.JsCompressionType;
 import htmlcompiler.pojos.library.LibraryArchive;
-import htmlcompiler.tools.Logger;
+import htmlcompiler.utils.Logger;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -15,7 +13,7 @@ import static htmlcompiler.compilers.TemplateThenCompile.compileDirectories;
 import static htmlcompiler.compilers.TemplateThenCompile.newTemplateThenCompile;
 import static htmlcompiler.pojos.compile.CompilerConfig.readChecksConfiguration;
 import static htmlcompiler.pojos.compile.JsCompressionType.gcc_advanced;
-import static htmlcompiler.tools.Strings.isNullOrEmpty;
+import static htmlcompiler.utils.Strings.isNullOrEmpty;
 
 public enum Compile {;
 
@@ -30,11 +28,11 @@ public enum Compile {;
         public String jsCompressorType;
         public boolean checksEnabled;
         public boolean deprecatedTagsEnabled;
-        public boolean compressionEnabled;
-        public boolean htmlCompressionEnabled;
-        public boolean cssCompressionEnabled;
-        public boolean jsCompressionEnabled;
-        public boolean cacheJsCompression;
+        public boolean compressionEnabled = true;
+        public boolean htmlCompressionEnabled = true;
+        public boolean cssCompressionEnabled = true;
+        public boolean jsCompressionEnabled = true;
+        public boolean cacheJsCompression = true;
 
         public JsCompressionType getJsCompressorType() {
             if (isNullOrEmpty(jsCompressorType)) return gcc_advanced;

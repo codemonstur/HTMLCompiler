@@ -6,8 +6,8 @@ import htmlcompiler.pojos.compile.MoveType;
 import htmlcompiler.pojos.compile.ScriptBag;
 import htmlcompiler.pojos.compile.ScriptType;
 import htmlcompiler.pojos.error.InvalidInput;
-import htmlcompiler.tools.Logger;
-import htmlcompiler.tools.MutableInteger;
+import htmlcompiler.utils.Logger;
+import htmlcompiler.utils.MutableInteger;
 import org.jsoup.nodes.Element;
 
 import java.nio.file.Path;
@@ -18,8 +18,8 @@ import static htmlcompiler.pojos.compile.MoveType.toMoveType;
 import static htmlcompiler.pojos.compile.ScriptType.detectScriptType;
 import static htmlcompiler.pojos.compile.ScriptType.javascript;
 import static htmlcompiler.services.RepositoryVersions.checkVersionLibrary;
-import static htmlcompiler.tools.IO.toLocation;
-import static htmlcompiler.tools.Strings.isNullOrEmpty;
+import static htmlcompiler.utils.IO.toLocation;
+import static htmlcompiler.utils.Strings.isNullOrEmpty;
 
 public enum Script {;
 

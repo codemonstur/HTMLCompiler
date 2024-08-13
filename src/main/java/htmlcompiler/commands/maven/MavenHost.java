@@ -10,7 +10,7 @@ import org.apache.maven.project.MavenProject;
 
 import java.nio.file.Path;
 
-import static htmlcompiler.tools.App.buildMavenTask;
+import static htmlcompiler.utils.App.buildMavenTask;
 
 @Mojo( name = "host" )
 public final class MavenHost extends AbstractMojo {

@@ -1,4 +1,4 @@
-package htmlcompiler.tools;
+package htmlcompiler.utils;
 
 import htmlcompiler.pojos.error.InvalidInput;
 

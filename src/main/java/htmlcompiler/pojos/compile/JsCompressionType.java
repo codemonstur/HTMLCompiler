@@ -2,7 +2,7 @@ package htmlcompiler.pojos.compile;
 
 import htmlcompiler.compilers.Compressor;
 import htmlcompiler.compilers.JsCompiler;
-import htmlcompiler.tools.Logger;
+import htmlcompiler.utils.Logger;
 
 public enum JsCompressionType {
     gcc_simple, gcc_bundle, gcc_whitespace, gcc_advanced, yui;

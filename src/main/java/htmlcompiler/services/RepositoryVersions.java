@@ -3,8 +3,8 @@ package htmlcompiler.services;
 import com.google.gson.reflect.TypeToken;
 import htmlcompiler.pojos.versions.CdnJsResponse;
 import htmlcompiler.pojos.versions.Version;
-import htmlcompiler.tools.HTTP;
-import htmlcompiler.tools.Logger;
+import htmlcompiler.utils.HTTP;
+import htmlcompiler.utils.Logger;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
@@ -20,8 +20,8 @@ import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static htmlcompiler.tools.Filenames.toRelativePath;
-import static htmlcompiler.tools.Json.GSON;
+import static htmlcompiler.utils.Filenames.toRelativePath;
+import static htmlcompiler.utils.Json.GSON;
 import static java.nio.file.Files.*;
 import static java.nio.file.StandardOpenOption.CREATE;
 import static java.util.concurrent.TimeUnit.DAYS;

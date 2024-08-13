@@ -2,7 +2,7 @@ package htmlcompiler.pojos.compile;
 
 import java.nio.file.Path;
 
-import static htmlcompiler.tools.Filenames.toExtension;
+import static htmlcompiler.utils.Filenames.toExtension;
 
 public enum ImageType {
     bmp("image/bmp"),

@@ -4,8 +4,8 @@ import htmlcompiler.compilers.HtmlCompiler;
 import htmlcompiler.compilers.tags.TagVisitor.TailVisitor;
 import htmlcompiler.pojos.compile.StyleType;
 import htmlcompiler.pojos.error.InvalidInput;
-import htmlcompiler.tools.Logger;
-import htmlcompiler.tools.MutableInteger;
+import htmlcompiler.utils.Logger;
+import htmlcompiler.utils.MutableInteger;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.nodes.Node;
@@ -20,8 +20,8 @@ import static htmlcompiler.pojos.compile.ImageType.toMimeType;
 import static htmlcompiler.pojos.compile.StyleType.css;
 import static htmlcompiler.pojos.compile.StyleType.detectStyleType;
 import static htmlcompiler.services.RepositoryVersions.checkVersionLibrary;
-import static htmlcompiler.tools.IO.loadResource;
-import static htmlcompiler.tools.IO.toLocation;
+import static htmlcompiler.utils.IO.loadResource;
+import static htmlcompiler.utils.IO.toLocation;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.nio.file.Files.readAllBytes;
 import static xmlparser.utils.Functions.isNullOrEmpty;
@@ -124,8 +124,8 @@ public enum Link {;
     }
     private static String loadCssUtil(final String cssUtilName) throws InvalidInput {
         try {
-            return loadResource("/css-utils/" + cssUtilName + ".css", UTF_8);
-        } catch (IOException e) {
+            return loadResource("/htmlcompiler/css-utils/" + cssUtilName + ".css", UTF_8);
+        } catch (final IOException e) {
             throw new InvalidInput("CSS util " + cssUtilName + " does not exist", e);
         }
     }

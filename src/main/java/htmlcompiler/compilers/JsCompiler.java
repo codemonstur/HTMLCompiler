@@ -2,7 +2,7 @@ package htmlcompiler.compilers;
 
 import com.googlecode.htmlcompressor.compressor.ClosureJavaScriptCompressor;
 import com.yahoo.platform.yui.compressor.JavaScriptCompressor;
-import htmlcompiler.tools.Logger;
+import htmlcompiler.utils.Logger;
 import org.mozilla.javascript.ErrorReporter;
 import org.mozilla.javascript.EvaluatorException;
 
