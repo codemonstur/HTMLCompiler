@@ -22,11 +22,14 @@ dependencies:
   - repository: de.inetsoftware:jlessc:1.12
   - repository: com.vaadin:vaadin-sass-compiler:0.9.13
   - repository: de.neuland-bfi:jade4j:1.3.2
-  - repository: de.neuland-bfi:pug4j:2.0.4
+  # This library doesn't work, but bob fails to load the older version (2.0.4) because its pom is invalid
+  - repository: de.neuland-bfi:pug4j:2.2.0
   - repository: com.github.codemonstur:simplexml:3.2.0
-  - repository: org.apache.maven:maven-plugin-api:3.8.6
+  - repository: org.apache.maven:maven-core:3.9.6
     scope: provided
-  - repository: org.apache.maven.plugin-tools:maven-plugin-annotations:3.9.0
+  - repository: org.apache.maven:maven-plugin-api:3.9.6
+    scope: provided
+  - repository: org.apache.maven.plugin-tools:maven-plugin-annotations:3.13.1
     scope: provided
   - repository: org.apache.maven:maven-project:3.0-alpha-2
     scope: provided
