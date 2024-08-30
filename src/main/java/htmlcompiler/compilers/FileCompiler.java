@@ -22,18 +22,8 @@ public interface FileCompiler {
 
     private static FileCompiler newHtmlCompiler(final HtmlCompiler html, final HtmlTemplateEngine engine) {
         return new FileCompiler() {
-            public String compile(Path file) throws IOException, InvalidTemplate, InvalidInput {
-                System.out.println("========================================================================");
-                System.out.println(file);
-                System.out.println(Files.readString(file));
-                final var afterTemplateEngine = engine.compile(file);
-                System.out.println("------------------------------------------------------------------------");
-                System.out.println(afterTemplateEngine);
-                System.out.println("------------------------------------------------------------------------");
-                final var finalHtml = html.doctypeCompressCompile(file, afterTemplateEngine);
-                System.out.println(finalHtml);
-                System.out.println("========================================================================");
-                return finalHtml;
+            public String compile(final Path file) throws IOException, InvalidTemplate, InvalidInput {
+                return html.doctypeCompressCompile(file, engine.compile(file));
             }
             public String outputExtension() {
                 return engine.outputExtension();
@@ -42,10 +32,10 @@ public interface FileCompiler {
     }
     private static FileCompiler newScriptCompiler(final Logger logger, final Compressor compressor, final CodeCompiler compiler, final String extension) {
         return new FileCompiler() {
-            public String compile(Path file) throws InvalidTemplate {
+            public String compile(final Path file) throws InvalidTemplate {
                 try {
                     return compressor.compress(compiler.compileCode(file));
-                } catch (Exception e) {
+                } catch (final Exception e) {
                     throw new InvalidTemplate(e);
                 }
             }
