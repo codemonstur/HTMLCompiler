@@ -21,7 +21,7 @@
             <plugin>
                 <groupId>com.github.codemonstur</groupId>
                 <artifactId>htmlcompiler</artifactId>
-                <version>5.7.5</version>
+                <version>5.7.6</version>
                 <executions>
                     <execution><goals><goal>compile</goal></goals></execution>
                 </executions>
