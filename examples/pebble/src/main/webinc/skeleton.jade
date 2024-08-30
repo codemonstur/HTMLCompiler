@@ -1,0 +1,15 @@
+html(lang='en-US')
+  head
+    title Skeleton
+    link(rel='stylesheet', href='https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css')
+    link(rel='stylesheet', href='../webinc/css/style.css', inline, compress)
+    block styles
+    block templates
+
+  body#canvas
+
+    script(src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js')
+
+    script(src='../webinc/js/before.js', inline, compress)
+    block scripts
+    script(src='../webinc/js/after.js', inline, compress)

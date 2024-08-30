@@ -1,0 +1,31 @@
+<project>
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.github.codemonstur</groupId>
+    <artifactId>htmlcompiler-example-pebble</artifactId>
+    <version>1.0</version>
+
+    <name>${project.groupId}:${project.artifactId}</name>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <build>
+        <finalName>${project.artifactId}</finalName>
+
+        <plugins>
+
+            <plugin>
+                <groupId>com.github.codemonstur</groupId>
+                <artifactId>htmlcompiler</artifactId>
+                <version>5.7.4</version>
+                <executions>
+                    <execution><goals><goal>compile</goal></goals></execution>
+                </executions>
+            </plugin>
+
+        </plugins>
+    </build>
+
+</project>

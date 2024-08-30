@@ -9,10 +9,11 @@ import java.net.InetSocketAddress;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
+// You can access compiled HTML files as resources in the jar. I use the JDK HttpServer here to serve it.
 public enum Main {;
 
     public static void main(final String... args) throws IOException {
-        final byte[] page = resourceToString("/webbin/index.html").getBytes(UTF_8);
+        final var page = loadResource("/webbin/index.html");
 
         HttpServer
             .create(new InetSocketAddress("127.0.0.1", 8080), 100)
@@ -24,15 +25,11 @@ public enum Main {;
             .getServer().start();
     }
 
-    private static String resourceToString(final String resource) throws IOException {
-        final StringBuilder sb = new StringBuilder();
+    private static byte[] loadResource(final String resourcePath) throws IOException {
+        final var in = Main.class.getResourceAsStream(resourcePath);
+        if (in == null) throw new FileNotFoundException("Missing resource " + resourcePath);
 
-        try (final BufferedReader br = new BufferedReader(new InputStreamReader(Main.class.getResourceAsStream(resource), UTF_8))) {
-            for (int c = br.read(); c != -1; c = br.read()) {
-                sb.append((char)c);
-            }
-        }
-
-        return sb.toString();
+        try (in) { return in.readAllBytes(); }
     }
+
 }
