@@ -2,24 +2,14 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.github.codemonstur</groupId>
-    <artifactId>htmlcompiler-example</artifactId>
+    <artifactId>htmlcompiler-example-html</artifactId>
     <version>1.0</version>
 
     <name>${project.groupId}:${project.artifactId}</name>
-    <description>An example of how to use the HTML compiler</description>
-
-    <licenses>
-        <license>
-            <name>MIT License</name>
-            <url>https://opensource.org/licenses/MIT</url>
-            <distribution>repo</distribution>
-        </license>
-    </licenses>
-
 
     <properties>
-        <project.requestApiSpecification>src/main/websrc/requests.json</project.requestApiSpecification>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
         <maven.compiler.source>18</maven.compiler.source>
         <maven.compiler.target>18</maven.compiler.target>
         <maven.compiler.release>18</maven.compiler.release>
@@ -31,16 +21,9 @@
             <plugin>
                 <groupId>com.github.codemonstur</groupId>
                 <artifactId>htmlcompiler</artifactId>
-                <version>5.3.0</version>
+                <version>5.7.4</version>
                 <executions>
                     <execution><goals><goal>compile</goal></goals></execution>
-                    <execution>
-                        <id>host</id>
-                        <goals><goal>host</goal></goals>
-                        <configuration>
-                            <requestApiSpecification>${project.requestApiSpecification}</requestApiSpecification>
-                        </configuration>
-                    </execution>
                 </executions>
             </plugin>
 
