@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.github.codemonstur</groupId>
-    <artifactId>htmlcompiler-example-pebble</artifactId>
+    <artifactId>htmlcompiler-example-compile-pebble</artifactId>
     <version>1.0</version>
 
     <name>${project.groupId}:${project.artifactId}</name>

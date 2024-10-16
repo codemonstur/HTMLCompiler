@@ -1,7 +1,6 @@
 package htmlcompiler.compilers;
 
 import com.inet.lib.less.Less;
-import com.vaadin.sass.SassCompiler;
 import com.vaadin.sass.internal.ScssStylesheet;
 import com.vaadin.sass.internal.handler.SCSSDocumentHandler;
 import com.vaadin.sass.internal.handler.SCSSDocumentHandlerImpl;
@@ -18,16 +17,6 @@ import static htmlcompiler.compilers.CodeCompiler.newExternalToolCompiler;
 import static htmlcompiler.utils.Logger.newVaadinLogger;
 
 public enum CssCompiler {;
-
-    public static String compressCssCode(final String code) {
-        try (final var reader = new StringReader(code); final var writer = new StringWriter()) {
-            final CssCompressor compressor = new CssCompressor(reader);
-            compressor.compress(writer, -1);
-            return writer.toString();
-        } catch (final IOException e) {
-            throw new IllegalStateException("IOException on StringReader or StringWriter", e);
-        }
-    }
 
     public static CodeCompiler newStylusCompiler() {
         return newExternalToolCompiler("stylus", ".styl", true, ".css",

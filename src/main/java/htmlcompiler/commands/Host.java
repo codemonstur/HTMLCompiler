@@ -2,7 +2,7 @@ package htmlcompiler.commands;
 
 import htmlcompiler.compilers.TemplateThenCompile;
 import htmlcompiler.compilers.HtmlCompiler;
-import htmlcompiler.pojos.compile.JsCompressionType;
+import htmlcompiler.minify.JsMinifyEngine;
 import htmlcompiler.pojos.compile.Task;
 import htmlcompiler.pojos.library.LibraryArchive;
 import htmlcompiler.services.LoopingSingleThread;
@@ -22,8 +22,8 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import static htmlcompiler.compilers.TemplateThenCompile.newTemplateThenCompile;
+import static htmlcompiler.minify.JsMinifyEngine.gcc_simple;
 import static htmlcompiler.pojos.compile.CompilerConfig.readChecksConfiguration;
-import static htmlcompiler.pojos.compile.JsCompressionType.gcc_advanced;
 import static htmlcompiler.services.DirectoryWatcher.newDirectoryWatcher;
 import static htmlcompiler.services.Http.newHttpServer;
 import static htmlcompiler.utils.Filenames.toRelativePath;
@@ -60,9 +60,9 @@ public enum Host {;
         public boolean jsCompressionEnabled;
         public boolean cacheJsCompression;
 
-        public JsCompressionType getJsCompressorType() {
-            if (isNullOrEmpty(jsCompressorType)) return gcc_advanced;
-            return JsCompressionType.valueOf(jsCompressorType.replace('-', '_'));
+        public JsMinifyEngine getJsCompressorType() {
+            if (isNullOrEmpty(jsCompressorType)) return gcc_simple;
+            return JsMinifyEngine.valueOf(jsCompressorType.replace('-', '_'));
         }
     }
 
