@@ -2,6 +2,7 @@ package htmlcompiler.compilers;
 
 import com.googlecode.htmlcompressor.compressor.ClosureJavaScriptCompressor;
 import com.yahoo.platform.yui.compressor.JavaScriptCompressor;
+import htmlcompiler.minify.Minifier;
 import htmlcompiler.utils.Logger;
 import org.mozilla.javascript.ErrorReporter;
 import org.mozilla.javascript.EvaluatorException;
@@ -14,48 +15,6 @@ import static com.google.javascript.jscomp.CompilationLevel.*;
 import static htmlcompiler.compilers.CodeCompiler.newExternalToolCompiler;
 
 public enum JsCompiler {;
-
-    public static String compressJsWithGccSimple(final String code) {
-        final var compress = new ClosureJavaScriptCompressor(SIMPLE_OPTIMIZATIONS);
-        return compress.compress(code);
-    }
-    public static String compressJsWithGccWhitespace(final String code) {
-        final var compress = new ClosureJavaScriptCompressor(WHITESPACE_ONLY);
-        return compress.compress(code);
-    }
-    public static String compressJsWithGccBundle(final String code) {
-        final var compress = new ClosureJavaScriptCompressor(BUNDLE);
-        return compress.compress(code);
-    }
-    public static String compressJsWithGccAdvanced(final String code) {
-        final var compress = new ClosureJavaScriptCompressor(ADVANCED_OPTIMIZATIONS);
-        return compress.compress(code);
-    }
-
-    public static Compressor newCompressJsWithYui(final Logger log) {
-        return new Compressor() {
-            @Override public String compress(final String code) {
-                try {
-                    final JavaScriptCompressor compressor = new JavaScriptCompressor(new StringReader(code), new ErrorReporter() {
-                        public void warning(final String message, final String sourceName, final int line, final String lineSource, final int lineOffset) {
-                            log.warn("In file " + sourceName + " on line " + line + " offset " + lineOffset + ": " + message);
-                        }
-                        public void error(final String message, final String sourceName, final int line, final String lineSource, final int lineOffset) {
-                            log.error("In file " + sourceName + " on line " + line + " offset " + lineOffset + ": " + message);
-                        }
-                        public EvaluatorException runtimeError(final String message, final String sourceName, final int line, final String lineSource, final int lineOffset) {
-                            return new EvaluatorException(message, sourceName, line, lineSource, lineOffset);
-                        }
-                    });
-                    final StringWriter writer = new StringWriter();
-                    compressor.compress(writer, -1, true, false, false, false);
-                    return writer.toString();
-                } catch (final IOException e) {
-                    throw new IllegalStateException("IOException on internal StringWriter", e);
-                }
-            }
-        };
-    }
 
     public static CodeCompiler newTypescriptCompiler() {
         return newExternalToolCompiler("tsc", ".tsc",

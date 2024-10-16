@@ -1,5 +1,7 @@
 package htmlcompiler.compilers;
 
+import htmlcompiler.minify.CssMinifyEngine;
+import htmlcompiler.minify.Minifier;
 import htmlcompiler.pojos.error.InvalidInput;
 import htmlcompiler.pojos.error.InvalidTemplate;
 import htmlcompiler.utils.Logger;
@@ -30,11 +32,11 @@ public interface FileCompiler {
             }
         };
     }
-    private static FileCompiler newScriptCompiler(final Logger logger, final Compressor compressor, final CodeCompiler compiler, final String extension) {
+    private static FileCompiler newScriptCompiler(final Logger logger, final Minifier compressor, final CodeCompiler compiler, final String extension) {
         return new FileCompiler() {
             public String compile(final Path file) throws InvalidTemplate {
                 try {
-                    return compressor.compress(compiler.compileCode(file));
+                    return compressor.minify(compiler.compileCode(file));
                 } catch (final Exception e) {
                     throw new InvalidTemplate(e);
                 }
@@ -54,14 +56,14 @@ public interface FileCompiler {
             , entry(".htm", newHtmlCompiler(html, Files::readString))
             , entry(".html", newHtmlCompiler(html, Files::readString))
             , entry(".hct", newHtmlCompiler(html, Files::readString))
-            , entry(".css", newScriptCompiler(logger, CssCompiler::compressCssCode, newNopCompiler(), ".min.css"))
-            , entry(".scss", newScriptCompiler(logger, CssCompiler::compressCssCode, newScssCompiler(logger), ".min.css"))
-            , entry(".stylus", newScriptCompiler(logger, CssCompiler::compressCssCode, newStylusCompiler(), ".min.css"))
-            , entry(".js", newScriptCompiler(logger, html.jsCompressor, newNopCompiler(), ".min.js"))
-            , entry(".jspp", newScriptCompiler(logger, html.jsCompressor, newJsppCompiler(), ".min.js"))
-            , entry(".js++", newScriptCompiler(logger, html.jsCompressor, newJsppCompiler(), ".min.js"))
-            , entry(".dart", newScriptCompiler(logger, html.jsCompressor, newDartCompiler(), ".min.js"))
-            , entry(".ts", newScriptCompiler(logger, html.jsCompressor, newTypescriptCompiler(), ".min.js"))
+            , entry(".css", newScriptCompiler(logger, CssMinifyEngine::minifyCssWithYui, newNopCompiler(), ".min.css"))
+            , entry(".scss", newScriptCompiler(logger, CssMinifyEngine::minifyCssWithYui, newScssCompiler(logger), ".min.css"))
+            , entry(".stylus", newScriptCompiler(logger, CssMinifyEngine::minifyCssWithYui, newStylusCompiler(), ".min.css"))
+            , entry(".js", newScriptCompiler(logger, html.jsMinifier, newNopCompiler(), ".min.js"))
+            , entry(".jspp", newScriptCompiler(logger, html.jsMinifier, newJsppCompiler(), ".min.js"))
+            , entry(".js++", newScriptCompiler(logger, html.jsMinifier, newJsppCompiler(), ".min.js"))
+            , entry(".dart", newScriptCompiler(logger, html.jsMinifier, newDartCompiler(), ".min.js"))
+            , entry(".ts", newScriptCompiler(logger, html.jsMinifier, newTypescriptCompiler(), ".min.js"))
             );
     }
 

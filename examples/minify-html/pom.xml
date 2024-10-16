@@ -1,0 +1,82 @@
+<project>
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.github.codemonstur</groupId>
+    <artifactId>htmlcompiler-example-minify-html</artifactId>
+    <version>1.0</version>
+
+    <name>${project.groupId}:${project.artifactId}</name>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <maven.compiler.source>18</maven.compiler.source>
+        <maven.compiler.target>18</maven.compiler.target>
+        <maven.compiler.release>18</maven.compiler.release>
+    </properties>
+
+    <build>
+        <plugins>
+
+            <plugin>
+                <groupId>com.github.codemonstur</groupId>
+                <artifactId>htmlcompiler</artifactId>
+                <version>5.8.0</version>
+                <executions>
+                    <execution>
+                        <goals><goal>minify</goal></goals>
+                        <configuration>
+                            <!-- default: hazendaz, options: [hazendaz] -->
+                            <htmlMinifyEngine>hazendaz</htmlMinifyEngine>
+                            <!-- default: yui, options: [yui, logicsquad] -->
+                            <cssMinifyEngine>yui</cssMinifyEngine>
+                            <!-- default: gcc_simple, options: [gcc_simple, gcc_bundle, gcc_whitespace, gcc_advanced, yui, logicsquad] -->
+                            <jsMinifyEngine>gcc_simple</jsMinifyEngine>
+                            <!-- any directory relative to the project base dir. default ${target}/classes -->
+                            <targetDir>target</targetDir>
+                            <!-- The list of file paths to process, default empty, relative to the `targetDir`.
+
+                                 The content of the files will be replaced with the new minified content. -->
+                            <files>
+                                <file>classes/individual/index.html</file>
+                                <file>classes/individual/example.js</file>
+                            </files>
+                            <!-- The list of directories to recursively walk and process all files in,
+                                 Default empty, relative to the `targetDir`.
+
+                                 The content of the files will be replaced with the new minified content.
+
+                                 Will skip files ending in .min.css and .min.js.
+                            -->
+                            <directories>
+                                <dir>classes/whole-dir</dir>
+                            </directories>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>2.4.3</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals><goal>shade</goal></goals>
+                        <configuration>
+                            <createDependencyReducedPom>false</createDependencyReducedPom>
+                            <transformers>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <mainClass>example.Main</mainClass>
+                                </transformer>
+                            </transformers>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+        </plugins>
+    </build>
+
+</project>

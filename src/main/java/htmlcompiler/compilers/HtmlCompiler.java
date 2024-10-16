@@ -1,9 +1,11 @@
 package htmlcompiler.compilers;
 
-import com.googlecode.htmlcompressor.compressor.HtmlCompressor;
 import htmlcompiler.compilers.tags.TagVisitor;
+import htmlcompiler.minify.CssMinifyEngine;
+import htmlcompiler.minify.HtmlMinifyEngine;
+import htmlcompiler.minify.JsMinifyEngine;
+import htmlcompiler.minify.Minifier;
 import htmlcompiler.pojos.compile.CompilerConfig;
-import htmlcompiler.pojos.compile.JsCompressionType;
 import htmlcompiler.pojos.compile.ScriptBag;
 import htmlcompiler.pojos.error.InvalidInput;
 import htmlcompiler.pojos.library.LibraryArchive;
@@ -41,10 +43,10 @@ import static xmlparser.utils.Functions.isNullOrEmpty;
 public final class HtmlCompiler {
 
     public final Logger log;
-    public final HtmlCompressor htmlCompressor;
-    public final Compressor cssCompressor;
-    public final Compressor jsCompressor;
-    public final JsCompressionType jsCompressionType;
+    public final Minifier htmlMinifier;
+    public final Minifier cssMinifier;
+    public final Minifier jsMinifier;
+    public final JsMinifyEngine jsMinifyEngine;
     public final Map<String, TagVisitor> processors;
     public final Map<String, CompilerConfig> configs;
     public final Map<String, MutableInteger> linkCounts = new HashMap<>();
@@ -58,7 +60,7 @@ public final class HtmlCompiler {
     public final boolean deprecatedTagsEnabled;
     public final boolean cachedJsCompression;
 
-    public HtmlCompiler(final Logger log, final JsCompressionType jsCompressionType, final LibraryArchive archive,
+    public HtmlCompiler(final Logger log, final JsMinifyEngine jsMinifyEngine, final LibraryArchive archive,
                         final Map<String, CompilerConfig> configs, final boolean checksEnabled,
                         final boolean compressionEnabled, final boolean deprecatedTagsEnabled,
                         final boolean htmlCompressionEnabled, final boolean cssCompressionEnabled,
@@ -72,18 +74,11 @@ public final class HtmlCompiler {
         this.jsCompressionEnabled = jsCompressionEnabled;
         this.deprecatedTagsEnabled = deprecatedTagsEnabled;
         this.cachedJsCompression = cachedJsCompression;
-        this.htmlCompressor = newDefaultHtmlCompressor();
-        this.cssCompressor = CssCompiler::compressCssCode;
-        this.jsCompressor = jsCompressionType.toCompressor(log);
-        this.jsCompressionType = jsCompressionType;
+        this.htmlMinifier = HtmlMinifyEngine.hazendaz.toMinifier();
+        this.cssMinifier = CssMinifyEngine.yui.toMinifier();
+        this.jsMinifier = jsMinifyEngine.toMinifier(log);
+        this.jsMinifyEngine = jsMinifyEngine;
         this.processors = newDefaultTagProcessors(log, this, archive);
-    }
-
-    private static HtmlCompressor newDefaultHtmlCompressor() {
-        final HtmlCompressor compressor = new HtmlCompressor();
-        compressor.setRemoveComments(true);
-        compressor.setRemoveIntertagSpaces(true);
-        return compressor;
     }
 
     private static Map<String, TagVisitor> newDefaultTagProcessors(final Logger log, final HtmlCompiler html
@@ -110,14 +105,14 @@ public final class HtmlCompiler {
     }
 
     public String compressHtml(final String code) {
-        return compressionEnabled && htmlCompressionEnabled ? htmlCompressor.compress(code) : code;
+        return compressionEnabled && htmlCompressionEnabled ? htmlMinifier.minify(code) : code;
     }
     public String compressCss(final String code) {
-        return compressionEnabled && cssCompressionEnabled ? cssCompressor.compress(code) : code;
+        return compressionEnabled && cssCompressionEnabled ? cssMinifier.minify(code) : code;
     }
     public String compressJs(final String code) {
         if (!compressionEnabled || !jsCompressionEnabled) return code;
-        return cached(cachedJsCompression, jsCompressionType, code, jsCompressor);
+        return cached(cachedJsCompression, jsMinifyEngine, code, jsMinifier);
     }
 
     public String compileHtmlCode(final Path file, final String content) throws InvalidInput {
