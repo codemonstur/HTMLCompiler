@@ -47,12 +47,12 @@ public interface FileCompiler {
         };
     }
 
-    public static Map<String, FileCompiler> newFileCompilerMap(final Logger logger, final HtmlCompiler html,
-                                                               final Map<String, String> context) {
+    public static Map<String, FileCompiler> newFileCompilerMap(final Logger logger
+            , final String baseDir, final HtmlCompiler html, final Map<String, String> context) {
         return Map.ofEntries
             ( entry(".pebble", newHtmlCompiler(html, newPebbleEngine(context)))
             , entry(".jade", newHtmlCompiler(html, newJade4jEngine(context)))
-            , entry(".pug", newHtmlCompiler(html, newPug4jEngine(context)))
+            , entry(".pug", newHtmlCompiler(html, newPug4jEngine(baseDir, context)))
             , entry(".htm", newHtmlCompiler(html, Files::readString))
             , entry(".html", newHtmlCompiler(html, Files::readString))
             , entry(".hct", newHtmlCompiler(html, Files::readString))

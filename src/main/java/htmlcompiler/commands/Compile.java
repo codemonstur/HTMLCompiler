@@ -46,7 +46,7 @@ public enum Compile {;
         final var html = new HtmlCompiler(log, config.getJsCompressorType(), libs, checksSettings, config.checksEnabled,
                 config.compressionEnabled, config.deprecatedTagsEnabled, config.htmlCompressionEnabled,
                 config.cssCompressionEnabled, config.jsCompressionEnabled, config.cacheJsCompression);
-        final var ttc = newTemplateThenCompile(log, config.inputDir, config.outputDir, config.replaceExtension, config.variables, html);
+        final var ttc = newTemplateThenCompile(log, config.baseDir.toString(), config.inputDir, config.outputDir, config.replaceExtension, config.variables, html);
 
         compileDirectories(config.inputDir, ttc, config.recursive);
     }
