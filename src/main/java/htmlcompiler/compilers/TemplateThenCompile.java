@@ -22,10 +22,10 @@ public interface TemplateThenCompile {
 
     void compileTemplate(final Path inFile) throws Exception;
 
-    public static TemplateThenCompile newTemplateThenCompile(final Logger logger, final Path inputDir
+    public static TemplateThenCompile newTemplateThenCompile(final Logger logger, final String baseDir, final Path inputDir
             , final Path outputDir, final boolean replaceExtension, final Map<String, String> variables
             , final HtmlCompiler html) {
-        final var compilers = newFileCompilerMap(logger, html, variables);
+        final var compilers = newFileCompilerMap(logger, baseDir, html, variables);
 
         return inFile -> {
             if (inFile == null || !isRegularFile(inFile)) return;

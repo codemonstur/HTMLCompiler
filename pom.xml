@@ -41,6 +41,7 @@
         <maven.version>3.6.3</maven.version>
 
         <version.library.jsoup>1.18.1</version.library.jsoup>
+        <version.library.jfiveparse>1.1.1</version.library.jfiveparse>
         <version.library.gson>2.11.0</version.library.gson>
         <version.library.common-io>2.17.0</version.library.common-io>
         <version.library.yuicompressor>2.4.8</version.library.yuicompressor>
@@ -170,6 +171,11 @@
             <groupId>org.jsoup</groupId>
             <artifactId>jsoup</artifactId>
             <version>${version.library.jsoup}</version>
+        </dependency>
+        <dependency>
+            <groupId>ch.digitalfondue.jfiveparse</groupId>
+            <artifactId>jfiveparse</artifactId>
+            <version>${version.library.jfiveparse}</version>
         </dependency>
         <dependency>
             <groupId>com.google.code.gson</groupId>
