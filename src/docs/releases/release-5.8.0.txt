@@ -1,0 +1,7 @@
+5.8.0
+
+Updated dependency versions
+Added threadsafe setting
+Potential fixes for using pug
+Added minify command
+Added example for minify command
