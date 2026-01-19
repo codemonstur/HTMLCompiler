@@ -13,8 +13,8 @@ import static util.Factory.newHtmlCompiler;
 public class TestCompression {
 
     private static final String html_output_compress_html =
-        "<!DOCTYPE html><html><head><script type=\"text/html\"><li><a href=\"/tour/{{>id}}\">{{&gt;" +
-        "title}}</a></li><b>Hello</b></script></head><body></body></html>";
+        "<!DOCTYPE html><html><head><script type=\"text/html\"><li><a href=\"/tour/{{ id }}\">{{ " +
+        "title }}</a></li><b>Hello</b></script></head><body></body></html>";
 
     @Test
     public void compressHtml() throws IOException, InvalidInput {

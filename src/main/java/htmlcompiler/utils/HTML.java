@@ -1,5 +1,7 @@
 package htmlcompiler.utils;
 
+import com.googlecode.htmlcompressor.compressor.HtmlCompressor;
+
 import java.util.Map;
 import java.util.Set;
 
@@ -7,6 +9,14 @@ import static java.util.Map.entry;
 import static java.util.Map.ofEntries;
 
 public enum HTML {;
+    public static final HtmlCompressor HTML_COMPRESSOR = newDefaultHtmlCompressor();
+
+    private static HtmlCompressor newDefaultHtmlCompressor() {
+        final HtmlCompressor compressor = new HtmlCompressor();
+        compressor.setRemoveComments(true);
+        compressor.setRemoveIntertagSpaces(true);
+        return compressor;
+    }
 
     public static final Set<String> known_tags = Set.of("a", "abbr", "address", "area", "article", "aside",
         "audio", "b", "base", "bdi", "bdo", "blockquote", "body", "br", "button", "canvas", "caption", "svg",

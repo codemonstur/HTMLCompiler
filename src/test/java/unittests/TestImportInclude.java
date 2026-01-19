@@ -14,7 +14,7 @@ public class TestImportInclude {
 
     private static final String html_output_with_footer =
         "<!DOCTYPE html><html lang=\"en\"><head><title>TestApp import</title></head><body><footer><div " +
-        "class=\"pull-right\"> Unit test </div><div class=\"clearfix\"></div></footer></body></html>";
+        "class=\"pull-right\">Unit test</div><div class=\"clearfix\"></div></footer></body></html>";
 
     @Test
     public void compileImport() throws IOException, InvalidInput {
