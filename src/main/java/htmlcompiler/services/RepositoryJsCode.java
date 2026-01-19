@@ -1,7 +1,7 @@
 package htmlcompiler.services;
 
-import htmlcompiler.compilers.Compressor;
-import htmlcompiler.pojos.compile.JsCompressionType;
+import htmlcompiler.minify.JsMinifyEngine;
+import htmlcompiler.minify.Minifier;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -19,8 +19,8 @@ import static java.util.concurrent.TimeUnit.DAYS;
 
 public enum RepositoryJsCode {;
 
-    public static String cached(final boolean enabled, final JsCompressionType type, final String code, final Compressor compressor) {
-        if (!enabled) return compressor.compress(code);
+    public static String cached(final boolean enabled, final JsMinifyEngine type, final String code, final Minifier minifier) {
+        if (!enabled) return minifier.minify(code);
 
         try {
             final String key = encodeHex(sha256(code, UTF_8));
@@ -28,14 +28,14 @@ public enum RepositoryJsCode {;
             if (isRegularFile(path) && !isOlderThanOneDay(path)) {
                 return Files.readString(path, UTF_8);
             } else {
-                final String compressedCode = compressor.compress(code);
+                final String compressedCode = minifier.minify(code);
                 Files.createDirectories(path.getParent());
                 Files.writeString(path, compressedCode, UTF_8, CREATE, TRUNCATE_EXISTING);
                 return compressedCode;
             }
         } catch (final IOException e) {
             e.printStackTrace();
-            return compressor.compress(code);
+            return minifier.minify(code);
         }
     }
 
