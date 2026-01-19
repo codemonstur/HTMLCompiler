@@ -3,7 +3,7 @@
 
     <groupId>com.github.codemonstur</groupId>
     <artifactId>htmlcompiler</artifactId>
-    <version>5.7.6</version>
+    <version>5.7.7</version>
     <packaging>maven-plugin</packaging>
 
     <name>${project.groupId}:${project.artifactId}</name>
@@ -39,19 +39,19 @@
         <maven.compiler.target>17</maven.compiler.target>
         <maven.compiler.release>17</maven.compiler.release>
 
-        <version.library.jsoup>1.18.1</version.library.jsoup>
-        <version.library.gson>2.11.0</version.library.gson>
-        <version.library.common-io>2.16.1</version.library.common-io>
+        <version.library.jsoup>1.22.1</version.library.jsoup>
+        <version.library.gson>2.13.2</version.library.gson>
+        <version.library.common-io>2.21.0</version.library.common-io>
         <version.library.yuicompressor>2.4.8</version.library.yuicompressor>
-        <version.library.htmlcompressor>2.0.1</version.library.htmlcompressor>
-        <version.library.jlessc>1.12</version.library.jlessc>
+        <version.library.htmlcompressor>2.3.1</version.library.htmlcompressor>
+        <version.library.jlessc>1.15</version.library.jlessc>
         <version.library.vaadin-sass>0.9.13</version.library.vaadin-sass>
-        <version.library.pebble>3.2.2</version.library.pebble>
+        <version.library.pebble>4.1.0</version.library.pebble>
         <version.library.jade4j>1.3.2</version.library.jade4j>
         <!-- Newer versions don't work: https://github.com/neuland/pug4j/issues/29 -->
         <version.library.pug4j>2.0.4</version.library.pug4j>
-        <version.library.simplexml>3.2.0</version.library.simplexml>
-        <version.library.closure-compiler>v20240317</version.library.closure-compiler>
+        <version.library.simplexml>3.3.0</version.library.simplexml>
+        <version.library.closure-compiler>v20260114</version.library.closure-compiler>
         <version.library.maven>3.9.6</version.library.maven>
         <version.library.maven-annotations>3.13.1</version.library.maven-annotations>
         <version.library.cssparser>0.9.30</version.library.cssparser>

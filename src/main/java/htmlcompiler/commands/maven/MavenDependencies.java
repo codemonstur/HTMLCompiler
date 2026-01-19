@@ -7,7 +7,7 @@ import org.apache.maven.plugins.annotations.Mojo;
 
 import static htmlcompiler.utils.App.buildMavenTask;
 
-@Mojo( name = "dependencies" )
+@Mojo( name = "dependencies", threadSafe = true )
 public final class MavenDependencies extends AbstractMojo {
 
     @Override

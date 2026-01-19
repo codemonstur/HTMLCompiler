@@ -11,7 +11,7 @@ import org.apache.maven.project.MavenProject;
 import static htmlcompiler.utils.App.buildMavenTask;
 import static org.apache.maven.plugins.annotations.LifecyclePhase.GENERATE_RESOURCES;
 
-@Mojo( defaultPhase = GENERATE_RESOURCES, name = "compile" )
+@Mojo( defaultPhase = GENERATE_RESOURCES, name = "compile", threadSafe = true )
 public final class MavenCompile extends AbstractMojo {
 
     @Parameter(defaultValue = "${project}", readonly = true)
