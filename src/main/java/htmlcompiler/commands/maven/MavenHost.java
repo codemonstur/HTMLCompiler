@@ -12,7 +12,7 @@ import java.nio.file.Path;
 
 import static htmlcompiler.utils.App.buildMavenTask;
 
-@Mojo( name = "host" )
+@Mojo( name = "host", threadSafe = true )
 public final class MavenHost extends AbstractMojo {
 
     @Parameter(defaultValue = "${project}", readonly = true)
