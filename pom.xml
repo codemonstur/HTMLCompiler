@@ -40,7 +40,7 @@
         <maven.compiler.release>17</maven.compiler.release>
         <maven.version>3.6.3</maven.version>
 
-        <version.library.jsoup>1.22.1</version.library.jsoup>
+        <version.library.jsoup>1.23.1</version.library.jsoup>
         <version.library.gson>2.13.2</version.library.gson>
         <version.library.common-io>2.21.0</version.library.common-io>
         <version.library.yuicompressor>2.4.8</version.library.yuicompressor>
