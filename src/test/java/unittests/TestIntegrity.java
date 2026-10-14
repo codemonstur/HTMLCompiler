@@ -15,7 +15,7 @@ public class TestIntegrity {
     private static final String
             html_output_integrity_default = "<!DOCTYPE html><html><head><title>TestApp html</title></head><body><script src=\"https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js\" integrity=\"sha384-1H217gwSVyLSIfaLxHbE7dRb3v4mYCKbpQvzx0cegeju1MVsGrX5xXxAvs/HgeFs\" crossorigin=\"anonymous\" referrerpolicy=\"no-referrer\"></script></body></html>",
             html_output_integrity_disable = "<!DOCTYPE html><html><head><title>TestApp html</title><script async defer src=\"https://apis.google.com/js/platform.js\"></script></head><body></body></html>",
-            html_output_integrity_force = "<!DOCTYPE html><html><head><title>TestApp html</title><script src=\"https://www.google.com/recaptcha/api.js\" integrity=\"sha384-6gpW0woUJbjZ7YRobEpSxb7R3kPgRAh0kwaV9RdFRobzuN0uNBMKdr75pg8T0Hrf\" crossorigin=\"anonymous\" referrerpolicy=\"no-referrer\"></script></head><body></body></html>";
+            html_output_integrity_force = "<!DOCTYPE html><html><head><title>TestApp html</title><script src=\"https://www.google.com/recaptcha/api.js\" integrity=\"sha384-ehbJYF277zAUkSr91XXb7CvUNHttAN7U2YlYHG1ojhA3oUCCoI2AFTy+ZaM2A5Le\" crossorigin=\"anonymous\" referrerpolicy=\"no-referrer\"></script></head><body></body></html>";
 
     @Test
     public void compileIntegrityDefault() throws IOException, InvalidInput {
