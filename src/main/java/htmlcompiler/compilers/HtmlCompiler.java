@@ -33,6 +33,7 @@ import static htmlcompiler.compilers.tags.Include.newIncludeVisitor;
 import static htmlcompiler.compilers.tags.Library.newLibraryVisitor;
 import static htmlcompiler.compilers.tags.Link.newLinkVisitor;
 import static htmlcompiler.compilers.tags.Meta.newMetaVisitor;
+import static htmlcompiler.compilers.tags.Script.collectMovedScript;
 import static htmlcompiler.compilers.tags.Script.newScriptVisitor;
 import static htmlcompiler.compilers.tags.Style.newStyleVisitor;
 import static htmlcompiler.compilers.tags.TagVisitor.NOOP;
@@ -49,8 +50,9 @@ public final class HtmlCompiler {
     public final JsMinifyEngine jsMinifyEngine;
     public final Map<String, TagVisitor> processors;
     public final Map<String, CompilerConfig> configs;
-    public final Map<String, MutableInteger> linkCounts = new HashMap<>();
-    public final Map<String, MutableInteger> cssUtils = new HashMap<>();
+    public Map<String, MutableInteger> linkCounts = new HashMap<>();
+    public Map<String, MutableInteger> cssUtils = new HashMap<>();
+    public ScriptBag scripts = new ScriptBag();
 
     public final boolean checksEnabled;
     public final boolean compressionEnabled;
@@ -83,15 +85,14 @@ public final class HtmlCompiler {
 
     private static Map<String, TagVisitor> newDefaultTagProcessors(final Logger log, final HtmlCompiler html
             , final LibraryArchive archive) {
-        final ScriptBag scripts = new ScriptBag();
         final Map<String, TagVisitor> processors = new HashMap<>();
         processors.put("style", newStyleVisitor(log, html));
         processors.put("link", newLinkVisitor(log, html));
         processors.put("img", newImageVisitor(html));
-        processors.put("script", newScriptVisitor(log, html, scripts));
+        processors.put("script", newScriptVisitor(log, html));
         if (html.deprecatedTagsEnabled) {
-            processors.put("body", newBodyVisitor(scripts));
-            processors.put("head", newHeadVisitor(scripts));
+            processors.put("body", newBodyVisitor(html));
+            processors.put("head", newHeadVisitor(html));
             processors.put("import", newImportVisitor(html));
             processors.put("include", newIncludeVisitor(html));
             processors.put("library", newLibraryVisitor(archive));
@@ -126,71 +127,105 @@ public final class HtmlCompiler {
     private Element compileAndValidateHtml(final Path file, final Element element) throws InvalidInput {
         final var config = findConfigFor(file, configs);
 
-        this.linkCounts.clear();
-
         final List<Exception> errors = new ArrayList<>();
-        element.traverse(new NodeVisitor() {
-            public void head(final Node node, final int depth) {
-                if (node instanceof final Element elem) {
-                    try {
-                        processors.getOrDefault(node.nodeName(), NOOP).head(config, file, elem, depth);
-                    } catch (final Exception e) {
-                        errors.add(e);
-                    }
-                }
-            }
-            public void tail(final Node node, final int depth) {
-                if (node instanceof final Element elem) {
-                    try {
-                        processors.getOrDefault(node.nodeName(), NOOP).tail(config, file, elem, depth);
-                    } catch (final Exception e) {
-                        errors.add(e);
-                    }
-                }
-            }
-        });
-        element.select("*[htmlcompiler=delete-me]").remove();
-
-        linkCounts.forEach((link, count) -> {
-            if (count.getValue() > 1)
-                log.warn("File " + toRelativePath(file) + " contains " + count.getValue() + " entries to " + toRelativePath(link));
-        });
-        cssUtils.forEach((util, count) -> {
-            if (count.getValue() > 1)
-                log.warn("CSS-util " + util + " is imported more than once");
-        });
-
-        if (checksEnabled) {
-            final var checks = newJsoupCheckList(config).addAllEnabled().build();
+        final ScriptBag previousScripts = scripts;
+        final Map<String, MutableInteger> previousLinkCounts = linkCounts;
+        final Map<String, MutableInteger> previousCssUtils = cssUtils;
+        scripts = new ScriptBag();
+        linkCounts = new HashMap<>();
+        cssUtils = new HashMap<>();
+        try {
             element.traverse(new NodeVisitor() {
                 public void head(final Node node, final int depth) {
-                    if (node instanceof final Element element) {
-                        for (final var check : checks) check.checkElement(log, config, file, element);
-                        for (final var siblings : config.validator.siblingAttributes.entrySet()) {
-                            if (!isNullOrEmpty(element.attr(siblings.getKey())) && isNullOrEmpty(element.attr(siblings.getValue())))
-                                log.warn("File " + toRelativePath(file) + " has a tag '" + element.tagName() + "' with an attribute '" + siblings.getKey() + "' but not '" + siblings.getValue() + "'");
-                        }
-                    }
-                    if (node instanceof TextNode) {
-                        final var element = (Element) node.parent();
-                        for (final String attribute : config.validator.textNodeParentsHaveAttributes) {
-                            if (isNullOrEmpty(element.attr(attribute)))
-                                log.warn("File " + toRelativePath(file) + " contains a text node '" + ((TextNode) node).text() + "' with missing parent attribute '" + attribute + "'");
+                    if (node instanceof final Element elem
+                            && "script".equals(elem.nodeName()) && elem.hasAttr("move")) {
+                        try {
+                            collectMovedScript(elem, config, file, HtmlCompiler.this);
+                        } catch (final Exception e) {
+                            errors.add(e);
                         }
                     }
                 }
                 public void tail(final Node node, final int depth) {}
             });
-        }
 
-        for (final Exception e : errors) {
-            log.warn(e.getClass().getSimpleName() + ": " + e.getMessage());
-        }
-        if (!errors.isEmpty()) {
-            throw new InvalidInput("HTML failed to compile, fix errors first", errors.get(0));
-        }
+            element.traverse(new NodeVisitor() {
+                public void head(final Node node, final int depth) {
+                    if (node instanceof final Element elem) {
+                        try {
+                            processors.getOrDefault(node.nodeName(), NOOP).head(config, file, elem, depth);
+                        } catch (final Exception e) {
+                            errors.add(e);
+                        }
+                    }
+                }
+                public void tail(final Node node, final int depth) {
+                    if (node instanceof final Element elem) {
+                        try {
+                            processors.getOrDefault(node.nodeName(), NOOP).tail(config, file, elem, depth);
+                        } catch (final Exception e) {
+                            errors.add(e);
+                        }
+                    }
+                }
+            });
+            element.select("*[htmlcompiler=delete-me]").remove();
 
-        return element;
+            linkCounts.forEach((link, count) -> {
+                if (count.getValue() > 1)
+                    log.warn("File " + toRelativePath(file) + " contains " + count.getValue() + " entries to " + toRelativePath(link));
+            });
+            cssUtils.forEach((util, count) -> {
+                if (count.getValue() > 1)
+                    log.warn("CSS-util " + util + " is imported more than once");
+            });
+
+            if (checksEnabled) {
+                final var checks = newJsoupCheckList(config).addAllEnabled().build();
+                element.traverse(new NodeVisitor() {
+                    public void head(final Node node, final int depth) {
+                        if (node instanceof final Element element) {
+                            for (final var check : checks) check.checkElement(log, config, file, element);
+                            for (final var siblings : config.validator().siblingAttributes().entrySet()) {
+                                if (!isNullOrEmpty(element.attr(siblings.getKey())) && isNullOrEmpty(element.attr(siblings.getValue())))
+                                    log.warn("File " + toRelativePath(file) + " has a tag '" + element.tagName() + "' with an attribute '" + siblings.getKey() + "' but not '" + siblings.getValue() + "'");
+                            }
+                        }
+                        if (node instanceof TextNode) {
+                            final var element = (Element) node.parent();
+                            for (final String attribute : config.validator().textNodeParentsHaveAttributes()) {
+                                if (isNullOrEmpty(element.attr(attribute)))
+                                    log.warn("File " + toRelativePath(file) + " contains a text node '" + ((TextNode) node).text() + "' with missing parent attribute '" + attribute + "'");
+                            }
+                        }
+                    }
+                    public void tail(final Node node, final int depth) {}
+                });
+            }
+
+            for (final Exception e : errors) {
+                log.warn(e.getClass().getSimpleName() + ": " + e.getMessage());
+            }
+            if (!errors.isEmpty()) {
+                throw new InvalidInput("HTML failed to compile, fix errors first", errors.get(0));
+            }
+
+            return element;
+        } finally {
+            if (hasUnmovedScripts())
+                log.warn("File " + toRelativePath(file)
+                    + " moves scripts to the head or body, but no matching <head>/<body> tag was found");
+            scripts = previousScripts;
+            linkCounts = previousLinkCounts;
+            cssUtils = previousCssUtils;
+        }
+    }
+
+    private boolean hasUnmovedScripts() {
+        return !scripts.getScriptAtHeadStart().isEmpty()
+            || !scripts.getScriptAtHeadEnd().isEmpty()
+            || !scripts.getScriptAtBodyStart().isEmpty()
+            || !scripts.getScriptAtBodyEnd().isEmpty();
     }
 
     private static CompilerConfig findConfigFor(final Path file, final Map<String, CompilerConfig> configs) {

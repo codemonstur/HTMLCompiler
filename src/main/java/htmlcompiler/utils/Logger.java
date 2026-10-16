@@ -46,14 +46,20 @@ public interface Logger {
             }
             public void error(CSSParseException e) throws CSSException {
                 logger.error(e.getMessage());
+                // Rethrowing matters: a returning error() tells the parser to keep going with a broken sheet
+                throw e;
             }
             public void fatalError(CSSParseException e) throws CSSException {
                 logger.error(e.getMessage());
+                throw e;
             }
         };
     }
     static Logger newConsoleLogger() {
         return newLogger(System.out::println, System.err::println, System.err::println);
+    }
+    static Logger newSilentLogger() {
+        return newLogger(message -> {}, message -> {}, message -> {});
     }
     public static Logger newLogger(final Consumer<String> info, final Consumer<String> warn, final Consumer<String> error) {
         return new Logger() {

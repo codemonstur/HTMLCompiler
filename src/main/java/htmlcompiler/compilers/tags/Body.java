@@ -1,17 +1,17 @@
 package htmlcompiler.compilers.tags;
 
+import htmlcompiler.compilers.HtmlCompiler;
 import htmlcompiler.pojos.compile.CompilerConfig;
-import htmlcompiler.pojos.compile.ScriptBag;
 import org.jsoup.nodes.Element;
 
 import java.nio.file.Path;
 
 public enum Body {;
 
-    public static TagVisitor newBodyVisitor(final ScriptBag scripts) {
+    public static TagVisitor newBodyVisitor(final HtmlCompiler html) {
         return new TagVisitor() {
             public void head(final CompilerConfig config, final Path file, final Element node, final int depth) {
-                final String startCode = scripts.getScriptAtBodyStart().trim();
+                final String startCode = html.scripts.getScriptAtBodyStart().trim();
                 if (!startCode.isEmpty()) {
                     final Element scriptStart = node.ownerDocument().createElement("script");
                     scriptStart.text(startCode);
@@ -19,7 +19,7 @@ public enum Body {;
                 }
             }
             public void tail(final CompilerConfig config, final Path file, final Element node, final int depth) {
-                final String code = scripts.getScriptAtBodyEnd().trim();
+                final String code = html.scripts.getScriptAtBodyEnd().trim();
                 if (!code.isEmpty()) {
                     final Element script = node.ownerDocument().createElement("script");
                     script.text(code);

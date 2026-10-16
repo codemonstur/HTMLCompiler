@@ -1,6 +1,9 @@
 package htmlcompiler.pojos.compile;
 
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Locale;
 
 import static htmlcompiler.utils.Filenames.toExtension;
 
@@ -35,7 +38,7 @@ public enum ImageType {
 
     public static boolean isBinaryImage(final String filename) {
         try {
-            ImageType.valueOf(toExtension(filename));
+            ImageType.valueOf(toExtension(filename).toLowerCase(Locale.ROOT));
             return true;
         }catch (Exception e) {
             return false;
@@ -45,10 +48,19 @@ public enum ImageType {
         return isBinaryImage(file.getFileName().toString());
     }
     public static String toMimeType(final String filename) {
-        return ImageType.valueOf(toExtension(filename)).mimetype;
+        return ImageType.valueOf(toExtension(filename).toLowerCase(Locale.ROOT)).mimetype;
     }
-    public static String toMimeType(final Path filename) {
-        return ImageType.valueOf(toExtension(filename)).mimetype;
+    public static String toMimeType(final Path file) {
+        try {
+            return toMimeType(file.getFileName().toString());
+        } catch (final IllegalArgumentException e) {
+            // Formats outside the enum (svg, webp, ...) still need a mime type when inlined
+            try {
+                final String probed = Files.probeContentType(file);
+                if (probed != null) return probed;
+            } catch (final IOException ignored) {}
+            return "application/octet-stream";
+        }
     }
 
 }

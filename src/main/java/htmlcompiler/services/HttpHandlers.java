@@ -14,7 +14,15 @@ public enum HttpHandlers {;
     public static HttpHandler pathHandler(final Path... directories) {
         return exchange -> {
             final var path = exchange.getRequestURI().getPath();
-            if (!"/".equals(path)) {
+            if ("/".equals(path)) {
+                for (final Path dir : directories) {
+                    final var index = dir.resolve("index.html");
+                    if (isRegularFile(index) && isReadable(index)) {
+                        sendFile(exchange, index);
+                        return;
+                    }
+                }
+            } else {
                 for (final Path dir : directories) {
                     final var file = toFile(dir, path, null);
                     if (file == null) continue;
@@ -27,7 +35,10 @@ public enum HttpHandlers {;
     }
 
     public static void sendFile(final HttpExchange exchange, final Path file) throws IOException {
-        exchange.getResponseHeaders().add("Content-Type", addCharset(probeContentType(file)));
+        // probeContentType returns null for types it cannot determine, which must not NPE in the header below
+        final String contentType = probeContentType(file);
+        final String header = contentType == null ? "application/octet-stream" : addCharset(contentType);
+        exchange.getResponseHeaders().add("Content-Type", header);
         final long length = Files.size(file);
         if (length > 0) {
             exchange.sendResponseHeaders(200, length);

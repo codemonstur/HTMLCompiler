@@ -5,6 +5,7 @@ import htmlcompiler.utils.Logger;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.net.http.HttpResponse;
 import java.nio.file.Path;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
@@ -13,8 +14,8 @@ import java.util.Map;
 import static htmlcompiler.services.Repository.getRepositoryDirectory;
 import static htmlcompiler.utils.Coding.encodeBase64;
 import static htmlcompiler.utils.Coding.sha384;
-import static htmlcompiler.utils.HTTP.urlHasCorsAllowed;
-import static htmlcompiler.utils.HTTP.urlToByteArray;
+import static htmlcompiler.utils.HTTP.fetch;
+import static htmlcompiler.utils.HTTP.hasCorsAllowed;
 import static htmlcompiler.utils.Json.GSON;
 import static java.nio.file.Files.*;
 
@@ -31,13 +32,16 @@ public enum RepositoryHashes {;
         String integrity = cachedIntegrityValues.get(uri);
         if (integrity != null) return integrity;
 
-        if (!urlHasCorsAllowed(uri)) {
+        // A single download serves both the CORS check and the hash: browsers can only
+        // verify the integrity value when the resource allows cross-origin use
+        final HttpResponse<byte[]> response = fetch(uri);
+        if (!hasCorsAllowed(response)) {
             final var message = "URI " + uri + " does not have * in Access-Control-Allow-Origin header. Consider loading this resource from a different URI or adding the 'no-integrity' attribute to the tag";
             if (force) log.warn(message);
             else throw new IOException(message);
         }
 
-        integrity = toIntegrityValue(urlToByteArray(uri));
+        integrity = toIntegrityValue(response.body());
         cachedIntegrityValues.put(uri, integrity);
         writeHashMap(cachedIntegrityValues, locationCachedIntegrityValues);
 
@@ -49,10 +53,15 @@ public enum RepositoryHashes {;
         if (!exists(jsonFile)) return new HashMap<>();
 
         try (final var reader = newBufferedReader(jsonFile)) {
-            return GSON.fromJson(reader, MAP_TYPE);
+            final Map<String, String> map = GSON.fromJson(reader, MAP_TYPE);
+            return map != null ? map : new HashMap<>();
+        } catch (final RuntimeException e) {
+            // Corrupt cache file: start over with an empty map, the next write replaces it
+            return new HashMap<>();
         }
     }
     private static void writeHashMap(final Map<String, String> map, final Path destination) throws IOException {
+        createDirectories(destination.getParent());
         try (final var writer = newBufferedWriter(destination)) {
             GSON.toJson(map, MAP_TYPE, GSON.newJsonWriter(writer));
         }

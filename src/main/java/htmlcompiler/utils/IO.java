@@ -7,6 +7,8 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Locale;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
@@ -26,24 +28,39 @@ public enum IO {;
     }
 
     public static Path findBinaryInPath(final String name) throws FileNotFoundException {
-        final Optional<Path> location = Stream.of(System.getenv("PATH")
-            .split(Pattern.quote(File.pathSeparator)))
-            .map(Paths::get)
-            .map(path -> path.resolve(name))
-            .filter(path -> Files.exists(path))
-            .findAny();
+        final Optional<Path> location = findBinary(name);
         if (location.isEmpty()) throw new FileNotFoundException("Could not find binary " + name + " in PATH");
         return location.get();
     }
 
     public static Path findBinaryInPath(final String name, final Path defaultValue) {
-        final Optional<Path> location = Stream.of(System.getenv("PATH")
+        return findBinary(name).orElse(defaultValue);
+    }
+
+    private static Optional<Path> findBinary(final String name) {
+        return Stream.of(System.getenv("PATH")
             .split(Pattern.quote(File.pathSeparator)))
             .map(Paths::get)
-            .map(path -> path.resolve(name))
-            .filter(path -> Files.exists(path))
+            .map(directory -> resolveBinary(directory, name))
+            .filter(Objects::nonNull)
             .findAny();
-        return location.isEmpty() ? defaultValue : location.get();
+    }
+
+    private static Path resolveBinary(final Path directory, final String name) {
+        final Path direct = directory.resolve(name);
+        if (Files.isRegularFile(direct)) return direct;
+        if (isWindows()) {
+            final String pathExt = System.getenv().getOrDefault("PATHEXT", ".COM;.EXE;.BAT;.CMD");
+            for (final String extension : pathExt.split(";")) {
+                final Path candidate = directory.resolve(name + extension.toLowerCase(Locale.ROOT));
+                if (Files.isRegularFile(candidate)) return candidate;
+            }
+        }
+        return null;
+    }
+
+    private static boolean isWindows() {
+        return System.getProperty("os.name").toLowerCase(Locale.ROOT).contains("win");
     }
 
     public static Path newTempFileWithContent(final String prefix, final String suffix, final Path tempDir, final String content) throws IOException {

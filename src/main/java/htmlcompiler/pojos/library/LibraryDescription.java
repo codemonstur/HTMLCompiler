@@ -12,6 +12,6 @@ public final class LibraryDescription {
     }
 
     static LibraryDescription toLibraryDescription(final LibraryRecord record) {
-        return new LibraryDescription(record.tagName, record.attributes);
+        return new LibraryDescription(record.tagName(), record.attributes());
     }
 }

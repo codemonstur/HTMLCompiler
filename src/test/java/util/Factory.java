@@ -13,7 +13,8 @@ import static htmlcompiler.minify.JsMinifyEngine.gcc_simple;
 public enum Factory {;
 
     public static HtmlCompiler newHtmlCompiler() {
-        final Logger log = Logger.newLogger(System.out::print, System.out::print, System.out::print);
+        // Keeps test output clean; tests assert on compiled output, not on logs
+        final Logger log = Logger.newSilentLogger();
         final LibraryArchive archive = new LibraryArchive();
         final CompilerConfig checks = new CompilerConfig();
         return new HtmlCompiler(log, gcc_simple, archive, Map.of("", checks),

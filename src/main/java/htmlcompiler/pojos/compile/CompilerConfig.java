@@ -17,28 +17,29 @@ import static htmlcompiler.utils.Strings.isNullOrBlank;
 import static java.nio.file.Files.isRegularFile;
 import static java.nio.file.Files.newBufferedReader;
 
-public final class CompilerConfig {
-
-    public final Set<String> ignoreTags;
-    public final Set<String> ignoreAttributes;
-    public final Set<String> ignoreInputTypes;
-    public final Map<String, Boolean> checks;
-    public final boolean ignoreMajorVersions;
-    public final ValidatorConfig validator;
+public record CompilerConfig(
+        Set<String> ignoreTags,
+        Set<String> ignoreAttributes,
+        Set<String> ignoreInputTypes,
+        Map<String, Boolean> checks,
+        boolean ignoreMajorVersions,
+        ValidatorConfig validator) {
 
     public CompilerConfig() {
         this(new HashSet<>(), new HashSet<>(), new HashSet<>(), new HashMap<>(), false, new ValidatorConfig());
     }
 
-    public CompilerConfig(final Set<String> ignoreTags, final Set<String> ignoreAttributes,
-                          final Set<String> ignoreInputTypes, final Map<String, Boolean> checks,
-                          final boolean ignoreMajorVersions, final ValidatorConfig validator) {
-        this.ignoreTags = ignoreTags;
-        this.ignoreAttributes = ignoreAttributes;
-        this.ignoreInputTypes = ignoreInputTypes;
-        this.checks = checks;
-        this.ignoreMajorVersions = ignoreMajorVersions;
-        this.validator = validator;
+    /** Components that the JSON file omits arrive as null in the canonical constructor, so restore the
+     *  defaults that used to come from the no-arg constructor. */
+    static CompilerConfig withDefaults(final CompilerConfig config) {
+        if (config == null) return new CompilerConfig();
+        return new CompilerConfig(
+                config.ignoreTags() != null ? config.ignoreTags() : new HashSet<>(),
+                config.ignoreAttributes() != null ? config.ignoreAttributes() : new HashSet<>(),
+                config.ignoreInputTypes() != null ? config.ignoreInputTypes() : new HashSet<>(),
+                config.checks() != null ? config.checks() : new HashMap<>(),
+                config.ignoreMajorVersions(),
+                ValidatorConfig.withDefaults(config.validator()));
     }
 
     private static final Type CONFIG_MAP_TYPE = new TypeToken<Map<String, CompilerConfig>>() {}.getType();
@@ -48,7 +49,12 @@ public final class CompilerConfig {
         if (!isRegularFile(confFile)) return Map.of("", new CompilerConfig());
 
         try (final Reader in = newBufferedReader(confFile)) {
-            return GSON.fromJson(in, CONFIG_MAP_TYPE);
+            final Map<String, CompilerConfig> configs = GSON.fromJson(in, CONFIG_MAP_TYPE);
+            if (configs == null) return Map.of("", new CompilerConfig());
+            configs.replaceAll((name, config) -> withDefaults(config));
+            return configs;
+        } catch (final RuntimeException e) {
+            throw new IOException("Invalid checks configuration file " + confFile, e);
         }
     }
 

@@ -66,7 +66,7 @@ public enum Link {;
             }
 
             if (isLinkStyleSheet(node) && node.hasAttr("href"))
-                checkVersionLibrary(log, file.toString(), node.attr("href"), config.ignoreMajorVersions);
+                checkVersionLibrary(log, file.toString(), node.attr("href"), config.ignoreMajorVersions());
 
             if (isLinkStyleSheet(node) && node.hasAttr("inline")) {
                 final Path location = toLocation(file, node.attr("href"), "<link> in %s has an invalid href location '%s'");
@@ -88,7 +88,7 @@ public enum Link {;
             if (node.hasAttr("to-absolute")) {
                 makeAbsolutePath(node, "href");
             }
-            removeAttributes(node, "to-absolute", "no-integrity");
+            removeAttributes(node, "to-absolute", "no-integrity", "compress");
         };
     }
 
@@ -116,7 +116,7 @@ public enum Link {;
         final Path location = toLocation(file, element.attr("href"), "<link> in %s has an invalid href location '%s'");
         final String type = (element.hasAttr("type")) ? element.attr("type") : toMimeType(location);
         element.removeAttr("inline");
-        element.attr("href", toDataUrl(type, readAllBytes(file)));
+        element.attr("href", toDataUrl(type, readAllBytes(location)));
     }
 
     private static boolean isCssUtil(final Element node) {

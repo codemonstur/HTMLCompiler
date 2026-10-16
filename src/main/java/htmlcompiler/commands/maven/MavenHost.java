@@ -21,6 +21,8 @@ public final class MavenHost extends AbstractMojo {
     @Parameter(defaultValue = "8080")
     public int port;
     @Parameter(defaultValue = "true")
+    public boolean checksEnabled;
+    @Parameter(defaultValue = "true")
     public boolean replaceExtension;
     @Parameter(defaultValue = "src/main/webinc")
     public String watchedDirectories;
@@ -54,6 +56,7 @@ public final class MavenHost extends AbstractMojo {
         config.requestApiEnabled = requestApiEnabled;
         config.requestApiSpecification = requestApiSpecification;
         config.validation = validation;
+        config.checksEnabled = checksEnabled;
         return config;
     }
 

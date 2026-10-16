@@ -10,6 +10,8 @@ import com.vaadin.sass.internal.resolver.ClassloaderResolver;
 import com.vaadin.sass.internal.resolver.FilesystemResolver;
 import com.yahoo.platform.yui.compressor.CssCompressor;
 import htmlcompiler.utils.Logger;
+import org.w3c.css.sac.CSSException;
+import org.w3c.css.sac.CSSParseException;
 import org.w3c.css.sac.InputSource;
 
 import java.io.*;
@@ -17,13 +19,15 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 import static htmlcompiler.compilers.CodeCompiler.newExternalToolCompiler;
+import static htmlcompiler.compilers.CodeCompiler.newStdoutToolCompiler;
 import static htmlcompiler.utils.Logger.newVaadinLogger;
 
 public enum CssCompiler {;
 
     public static CodeCompiler newStylusCompiler() {
-        return newExternalToolCompiler("stylus", ".styl", true, ".css",
-            (outputFile, inputFile) -> inputFile.toAbsolutePath().toString() + " -o " + outputFile.toAbsolutePath());
+        // The stylus -o option takes a directory, so the compiled CSS is printed to stdout instead
+        return newStdoutToolCompiler("stylus", ".styl",
+            inputFile -> new String[]{"--print", inputFile.toAbsolutePath().toString()});
     }
 
     public static CodeCompiler newLessCompiler() {
@@ -60,7 +64,7 @@ public enum CssCompiler {;
 
     public static CodeCompiler newToolScssCompiler() {
         return newExternalToolCompiler("sass", ".scss", true, ".css",
-            (outputFile, inputFile) -> "--no-source-map " + inputFile.toAbsolutePath() + " " + outputFile.toAbsolutePath());
+            (outputFile, inputFile) -> new String[]{"--no-source-map", inputFile.toAbsolutePath().toString(), outputFile.toAbsolutePath().toString()});
     }
 
     public static CodeCompiler newInternalScssCompiler(final Logger logger) {
@@ -77,7 +81,7 @@ public enum CssCompiler {;
                 final Path dir = Files.isDirectory(parent) ? parent : parent.getParent();
                 return dir == null ? null : dir.resolve("__inline__.scss").toFile();
             }
-            private ScssStylesheet toCompiledStylesheet(final String code, final File backingFile) {
+            private ScssStylesheet toCompiledStylesheet(final String code, final File backingFile) throws Exception {
                 final SCSSDocumentHandler handler = new SCSSDocumentHandlerImpl();
 
                 // The thread local error handler must be set before compiling, otherwise
@@ -86,20 +90,20 @@ public enum CssCompiler {;
                 final var scssCompiler = new Parser();
                 scssCompiler.setErrorHandler(errorHandler);
                 scssCompiler.setDocumentHandler(handler);
-                try {
-                    scssCompiler.parseStyleSheet(new InputSource(new StringReader(code)));
 
-                    // Without resolvers, a backing file, and a charset the parsed sheet
-                    // cannot resolve @import statements and fails on any stylesheet that uses them
-                    final ScssStylesheet stylesheet = handler.getStyleSheet();
-                    stylesheet.addResolver(new FilesystemResolver());
-                    stylesheet.addResolver(new ClassloaderResolver());
-                    if (backingFile != null) stylesheet.setFile(backingFile);
-                    stylesheet.setCharset("ASCII");
-                    stylesheet.compile();
-                } catch (final Exception e) {
-                    logger.error(e.getMessage());
-                }
+                // Any failure from here on must propagate: the vaadin error handlers rethrow,
+                // because a logged-and-returned parse error would emit a partial stylesheet
+                // while the build still succeeds
+                scssCompiler.parseStyleSheet(new InputSource(new StringReader(code)));
+
+                // Without resolvers, a backing file, and a charset the parsed sheet
+                // cannot resolve @import statements and fails on any stylesheet that uses them
+                final ScssStylesheet stylesheet = handler.getStyleSheet();
+                stylesheet.addResolver(new FilesystemResolver());
+                stylesheet.addResolver(new ClassloaderResolver());
+                if (backingFile != null) stylesheet.setFile(backingFile);
+                stylesheet.setCharset("ASCII");
+                stylesheet.compile();
 
                 return handler.getStyleSheet();
             }
@@ -114,13 +118,34 @@ public enum CssCompiler {;
 
     private static SCSSErrorHandler newVaadinTraversalLogger(final Logger logger) {
         return new SCSSErrorHandler() {
+            // Every handler rethrows: vaadin reports recoverable errors by calling these
+            // and continuing, which would silently drop imports or emit a partial sheet.
+            // traverseError(String) is caught by vaadin and re-reported through
+            // traverseError(Exception), which is not caught again, so this propagates
             @Override
             public void traverseError(final Exception e) {
                 logger.error(e.getMessage() == null ? e.toString() : e.getMessage());
+                throw e instanceof RuntimeException runtime ? runtime : new IllegalStateException(e);
             }
             @Override
             public void traverseError(final String message) {
                 logger.error(message);
+                throw new IllegalStateException(message);
+            }
+            // This handler is also used as the parser for imported sheets
+            @Override
+            public void error(final CSSParseException e) throws CSSException {
+                logger.error(e.getMessage());
+                throw e;
+            }
+            @Override
+            public void fatalError(final CSSParseException e) throws CSSException {
+                logger.error(e.getMessage());
+                throw e;
+            }
+            @Override
+            public void warning(final CSSParseException e) {
+                logger.warn(e.getMessage());
             }
         };
     }

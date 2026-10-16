@@ -8,6 +8,7 @@ import java.nio.file.FileVisitOption;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.EnumSet;
+import java.util.Locale;
 import java.util.Map;
 
 import static htmlcompiler.compilers.FileCompiler.newFileCompilerMap;
@@ -32,7 +33,7 @@ public interface TemplateThenCompile {
 
             final String extension = toExtension(inFile, null);
             if (extension == null) return;
-            final var compiler = compilers.get(extension);
+            final var compiler = compilers.get(extension.toLowerCase(Locale.ROOT));
             if (compiler == null) return;
 
             final String output = compiler.compile(inFile);

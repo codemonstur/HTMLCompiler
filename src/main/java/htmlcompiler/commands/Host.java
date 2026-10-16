@@ -104,7 +104,6 @@ public enum Host {;
             if (take.path == null) return;
             if (!isRegularFile(take.path)) return;
             if (take.type == ENTRY_DELETE) return;
-            if (take.type == ENTRY_CREATE) return;
 
             try {
                 final boolean isKnownTemplate = rootPages.contains(take.path.normalize().toAbsolutePath());
@@ -132,7 +131,7 @@ public enum Host {;
     }
 
     private static boolean isChildOf(final Path path, final Path directory) {
-        return directory.toAbsolutePath().startsWith(path.toAbsolutePath());
+        return path.toAbsolutePath().startsWith(directory.toAbsolutePath());
     }
 
     private static List<Path> toPathList(final String semicolonSeparatedList) {

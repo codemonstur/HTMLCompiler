@@ -37,7 +37,7 @@ public enum Meta {;
     private static Element createTag(final LibraryDescription description, final Document document) {
         final Element newElement = document.createElement(description.tagName);
         for (final Attribute attribute : description.attributes) {
-            newElement.attr(attribute.name, attribute.value);
+            newElement.attr(attribute.name(), attribute.value());
         }
         return newElement;
     }

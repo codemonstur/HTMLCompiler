@@ -2,8 +2,8 @@ package htmlcompiler.compilers.tags;
 
 import htmlcompiler.compilers.HtmlCompiler;
 import htmlcompiler.compilers.tags.TagVisitor.TailVisitor;
+import htmlcompiler.pojos.compile.CompilerConfig;
 import htmlcompiler.pojos.compile.MoveType;
-import htmlcompiler.pojos.compile.ScriptBag;
 import htmlcompiler.pojos.compile.ScriptType;
 import htmlcompiler.pojos.error.InvalidInput;
 import htmlcompiler.utils.Logger;
@@ -23,7 +23,7 @@ import static htmlcompiler.utils.Strings.isNullOrEmpty;
 
 public enum Script {;
 
-    public static TagVisitor newScriptVisitor(final Logger log, final HtmlCompiler html, final ScriptBag scripts) {
+    public static TagVisitor newScriptVisitor(final Logger log, final HtmlCompiler html) {
         return (TailVisitor) (config, file, node, depth) -> {
             if (!node.hasAttr("src") && node.hasAttr("inline"))
                 throw new InvalidInput("script inline attempted on tag without src attribute");
@@ -34,19 +34,8 @@ public enum Script {;
                 node.attr("htmlcompiler", "delete-me");
                 return;
             }
-            if (node.hasAttr("move")) {
-                final MoveType type = toMoveType(node.attr("move"), null);
-                final ScriptType scriptType = detectScriptType(node, javascript);
-                final String code = compileScriptTag(node, scriptType, file);
-
-                storeCode( shouldCompress(code, node) ? html.compressJs(code) : code, type, scripts);
-                setData(node, "");
-                node.attr("htmlcompiler", "delete-me");
-                return;
-            }
-
             if (node.hasAttr("src") && isScriptEmpty(node))
-                checkVersionLibrary(log, file.toString(), node.attr("src"), config.ignoreMajorVersions);
+                checkVersionLibrary(log, file.toString(), node.attr("src"), config.ignoreMajorVersions());
 
             if (!isScriptEmpty(node)) {
                 final ScriptType type = detectScriptType(node, null);
@@ -96,6 +85,15 @@ public enum Script {;
 
                 return;
             }
+
+            if (node.hasAttr("compress")) {
+                // Anything reaching this point is not compressible inline code: an unknown
+                // script type (module, json-ld, ...) or an external source. Remove the
+                // attribute so it does not leak into the compiled output
+                if (!isScriptEmpty(node))
+                    log.warn("The 'compress' attribute has no effect on script with type '" + node.attr("type") + "' in " + file);
+                node.removeAttr("compress");
+            }
             if (node.hasAttr("src") && !node.hasAttr("integrity") && !node.hasAttr("no-integrity")) {
                 addIntegrityAttributes(node, node.attr("src"), log);
             }
@@ -104,6 +102,33 @@ public enum Script {;
             }
             removeAttributes(node, "to-absolute", "no-integrity");
         };
+    }
+
+    /**
+     * Handles a script tag with a move attribute before the main traversal. The head and body
+     * hooks that consume moved scripts run at their own position in document order, so scripts
+     * stored during the traversal would miss the head hooks and leak into the next file.
+     */
+    public static void collectMovedScript(final Element node, final CompilerConfig config, final Path file
+            , final HtmlCompiler html) throws Exception {
+        if (!node.hasAttr("src") && node.hasAttr("inline"))
+            throw new InvalidInput("script inline attempted on tag without src attribute");
+        if (node.hasAttr("src") && !isScriptEmpty(node))
+            throw new InvalidInput("script tag has both src tag and text content");
+
+        final MoveType type = toMoveType(node.attr("move"), null);
+        if (type == null)
+            html.log.warn("Script in " + file + " has an invalid move target '" + node.attr("move") + "'");
+        final ScriptType scriptType = detectScriptType(node, javascript);
+        final String code = compileScriptTag(node, scriptType, file);
+
+        storeCode( shouldCompress(code, node) ? html.compressJs(code) : code, type, html.scripts);
+
+        // Empty the tag and strip its attributes so the main traversal leaves it alone
+        // until it is removed by the delete-me cleanup
+        setData(node, "");
+        removeAttributes(node, "move", "inline", "compress", "src", "type");
+        node.attr("htmlcompiler", "delete-me");
     }
 
     private static String compileScriptTag(final Element element, final ScriptType scriptType, final Path parent) throws Exception {

@@ -15,7 +15,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Set;
-import java.util.function.Consumer;
 
 import static htmlcompiler.utils.App.buildMavenTask;
 import static java.nio.file.Files.*;
@@ -71,7 +70,7 @@ public final class MavenMinify extends AbstractMojo {
                 final var minifier = selectMinifier(path, htmlMinifier, cssMinifier, jsMinifier);
                 if (minifier == null) continue;
 
-                tryMinify(log, path, minifier);
+                tryMinify(path, minifier);
             }
 
             if (directories != null) for (final var dir : directories) {
@@ -88,18 +87,19 @@ public final class MavenMinify extends AbstractMojo {
 
                         final var minifier = selectMinifier(file, htmlMinifier, cssMinifier, jsMinifier);
                         if (minifier == null) return;
-                        tryMinify(log, file, minifier);
+                        tryMinify(file, minifier);
                     });
                 }
             }
         });
     }
 
-    private static void tryMinify(final Logger log, final Path file, final Minifier minifier) {
+    private static void tryMinify(final Path file, final Minifier minifier) {
         try {
             writeString(file, minifier.minify(readString(file)));
         } catch (final Exception e) {
-            log.error("Failed to minify file " + file + ". " + e.getMessage());
+            // Failing here must fail the build: shipping a partially minified artifact is worse
+            throw new IllegalStateException("Failed to minify file " + file, e);
         }
     }
 

@@ -35,7 +35,7 @@ public final class LibraryArchive {
         final LibraryDescription description = archive.get(new LibraryKey(name, version, type));
         final Element element = document.createElement(description.tagName);
         for (final Attribute attribute : description.attributes) {
-            element.setAttribute(attribute.name, attribute.value);
+            element.setAttribute(attribute.name(), attribute.value());
         }
         return element;
     }

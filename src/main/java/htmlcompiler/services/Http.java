@@ -47,7 +47,7 @@ public enum Http {;
         for (final var entry : requests.entrySet()) {
             final var handlers = new HashMap<Endpoint, HttpHandler>();
             for (final Request spec : entry.getValue()) {
-                handlers.put(spec.endpoint, toHttpHandler(spec, pathsToHost));
+                handlers.put(spec.endpoint(), toHttpHandler(spec, pathsToHost));
             }
             api.put(entry.getKey(), handlers);
         }

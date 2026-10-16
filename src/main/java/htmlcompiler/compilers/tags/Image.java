@@ -31,6 +31,9 @@ public enum Image {;
                 } else if (isBinaryImage(location)) {
                     node.removeAttr("inline");
                     node.attr("src", toDataUrl(location));
+                } else {
+                    compiler.log.warn("Cannot inline image " + location + " (unsupported format), keeping it as an external image");
+                    node.removeAttr("inline");
                 }
             } else if (node.hasAttr("to-absolute")) {
                 makeAbsolutePath(node, "src");

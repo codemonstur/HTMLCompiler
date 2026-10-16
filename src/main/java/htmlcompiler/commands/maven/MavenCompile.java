@@ -20,6 +20,8 @@ public final class MavenCompile extends AbstractMojo {
     @Parameter(defaultValue = "true")
     public boolean enabled;
     @Parameter(defaultValue = "true")
+    public boolean checksEnabled;
+    @Parameter(defaultValue = "true")
     public boolean recursive;
     @Parameter(defaultValue = "true")
     public boolean replaceExtension;
@@ -42,6 +44,7 @@ public final class MavenCompile extends AbstractMojo {
         config.recursive = recursive;
         config.replaceExtension = replaceExtension;
         config.validation = validation;
+        config.checksEnabled = checksEnabled;
         return config;
     }
 

@@ -6,6 +6,10 @@ import org.junit.jupiter.api.Test;
 import util.Parsing;
 
 import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Base64;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static util.Factory.newHtmlCompiler;
@@ -31,11 +35,20 @@ public class TestInlining {
         assertEquals(html_output_image, output, "Invalid generated HTML");
     }
 
+    // The inlined favicon must contain the favicon file itself, not the compiled page
     public static final String html_output_favicon =
             "<!DOCTYPE html><html><head><link rel=\"icon\" type=\"image/ico\" href=\"data:image/ico;base64," +
-            "PGh0bWw+CjxoZWFkPgogICAgPGxpbmsgcmVsPSJpY29uIiB0eXBlPSJpbWFnZS9pY28iIGhyZWY9Ii4uL3N0YXRpYy9pbW" +
-            "cvZmF2aWNvbi5pY28iIGlubGluZT4KICAgIDx0aXRsZT5UZXN0QXBwIGh0bWw8L3RpdGxlPgo8L2hlYWQ+Cjxib2R5PgoK" +
-            "PC9ib2R5Pgo8L2h0bWw+\"><title>TestApp html</title></head><body></body></html>";
+            faviconBase64() +
+            "\"><title>TestApp html</title></head><body></body></html>";
+
+    private static String faviconBase64() {
+        try {
+            final byte[] favicon = Files.readAllBytes(Path.of("src/test/resources/static/img/favicon.ico"));
+            return Base64.getEncoder().encodeToString(favicon);
+        } catch (final IOException e) {
+            throw new UncheckedIOException(e);
+        }
+    }
 
     @Test
     public void compileInlineFavicon() throws IOException, InvalidInput {

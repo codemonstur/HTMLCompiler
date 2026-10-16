@@ -18,17 +18,17 @@ public enum JsCompiler {;
 
     public static CodeCompiler newTypescriptCompiler() {
         return newExternalToolCompiler("tsc", ".tsc",
-            (outputFile, inputFile) -> "--outFile " + outputFile.toAbsolutePath() + " " + inputFile.toAbsolutePath());
+            (outputFile, inputFile) -> new String[]{"--outFile", outputFile.toAbsolutePath().toString(), inputFile.toAbsolutePath().toString()});
     }
 
     public static CodeCompiler newJsppCompiler() {
         return newExternalToolCompiler("js++", ".jspp",
-            (outputFile, inputFile) -> inputFile.toAbsolutePath() + " -o " + outputFile.toAbsolutePath());
+            (outputFile, inputFile) -> new String[]{inputFile.toAbsolutePath().toString(), "-o", outputFile.toAbsolutePath().toString()});
     }
 
     public static CodeCompiler newDartCompiler() {
         return newExternalToolCompiler("dart2js", ".dart",
-            (outputFile, inputFile) -> "-o " + outputFile.toAbsolutePath() + " " + inputFile.toAbsolutePath());
+            (outputFile, inputFile) -> new String[]{"-o", outputFile.toAbsolutePath().toString(), inputFile.toAbsolutePath().toString()});
     }
 
 }

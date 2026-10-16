@@ -14,7 +14,7 @@ public final class LibraryKey {
     }
 
     public static LibraryKey toLibraryKey(final LibraryRecord record) {
-        return new LibraryKey(record.name, record.version, record.type);
+        return new LibraryKey(record.name(), record.version(), record.type());
     }
 
     @Override

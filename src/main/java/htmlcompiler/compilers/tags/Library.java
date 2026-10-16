@@ -29,7 +29,7 @@ public enum Library {;
         final LibraryDescription description = library.get(name, version, type);
         final Element newElement = element.ownerDocument().createElement(description.tagName);
         for (final Attribute attribute : description.attributes) {
-            newElement.attr(attribute.name, attribute.value);
+            newElement.attr(attribute.name(), attribute.value());
         }
         return newElement;
     }

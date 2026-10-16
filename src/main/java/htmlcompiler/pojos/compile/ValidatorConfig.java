@@ -7,19 +7,20 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public final class ValidatorConfig {
-
-    @SerializedName("text_node_parents_have_attributes")
-    public final List<String> textNodeParentsHaveAttributes;
-    @SerializedName("sibling_attributes")
-    public final Map<String, String> siblingAttributes;
+public record ValidatorConfig(
+        @SerializedName("text_node_parents_have_attributes") List<String> textNodeParentsHaveAttributes,
+        @SerializedName("sibling_attributes") Map<String, String> siblingAttributes) {
 
     public ValidatorConfig() {
         this(new ArrayList<>(), new HashMap<>());
     }
-    public ValidatorConfig(final List<String> textNodeParentsHaveAttributes, final Map<String, String> siblingAttributes) {
-        this.textNodeParentsHaveAttributes = textNodeParentsHaveAttributes;
-        this.siblingAttributes = siblingAttributes;
+
+    /** Same as CompilerConfig.withDefaults: omitted components come in as null. */
+    static ValidatorConfig withDefaults(final ValidatorConfig config) {
+        if (config == null) return new ValidatorConfig();
+        return new ValidatorConfig(
+                config.textNodeParentsHaveAttributes() != null ? config.textNodeParentsHaveAttributes() : new ArrayList<>(),
+                config.siblingAttributes() != null ? config.siblingAttributes() : new HashMap<>());
     }
 
 }

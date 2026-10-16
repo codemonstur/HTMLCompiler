@@ -1,41 +1,40 @@
 package htmlcompiler.utils;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
-import java.net.http.HttpResponse.BodyHandlers;
+import java.net.http.HttpResponse;
+import java.time.Duration;
 
 public enum HTTP {;
-    public static final HttpClient HTTP = HttpClient.newHttpClient();
+    private static final Duration CONNECT_TIMEOUT = Duration.ofSeconds(10);
+    private static final Duration REQUEST_TIMEOUT = Duration.ofSeconds(30);
+
+    public static final HttpClient HTTP = HttpClient.newBuilder().connectTimeout(CONNECT_TIMEOUT).build();
 
     public static boolean isUrl(final String url) {
         return url != null && (url.startsWith("https://") || url.startsWith("http://"));
     }
 
-    public static boolean urlHasCorsAllowed(final String url) {
-        final HttpRequest request = HttpRequest.newBuilder().uri(URI.create(url)).build();
+    public static HttpResponse<byte[]> fetch(final String url) throws IOException {
+        final HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(url))
+                .timeout(REQUEST_TIMEOUT)
+                .build();
         try {
-            final var response = HTTP.send(request, BodyHandlers.discarding());
-            if (response.statusCode() < 200 || response.statusCode() > 299) return false;
-            final var acao = response.headers().firstValue("Access-Control-Allow-Origin");
-            return  acao.isPresent() && "*".equals(acao.get());
-        } catch (IOException | InterruptedException e) {
-            return false;
+            final HttpResponse<byte[]> response = HTTP.send(request, HttpResponse.BodyHandlers.ofByteArray());
+            if (response.statusCode() < 200 || response.statusCode() > 299)
+                throw new IOException("HTTP " + response.statusCode() + " when downloading " + url);
+            return response;
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new IOException("Interrupted during download of " + url);
         }
     }
 
-    public static byte[] urlToByteArray(final String url) throws IOException {
-        final var request = HttpRequest.newBuilder().uri(URI.create(url)).build();
-        try {
-            final var response = HTTP.send(request, BodyHandlers.ofByteArray());
-            if (response.statusCode() < 200 || response.statusCode() > 299)
-                throw new FileNotFoundException(url);
-            return response.body();
-        } catch (InterruptedException e) {
-            throw new IOException("Interrupted during download of " + url);
-        }
+    public static boolean hasCorsAllowed(final HttpResponse<?> response) {
+        return response.headers().firstValue("Access-Control-Allow-Origin").filter("*"::equals).isPresent();
     }
 
 }

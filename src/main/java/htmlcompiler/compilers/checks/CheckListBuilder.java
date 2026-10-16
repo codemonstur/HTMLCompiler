@@ -25,12 +25,12 @@ public final class CheckListBuilder {
         this.config = config;
     }
     public CheckListBuilder addConfiguration(final Map<String, Boolean> conf) {
-        this.config.checks.putAll(conf);
+        this.config.checks().putAll(conf);
         return this;
     }
 
     public CheckListBuilder addIfEnabled(final String name, final ElementChecks.JsoupElementCheck check) {
-        if (config.checks.getOrDefault(name, TRUE)) list.add(check);
+        if (config.checks().getOrDefault(name, TRUE)) list.add(check);
         return this;
     }
 

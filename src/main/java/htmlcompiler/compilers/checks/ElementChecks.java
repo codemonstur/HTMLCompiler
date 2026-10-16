@@ -73,7 +73,7 @@ public enum ElementChecks {;
         if (!"input".equals(element.tagName())) return;
         final var type = element.attr("type");
         if (type == null || type.isEmpty()) return;
-        if (config.ignoreInputTypes.contains(type)) return;
+        if (config.ignoreInputTypes().contains(type)) return;
         if (known_input_types.contains(type)) return;
 
         log.warn("File " + toRelativePath(file) + " contains an <input> tag with unknown type attribute '" + type + "'");
@@ -186,7 +186,7 @@ public enum ElementChecks {;
 
     public static void isValidTag(final Logger log, final CompilerConfig config, final Path file, final Element element) {
         final String tagName = element.tagName().toLowerCase();
-        if (config.ignoreTags.contains(tagName)) return;
+        if (config.ignoreTags().contains(tagName)) return;
         if (!known_tags.contains(tagName))
             log.warn("File " + toRelativePath(file) + " contains an unknown tag <" + element.tagName() + ">");
     }
@@ -194,7 +194,7 @@ public enum ElementChecks {;
     public static void isValidAttribute(final Logger log, final CompilerConfig config, final Path file, final Element element) {
         for (final var attribute : element.attributes()) {
             final String lowerAttr = attribute.getKey().toLowerCase();
-            if (config.ignoreAttributes.contains(lowerAttr)) continue;
+            if (config.ignoreAttributes().contains(lowerAttr)) continue;
             if (!known_attributes.contains(lowerAttr) && !lowerAttr.startsWith("data-"))
                 log.warn("File " + toRelativePath(file) + " contains a tag <" + element.tagName() + "> with an unknown attribute " + attribute.getKey());
         }
