@@ -72,4 +72,4 @@ plugin codemonstur/htmlcompiler:5.8.0
 The `compile-html`, `host-frontend` and `check-frontend-dependencies` commands are then
 available in all your bob tasks.
 
-This replaces the old [htmlcompiler-bobplugin](https://github.com/codemonstur/htmlcompiler-bobplugin) plugin.
+This replaces the old `htmlcompiler-bobplugin` plugin.
