@@ -42,3 +42,8 @@ dependencies:
 
 build
  |  mvn clean package -DskipTests
+
+-- Uploads binaries to Github; the bobplugin jar is what the bob `plugin` directive downloads
+deploy-github
+    info [${PROJECT_NAME}] Uploading to Github
+    hub release create -a target/${PROJECT_NAME}-${PROJECT_VERSION}-bobplugin.jar -F src/docs/releases/release-${PROJECT_VERSION}.txt ${PROJECT_NAME}-${PROJECT_VERSION}

@@ -59,3 +59,17 @@ No more minified files everywhere. No more manually compressing resources.
 The code will compile all HTML files in `src/main/websrc` to `target/classes/webbin` while mirroring the directory structure.
 
 For an example how to set this up see here: in the `example` subdirectory.
+
+### How to use as a bob plugin
+
+The jar attached to each release doubles as a [bob](https://github.com/codemonstur/bobthebuildtool) plugin.
+Add this line to the top of your bobfile:
+
+```
+plugin codemonstur/htmlcompiler:5.8.0
+```
+
+The `compile-html`, `host-frontend` and `check-frontend-dependencies` commands are then
+available in all your bob tasks.
+
+This replaces the old [htmlcompiler-bobplugin](https://github.com/codemonstur/htmlcompiler-bobplugin) plugin.

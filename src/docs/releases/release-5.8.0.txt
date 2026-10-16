@@ -5,3 +5,5 @@ Added threadsafe setting
 Potential fixes for using pug
 Added minify command
 Added example for minify command
+Merged the bob plugin into this project: the release now carries a jar that can be used
+with `plugin codemonstur/htmlcompiler:5.8.0`, replacing htmlcompiler-bobplugin
